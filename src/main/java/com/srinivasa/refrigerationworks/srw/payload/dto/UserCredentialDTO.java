@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.validation.FieldMatch;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldMatch(firstField = "password", secondField = "confirmPassword", message = "The passwords do not match. Please try again.")
 public class UserCredentialDTO {
 
     /*
