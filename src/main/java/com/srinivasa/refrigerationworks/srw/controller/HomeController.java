@@ -10,6 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     /*
+     * Method to handle GET requests for the root ("/") endpoint
+     * Redirects to "/SRW/home"
+     */
+    @GetMapping("/")
+    public String redirectToHome() {
+        return "redirect:/SRW/home";
+    }
+
+    /*
      * Method to handle GET requests for the SRW/home endpoint
      * Returns the "home" view
      */
