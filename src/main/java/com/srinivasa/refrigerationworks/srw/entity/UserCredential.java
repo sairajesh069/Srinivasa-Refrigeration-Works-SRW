@@ -3,6 +3,7 @@ package com.srinivasa.refrigerationworks.srw.entity;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "user_credentials")
 @Data
+@NoArgsConstructor
 public class UserCredential {
 
     /*

@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
  * Entity class representing user roles in the database
@@ -9,6 +10,7 @@ import lombok.Data;
 @Entity
 @Table(name = "user_roles")
 @Data
+@NoArgsConstructor
 public class UserRole {
 
     /*

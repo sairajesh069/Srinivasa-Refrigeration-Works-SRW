@@ -3,6 +3,8 @@ package com.srinivasa.refrigerationworks.srw.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "owners")
 @Data
+@NoArgsConstructor
 public class Owner {
 
     /*
