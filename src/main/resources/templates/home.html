@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <!-- Character encoding -->
         <meta charset="UTF-8">
@@ -17,16 +18,29 @@
         <!-- Welcome message -->
         <h3>Welcome to Srinivasa Refrigeration Works.</h3> <br> <hr>
 
-        <!-- Login link for navigation -->
-        <a th:href="@{/SRW/login}" class="btn btn-primary btn-sm mb-3" title="Navigate to the login page">Login</a>
+        <!-- Check if user is authenticated -->
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
 
-        <!-- Logout form with confirmation prompt -->
-        <form th:action="@{/logout}" method="POST">
-            <!-- Logout button with confirmation dialog -->
-            <input
-                    class="btn btn-danger btn-sm mb-3"
-                    onclick="if(!confirm('Are you sure you want to log out?')) return false"
-                    type="submit" value="Logout">
-        </form>
+            <!-- Check if user has the role 'OWNER' to display registration options -->
+            <div sec:authorize="hasRole('OWNER')">
+                <!-- Button to navigate to management portal -->
+                <a th:href="@{/SRW/management-portal}" class="btn btn-secondary btn-sm mb-3"
+                   title="management portal">Management Portal</a>
+            </div>
+
+            <!-- Logout form, only visible when user is authenticated -->
+            <form th:action="@{/logout}" method="POST">
+                <!-- Logout button with a confirmation dialog -->
+                <input
+                        class="btn btn-danger btn-sm mb-3"
+                        onclick="if(!confirm('Are you sure you want to log out?')) return false"
+                        type="submit" value="Logout" title="Click to log out from your account">
+            </form>
+        </div>
+
+        <!-- Login link for users who are not authenticated -->
+        <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/SRW/login}"
+            class="btn btn-primary btn-sm mb-3" title="Navigate to the login page">Login</a>
+
     </body>
 </html>

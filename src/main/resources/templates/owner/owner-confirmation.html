@@ -20,9 +20,12 @@
             <strong>Owner ID:</strong> <span th:text="${ownerCredentialDTO.ownerDTO.ownerId}"></span> <br><br>
             <strong>Username:</strong> <span th:text="${ownerCredentialDTO.userCredentialDTO.username}"></span> <br><br>
             Congratulations!
-        </p> <br><br>
+        </p> <br>
 
         <!-- Button to return to home page -->
         <a th:href="@{/SRW/home}" class="btn btn-secondary btn-sm mb-3" title="Return to the homepage">Back to Home</a>
+
+        <!-- Button to navigate to management portal -->
+        <a th:href="@{/SRW/management-portal}" class="btn btn-secondary btn-sm mb-3" title="management portal">Back to Management Portal</a>
     </body>
 </html>

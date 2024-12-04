@@ -27,4 +27,13 @@ public class HomeController {
         return "home";
     }
 
+    /*
+     * Method to handle GET requests for the SRW/management-portal endpoint
+     * Returns the "management-portal" view
+     */
+    @GetMapping("SRW/management-portal")
+    public String managementPortal() {
+        return "management-portal";
+    }
+
 }
