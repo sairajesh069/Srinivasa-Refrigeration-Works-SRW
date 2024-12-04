@@ -1,6 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.entity;
 
-import com.srinivasa.refrigerationworks.srw.utility.common.CommonEnums;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -57,7 +57,7 @@ public class UserCredential {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
-    private CommonEnums.UserType userType;
+    private UserType userType;
 
     /*
      * List of roles assigned to the user
