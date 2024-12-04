@@ -1,0 +1,5 @@
+# Spring application configuration
+spring:
+
+  application:
+    name: SRW  # Name of the application
