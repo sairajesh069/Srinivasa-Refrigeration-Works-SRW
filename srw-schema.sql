@@ -20,3 +20,17 @@ CREATE TABLE user_roles (
     roles VARCHAR(25) NOT NULL,
     PRIMARY KEY(user_id, roles),
     FOREIGN KEY(user_id) REFERENCES user_credentials(user_id));
+    
+-- Creating the owners table
+CREATE TABLE owners (
+    owner_reference BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    owner_id VARCHAR(6) UNIQUE,
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender VARCHAR(10) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL UNIQUE, 
+    email VARCHAR(60) NOT NULL UNIQUE,
+    address VARCHAR(108) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME);
