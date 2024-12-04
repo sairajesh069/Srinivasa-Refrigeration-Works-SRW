@@ -3,3 +3,8 @@ spring:
 
   application:
     name: SRW  # Name of the application
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/srinivasa_refrigeration_works  # Database URL
+    username: root  # Database username
+    password: Sai@8500  # Database password
