@@ -36,6 +36,5 @@ public class UserCredentialDTO {
     /*
      * Confirm Password (mandatory field)
      */
-    @NotNull(message = "Confirm Password is required")
     private String confirmPassword;
 }

@@ -38,7 +38,7 @@
 
             <!-- Date of Birth input field with error handling -->
             <label for="dateOfBirth">Date Of Birth:</label>
-            <input id="dateOfBirth" type="date" th:field="*{ownerDTO.dateOfBirth}" placeholder="Enter your date of birth (DD-MM-YYYY)">
+            <input id="dateOfBirth" type="date" th:field="*{ownerDTO.dateOfBirth}">
             <span th:if="${#fields.hasErrors('ownerDTO.dateOfBirth')}" th:errors="*{ownerDTO.dateOfBirth}" class="error"></span> <br><br>
 
             <!-- Dropdown for selecting gender with error handling -->

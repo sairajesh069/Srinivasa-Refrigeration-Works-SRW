@@ -75,6 +75,7 @@ public class UserCredential {
     public void prePersist() {
         this.enabled = 1;
         this.confirmPassword = password;
+        this.phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
     }
 
     /*

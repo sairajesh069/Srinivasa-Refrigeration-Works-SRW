@@ -2,11 +2,13 @@ package com.srinivasa.refrigerationworks.srw.payload.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -37,9 +39,14 @@ public class OwnerDTO {
     private String lastName;
 
     /*
-     * Owner's date of birth (mandatory field)
+     * Owner's date of birth
+     * - NotNull: Ensures that the date of birth is provided.
+     * - Past: Ensures that the date of birth is in the past.
+     * - DateTimeFormat: Validates the date format (yyyy-MM-dd).
      */
     @NotNull(message = "Date of Birth is mandatory")
+    @Past(message = "Date of birth must be in the past.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     /*
