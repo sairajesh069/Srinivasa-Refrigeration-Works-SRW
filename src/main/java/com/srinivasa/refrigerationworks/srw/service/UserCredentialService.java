@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.entity.UserRole;
+import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
@@ -21,6 +22,7 @@ public class UserCredentialService {
     private final UserCredentialRepository userCredentialRepository;
     private final UserCredentialMapper userCredentialMapper;
     private final OwnerService ownerService;
+    private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
 
     /*
@@ -48,5 +50,17 @@ public class UserCredentialService {
         userCredential.setUserId(ownerId);
         userCredential.setPhoneNumber(ownerCredentialDTO.getOwnerDTO().getPhoneNumber());
         saveCredential(userCredential, UserType.OWNER, "ROLE_OWNER");
+    }
+
+    /*
+     * Adds user credential for the employee. The employee's details are added,
+     * and user credentials are saved with the role "ROLE_EMPLOYEE".
+     */
+    public void addEmployeeCredential(EmployeeCredentialDTO employeeCredentialDTO) {
+        String employeeId = employeeService.addEmployee(employeeCredentialDTO.getEmployeeDTO());
+        UserCredential userCredential = userCredentialMapper.toEntity(employeeCredentialDTO.getUserCredentialDTO());
+        userCredential.setUserId(employeeId);
+        userCredential.setPhoneNumber(employeeCredentialDTO.getEmployeeDTO().getPhoneNumber());
+        saveCredential(userCredential, UserType.EMPLOYEE, "ROLE_EMPLOYEE");
     }
 }
