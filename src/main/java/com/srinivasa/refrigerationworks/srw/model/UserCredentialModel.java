@@ -1,8 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
-import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.UserCredentialDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.*;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.UserFormConstants;
 import org.springframework.ui.Model;
 
@@ -20,13 +18,25 @@ public class UserCredentialModel {
         ownerCredentialDTO.setOwnerDTO(new OwnerDTO());
         ownerCredentialDTO.setUserCredentialDTO(new UserCredentialDTO());
         model.addAttribute("ownerCredentialDTO", ownerCredentialDTO);
-        addOwnerFormConstantsToModel(model);
+        addUserFormConstantsToModel(model);
     }
 
     /*
-     * Adds form constants (like genders) to the model for owner registration.
+     * Initializes the EmployeeDTO and UserCredentialDTO.
+     * Adds EmployeeCredentialDTO and form constants to the model for employee registration.
      */
-    public static void addOwnerFormConstantsToModel(Model model) {
+    public static void addEmployeeCredentialToModel(Model model) {
+        EmployeeCredentialDTO employeeCredentialDTO = new EmployeeCredentialDTO();
+        employeeCredentialDTO.setEmployeeDTO(new EmployeeDTO());
+        employeeCredentialDTO.setUserCredentialDTO(new UserCredentialDTO());
+        model.addAttribute("employeeCredentialDTO", employeeCredentialDTO);
+        addUserFormConstantsToModel(model);
+    }
+
+    /*
+     * Adds form constants (like genders) to the model for user registration.
+     */
+    public static void addUserFormConstantsToModel(Model model) {
         model.addAttribute("genders", UserFormConstants.GENDERS);
     }
 }
