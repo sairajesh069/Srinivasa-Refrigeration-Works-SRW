@@ -1,6 +1,8 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.validation.FieldMatch;
+import com.srinivasa.refrigerationworks.srw.validation.UniqueValue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -16,14 +18,22 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+/*
+ * Validates that two fields match.
+ * - Applies to 'password' and 'confirmPassword' fields.
+ * - Displays a custom error message if they do not match.
+ */
 @FieldMatch(firstField = "password", secondField = "confirmPassword", message = "The passwords do not match. Please try again.")
 public class UserCredentialDTO {
 
     /*
-     * Username (mandatory field, must be at least 6 characters long)
+     * Username.
+     * - Mandatory field.
+     * - Must be at least 6 characters long.
      */
     @NotNull(message = "Username is required")
     @Size(min = 6, message = "Username must be at least 6 characters long")
+    @UniqueValue(entityClass = UserCredential.class, fieldName = "username", message = "This username is already taken")
     private String username;
 
     /*

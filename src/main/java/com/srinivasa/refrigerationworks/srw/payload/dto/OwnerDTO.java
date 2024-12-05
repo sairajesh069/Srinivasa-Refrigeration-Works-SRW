@@ -1,5 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.entity.Owner;
+import com.srinivasa.refrigerationworks.srw.validation.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -56,17 +58,23 @@ public class OwnerDTO {
     private String gender;
 
     /*
-     * Owner's phone number (mandatory field, must match specified regex)
+     * Owner's phone number.
+     * - Mandatory field.
+     * - Must match the specified regex for valid phone numbers.
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
+    @UniqueValue(fieldName = "phoneNumber", entityClass = Owner.class, message = "This phone number is already registered")
     private String phoneNumber;
 
     /*
-     * Owner's email (mandatory field, must be a valid email)
+     * Owner's email address.
+     * - Mandatory field.
+     * - Must be a valid email format.
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
+    @UniqueValue(fieldName = "email", entityClass = Owner.class, message = "This email address is already registered")
     private String email;
 
     /*
