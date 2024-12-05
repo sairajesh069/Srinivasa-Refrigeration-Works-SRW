@@ -52,3 +52,17 @@ CREATE TABLE employees (
     salary BIGINT NOT NULL,
     updated_at DATETIME,
     date_of_exit DATETIME) AUTO_INCREMENT=101;
+    
+-- Creating the customers table
+CREATE TABLE customers (
+    customer_reference BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    customer_id VARCHAR(10) UNIQUE,
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL UNIQUE, 
+    email VARCHAR(60) NOT NULL UNIQUE,
+    address VARCHAR(108) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME) AUTO_INCREMENT=1001;
