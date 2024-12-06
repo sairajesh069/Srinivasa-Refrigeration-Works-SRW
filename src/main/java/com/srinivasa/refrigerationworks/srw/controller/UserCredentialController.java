@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
+import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.service.UserCredentialService;
@@ -73,6 +74,28 @@ public class UserCredentialController {
         }
         userCredentialService.addEmployeeCredential(employeeCredentialDTO);
         return "employee/employee-confirmation";
+    }
+
+    /*
+     * Displays the customer registration form
+     */
+    @GetMapping("/customer/register")
+    public String createCustomer(Model model) {
+        UserCredentialModel.addCustomerCredentialToModel(model);
+        return "customer/customer-register-form";
+    }
+
+    /*
+     * Confirms the customer registration and adds customer credentials
+     */
+    @PostMapping("/customer/confirmation")
+    public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            return "customer/customer-register-form";
+        }
+        userCredentialService.addCustomerCredential(customerCredentialDTO);
+        return "customer/customer-confirmation";
     }
 
 }

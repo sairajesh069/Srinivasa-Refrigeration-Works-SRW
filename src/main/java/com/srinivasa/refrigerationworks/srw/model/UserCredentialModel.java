@@ -34,6 +34,18 @@ public class UserCredentialModel {
     }
 
     /*
+     * Initializes the CustomerDTO and UserCredentialDTO.
+     * Adds CustomerCredentialDTO and form constants to the model for customer registration.
+     */
+    public static void addCustomerCredentialToModel(Model model) {
+        CustomerCredentialDTO customerCredentialDTO = new CustomerCredentialDTO();
+        customerCredentialDTO.setCustomerDTO(new CustomerDTO());
+        customerCredentialDTO.setUserCredentialDTO(new UserCredentialDTO());
+        model.addAttribute("customerCredentialDTO", customerCredentialDTO);
+        addUserFormConstantsToModel(model);
+    }
+
+    /*
      * Adds form constants (like genders) to the model for user registration.
      */
     public static void addUserFormConstantsToModel(Model model) {
