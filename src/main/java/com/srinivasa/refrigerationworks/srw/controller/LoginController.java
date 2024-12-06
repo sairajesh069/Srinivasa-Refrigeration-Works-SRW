@@ -20,4 +20,13 @@ public class LoginController {
         return "custom-login";
     }
 
+    /*
+     * Method to handle GET requests for the /SRW/access-denied endpoint
+     * Returns the access denied page view
+     */
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "access-denied";
+    }
+
 }

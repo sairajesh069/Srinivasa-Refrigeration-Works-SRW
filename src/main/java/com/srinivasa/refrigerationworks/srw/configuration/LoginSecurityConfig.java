@@ -113,6 +113,12 @@ public class LoginSecurityConfig {
                         .loginProcessingUrl("/authenticateUser")
                         .permitAll())
                 .logout(LogoutConfigurer::permitAll)
+                .exceptionHandling(customizer -> customizer
+                        /*
+                         * Configures custom exception handling for access control.
+                         * - Redirects users to a custom "Access Denied" page when they attempt to access restricted resources.
+                         */
+                        .accessDeniedPage("/SRW/access-denied"))
                 .build();
     }
 }
