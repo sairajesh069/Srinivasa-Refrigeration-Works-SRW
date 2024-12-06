@@ -92,6 +92,11 @@ public class LoginSecurityConfig {
                         .requestMatchers("/SRW/customer/register", "/SRW/customer/confirmation").permitAll()
 
                         /*
+                         * Allow username recovery to be accessed by anyone.
+                         */
+                        .requestMatchers("/SRW/username-recovery").permitAll()
+
+                        /*
                          * Restrict access to owner-related pages to users with the "OWNER" role.
                          */
                         .requestMatchers("/SRW/owner/**", "/SRW/management-portal").hasRole("OWNER")
