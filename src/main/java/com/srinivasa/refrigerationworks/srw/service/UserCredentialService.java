@@ -5,6 +5,7 @@ import com.srinivasa.refrigerationworks.srw.entity.UserRole;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UsernameRecoveryDTO;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.UserCredentialMapper;
@@ -76,5 +77,16 @@ public class UserCredentialService {
         userCredential.setUserId(customerId);
         userCredential.setPhoneNumber(customerCredentialDTO.getCustomerDTO().getPhoneNumber());
         saveCredential(userCredential, UserType.CUSTOMER, "ROLE_CUSTOMER");
+    }
+
+    /*
+     * Fetches the username associated with the provided phone number.
+     * - Ensures the phone number includes the country code (+91).
+     * - Delegates the query execution to the repository.
+     */
+    public String fetchUsername(UsernameRecoveryDTO usernameRecoveryDTO) {
+        String phoneNumber = usernameRecoveryDTO.getPhoneNumber();
+        phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
+        return userCredentialRepository.fetchUsernameByPhoneNumber(phoneNumber);
     }
 }
