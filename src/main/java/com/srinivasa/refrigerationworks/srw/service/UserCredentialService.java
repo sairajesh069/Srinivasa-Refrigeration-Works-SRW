@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.entity.UserRole;
+import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
@@ -21,9 +22,10 @@ public class UserCredentialService {
 
     private final UserCredentialRepository userCredentialRepository;
     private final UserCredentialMapper userCredentialMapper;
+    private final PasswordEncoder passwordEncoder;
     private final OwnerService ownerService;
     private final EmployeeService employeeService;
-    private final PasswordEncoder passwordEncoder;
+    private final CustomerService customerService;
 
     /*
      * Saves user credentials with the specified user type and role.
@@ -62,5 +64,17 @@ public class UserCredentialService {
         userCredential.setUserId(employeeId);
         userCredential.setPhoneNumber(employeeCredentialDTO.getEmployeeDTO().getPhoneNumber());
         saveCredential(userCredential, UserType.EMPLOYEE, "ROLE_EMPLOYEE");
+    }
+
+    /*
+     * Adds user credential for the customer. The customer's details are added,
+     * and user credentials are saved with the role "ROLE_CUSTOMER".
+     */
+    public void addCustomerCredential(CustomerCredentialDTO customerCredentialDTO) {
+        String customerId = customerService.addCustomer(customerCredentialDTO.getCustomerDTO());
+        UserCredential userCredential = userCredentialMapper.toEntity(customerCredentialDTO.getUserCredentialDTO());
+        userCredential.setUserId(customerId);
+        userCredential.setPhoneNumber(customerCredentialDTO.getCustomerDTO().getPhoneNumber());
+        saveCredential(userCredential, UserType.CUSTOMER, "ROLE_CUSTOMER");
     }
 }

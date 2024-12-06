@@ -6,10 +6,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDate;
 
+/*
+ * DTO class for transferring Customer data with validation annotations
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerDTO {
 
     /*
