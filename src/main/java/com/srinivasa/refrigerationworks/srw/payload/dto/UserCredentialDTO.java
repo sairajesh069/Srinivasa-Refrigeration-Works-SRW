@@ -30,10 +30,11 @@ public class UserCredentialDTO {
      * Username.
      * - Mandatory field.
      * - Must be at least 6 characters long.
+     * - Ensures uniqueness within the UserCredential entity.
      */
     @NotNull(message = "Username is required")
     @Size(min = 6, message = "Username must be at least 6 characters long")
-    @UniqueValue(entityClass = UserCredential.class, fieldName = "username", message = "This username is already taken")
+    @UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, message = "This username is already taken")
     private String username;
 
     /*

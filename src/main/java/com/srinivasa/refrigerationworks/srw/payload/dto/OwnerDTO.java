@@ -61,20 +61,22 @@ public class OwnerDTO {
      * Owner's phone number.
      * - Mandatory field.
      * - Must match the specified regex for valid phone numbers.
+     * - Ensures uniqueness across all user-related entities.
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
-    @UniqueValue(fieldName = "phoneNumber", entityClass = Owner.class, message = "This phone number is already registered")
+    @UniqueValue(fieldName = "phoneNumber", entityClass = Owner.class, inEveryUserEntity = true, message = "This phone number is already registered")
     private String phoneNumber;
 
     /*
      * Owner's email address.
      * - Mandatory field.
      * - Must be a valid email format.
+     * - Ensures uniqueness across all user-related entities.
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
-    @UniqueValue(fieldName = "email", entityClass = Owner.class, message = "This email address is already registered")
+    @UniqueValue(fieldName = "email", entityClass = Owner.class, inEveryUserEntity = true, message = "This email address is already registered")
     private String email;
 
     /*

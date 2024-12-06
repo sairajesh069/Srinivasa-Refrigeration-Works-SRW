@@ -13,6 +13,7 @@ import jakarta.validation.Payload;
  * - Ensures the annotated field's value is unique in the database.
  * - fieldName: Specifies the field to check for uniqueness.
  * - entityClass: Specifies the entity to query.
+ * - inEveryUserEntity: Determines if uniqueness is checked across multiple user-related entities.
  */
 @Constraint(validatedBy = UniqueValueConstraintValidator.class)
 @Target({ElementType.METHOD, ElementType.FIELD})
@@ -43,5 +44,10 @@ public @interface UniqueValue {
      * The entity class where the field resides.
      */
     Class<?> entityClass();
+
+    /*
+     * Indicates whether the field should be unique across multiple user entities.
+     */
+    boolean inEveryUserEntity();
 
 }
