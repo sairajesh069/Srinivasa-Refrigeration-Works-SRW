@@ -67,6 +67,7 @@ public class LoginSecurityConfig {
                 .authorizeHttpRequests(configurer -> configurer
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/", "/SRW/home").permitAll()
+                        .requestMatchers("/SRW/customer/register", "/SRW/customer/confirmation").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/SRW/login")
