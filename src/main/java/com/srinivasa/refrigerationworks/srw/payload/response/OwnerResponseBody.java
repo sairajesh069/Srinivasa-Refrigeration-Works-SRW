@@ -18,7 +18,7 @@ public class OwnerResponseBody {
     /*
      * Status of the response (SUCCESS, FAILURE, ERROR, NOT_FOUND)
      */
-    private ResponseBodyStatus Status;
+    private ResponseBodyStatus status;
 
     /*
      * OwnerDTO object containing owner details

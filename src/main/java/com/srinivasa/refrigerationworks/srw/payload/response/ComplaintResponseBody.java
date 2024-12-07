@@ -1,14 +1,14 @@
 package com.srinivasa.refrigerationworks.srw.payload.response;
 
-import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ResponseBodyStatus;
 import lombok.Data;
 
 /*
- * Response body class for returning EmployeeDTO data along with a message and status
+ * Response body class for returning ComplaintDTO data along with a message and status
  */
 @Data
-public class EmployeeResponseBody {
+public class ComplaintResponseBody {
 
     /*
      * Message providing additional information about the response
@@ -21,7 +21,7 @@ public class EmployeeResponseBody {
     private ResponseBodyStatus status;
 
     /*
-     * EmployeeDTO object containing employee details
+     * ComplaintDTO object containing complaint details
      */
-    private EmployeeDTO employeeDTO;
+    private ComplaintDTO complaintDTO;
 }

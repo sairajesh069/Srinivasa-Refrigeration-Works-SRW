@@ -18,7 +18,7 @@ public class CustomerResponseBody {
     /*
      * Status of the response (SUCCESS, FAILURE, ERROR, NOT_FOUND)
      */
-    private ResponseBodyStatus Status;
+    private ResponseBodyStatus status;
 
     /*
      * CustomerDTO object containing customer details
