@@ -2,10 +2,7 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.entity.UserRole;
-import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.UsernameRecoveryDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.*;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.UserCredentialMapper;
@@ -88,5 +85,27 @@ public class UserCredentialService {
         String phoneNumber = usernameRecoveryDTO.getPhoneNumber();
         phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
         return userCredentialRepository.fetchUsernameByPhoneNumber(phoneNumber);
+    }
+
+    /*
+     * Validates the user by checking if a combination of phone number and username exists in the repository.
+     * - Ensures the phone number is normalized to include the country code.
+     * - Returns true if a matching user is found.
+     */
+    public boolean validateUser(PasswordResetDTO passwordResetDTO) {
+        String phoneNumber = passwordResetDTO.getPhoneNumber();
+        phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
+        String username = passwordResetDTO.getUsername();
+        return userCredentialRepository.existsByPhoneNumberAndUsername(phoneNumber, username);
+    }
+
+    /*
+     * Updates the user's password in the repository.
+     * - Encodes the new password before updating.
+     */
+    public void updatePassword(PasswordResetDTO passwordResetDTO) {
+        String password = passwordEncoder.encode(passwordResetDTO.getPassword());
+        String username = passwordResetDTO.getUsername();
+        userCredentialRepository.updatePassword(username, password);
     }
 }
