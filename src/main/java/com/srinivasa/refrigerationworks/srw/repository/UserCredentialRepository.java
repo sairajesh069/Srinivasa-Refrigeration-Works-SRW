@@ -1,7 +1,9 @@
 package com.srinivasa.refrigerationworks.srw.repository;
 
 import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,4 +21,20 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
      */
     @Query("SELECT username FROM UserCredential WHERE phoneNumber = :phoneNumber")
     public String fetchUsernameByPhoneNumber(@Param("phoneNumber") String phoneNumber);
+
+    /*
+     * Checks if a UserCredential exists with the given phone number and username.
+     * - Returns true if a matching record exists.
+     */
+    @Query("SELECT COUNT(u) > 0 FROM UserCredential u WHERE u.phoneNumber = :phoneNumber AND u.username = :username")
+    public boolean existsByPhoneNumberAndUsername(@Param("phoneNumber") String phoneNumber, @Param("username") String username);
+
+    /*
+     * Updates the password for a UserCredential identified by the username.
+     * - The operation is transactional and modifying.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserCredential SET password = :password WHERE username = :username")
+    public void updatePassword(@Param("username") String username, @Param("password") String password);
 }
