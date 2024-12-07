@@ -66,3 +66,23 @@ CREATE TABLE customers (
     address VARCHAR(108) NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME) AUTO_INCREMENT=1001;
+    
+-- Creating the complaints table
+CREATE TABLE complaints (
+    complaint_reference BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    complaint_id VARCHAR(12) UNIQUE,
+    booked_by_id VARCHAR(10),
+    customer_name VARCHAR(60) NOT NULL,
+    contact_number VARCHAR(15) NOT NULL, 
+    email VARCHAR(45) NOT NULL,
+    address VARCHAR(108) NOT NULL,
+    product_type VARCHAR(45) NOT NULL,
+    brand VARCHAR(45) NOT NULL,
+    product_model VARCHAR(45) NOT NULL,
+    description VARCHAR(250) NOT NULL,
+    created_at DATETIME NOT NULL,
+    status ENUM('OPEN', 'IN_PROGRESS', 'RESOLVED') NOT NULL,
+    updated_at DATETIME NULL,
+    technician_id VARCHAR(25),
+    closed_at DATETIME NULL,
+    customer_feedback VARCHAR(250) NULL);
