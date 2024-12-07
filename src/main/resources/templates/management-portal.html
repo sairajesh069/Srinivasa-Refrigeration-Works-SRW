@@ -49,9 +49,11 @@
 
         <!-- Account recovery section -->
         <div>
-        <!-- Link to navigate to the page for forgotten username -->
-        <a th:href="@{/SRW/username-recovery}">Forgot username</a>
+            <!-- Button to retrieve username -->
+            <a th:href="@{/SRW/username-recovery}" class="btn btn-secondary btn-sm mb-3">Forgot username</a>
 
+            <!-- Button to reset the password -->
+            <a th:href="@{/SRW/password-reset}" class="btn btn-secondary btn-sm mb-3">Forgot password</a> <br><br>
         </div> <hr>
 
         <!-- Button to navigate to home page -->
