@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
+import com.srinivasa.refrigerationworks.srw.entity.Complaint;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
 import org.springframework.ui.Model;
@@ -54,4 +55,16 @@ public class ComplaintModel {
             }
         }
     }
+
+    /*
+     * Adds a list of complaints to the model.
+     * If the list is empty, a "noRecordsFound" attribute with a message is added.
+     * Otherwise, the list of complaints is added under the "complaints" attribute.
+     */
+    public static void addComplaintListToModel(List<Complaint> complaints, Model model) {
+        model.addAttribute(
+                complaints.isEmpty() ? "noRecordsFound" : "complaints",
+                complaints.isEmpty() ? "You have not registered any complaints." : complaints);
+    }
+
 }

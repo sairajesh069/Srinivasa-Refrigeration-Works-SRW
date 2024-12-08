@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 
 /*
@@ -37,8 +38,8 @@ public class ComplaintController {
      */
     @GetMapping("/register")
     public String bookRepair(Model model) {
-        ComplaintModel.addComplaintDTOToModel(model); // Adds empty ComplaintDTO object to the model
-        return "complaint/complaint-register-form"; // Returns the view for the complaint registration form
+        ComplaintModel.addComplaintDTOToModel(model);
+        return "complaint/complaint-register-form";
     }
 
     /*
@@ -49,17 +50,17 @@ public class ComplaintController {
      */
     @PostMapping("/confirmation")
     public String registerComplaint(@ModelAttribute @Valid ComplaintDTO complaintDTO, BindingResult bindingResult, Model model, Principal principal) {
-        if(bindingResult.hasErrors()) { // If there are validation errors
-            if(complaintDTO.getProductType() != null) { // Populate dropdowns based on the selected product type
+        if(bindingResult.hasErrors()) {
+            if(complaintDTO.getProductType() != null) {
                 ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
             }
             else {
-                ComplaintModel.addProductTypesToModel(model); // Adds available product types if none selected
+                ComplaintModel.addProductTypesToModel(model);
             }
-            return "complaint/complaint-register-form"; // Return the complaint registration form view with errors
+            return "complaint/complaint-register-form";
         }
-        complaintService.registerComplaint(complaintDTO, principal.getName()); // Register the complaint using the service
-        return "complaint/complaint-confirmation"; // Return the complaint confirmation view
+        complaintService.registerComplaint(complaintDTO, principal.getName());
+        return "complaint/complaint-confirmation";
     }
 
     /*
@@ -67,7 +68,17 @@ public class ComplaintController {
      */
     @PostMapping("/update-dropdown")
     public String bookRepair(ComplaintDTO complaintDTO, Model model) {
-        ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model); // Updates dropdowns based on product type
-        return "complaint/complaint-register-form"; // Returns the complaint registration form view with updated dropdowns
+        ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
+        return "complaint/complaint-register-form";
+    }
+
+    /*
+     * Handles the GET request to display a list of complaints registered by the logged-in user.
+     * Retrieves complaints associated with the user's username and adds them to the model for rendering.
+     */
+    @GetMapping("/my-complaints")
+    public String getMyComplaints(Model model, Principal principal) {
+        ComplaintModel.addComplaintListToModel(complaintService.getComplaintsByUsername(principal.getName()), model);
+        return "complaint/complaint-list";
     }
 }
