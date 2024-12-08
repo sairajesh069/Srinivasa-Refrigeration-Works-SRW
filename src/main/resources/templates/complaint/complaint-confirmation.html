@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <!-- Meta tags for character set and responsive design -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Bootstrap CSS for styling -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+        <title>Srinivasa Refrigeration Works - Complaint confirmation</title>
+    </head>
+    <body>
+        <!-- Heading to display the complaint registration status -->
+        <h3>Complaint Registered</h3>
+
+        <!-- Message displaying the customer's complaint details -->
+        <p>
+            <!-- Customer's name dynamically populated using Thymeleaf -->
+            Hi <span th:text="${complaintDTO.customerName}"></span>, you have successfully registered a complaint. <br><br>
+
+            <!-- Displaying the unique complaint tracking ID -->
+            <span th:text="${complaintDTO.complaintId}"></span> is your complaint tracking ID. <br><br>
+
+            <!-- Displaying the service type requested -->
+            Service Type: <span th:text="${complaintDTO.productType}"></span><br><br>
+
+            <!-- Displaying the description of the complaint -->
+            Description: <span th:text="${complaintDTO.description}"></span><br><br>
+
+            <!-- Displaying the current status of the complaint -->
+            Status: <span th:text="${complaintDTO.status}"></span><br><br>
+
+            <!-- Thank you message to the customer -->
+            Thank you for choosing us....Have a good day........
+        </p> <br><br>
+
+        <!-- Button to navigate back to the home page -->
+        <a th:href="@{/SRW/home}" class="btn btn-primary btn-sm mb-3"> Back to Home </a>
+
+        <!-- Check if user has the role 'OWNER' to display management portal -->
+        <div sec:authorize="hasRole('OWNER')">
+            <!-- Button to navigate to management portal -->
+            <a th:href="@{/SRW/management-portal}" class="btn btn-secondary btn-sm mb-3" title="management portal">Back to Management Portal</a>
+        </div>
+    </body>
+</html>
