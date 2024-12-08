@@ -97,19 +97,19 @@ public class LoginSecurityConfig {
                         .requestMatchers("/SRW/username-recovery", "/SRW/password-reset").permitAll()
 
                         /*
-                         * Restrict access to owner-related pages to users with the "OWNER" role.
+                         * Restricts access to specific resources and actions to users with the "OWNER" role.
+                         * - "/SRW/owner/**", "/SRW/management-portal": Full access to owner-related endpoints and the management portal.
+                         * - "/SRW/employee/register", "/SRW/employee/confirmation": Access to employee registration and confirmation pages.
+                         * - "/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list": Access to various list pages.
                          */
                         .requestMatchers("/SRW/owner/**", "/SRW/management-portal").hasRole("OWNER")
-
-                        /*
-                         * Restrict access to employee registration and confirmation to users with the "OWNER" role.
-                         */
                         .requestMatchers("/SRW/employee/register", "/SRW/employee/confirmation").hasRole("OWNER")
+                        .requestMatchers("/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list").hasRole("OWNER")
 
                         /*
-                         * Restrict access to complaint registration and confirmation to users with the "CUSTOMER" role.
+                         * Restrict access to complaint registration, confirmation, and viewing own complaints to "CUSTOMER" role.
                          */
-                        .requestMatchers("/SRW/complaint/register", "/SRW/complaint/confirmation").hasRole("CUSTOMER")
+                        .requestMatchers("/SRW/complaint/register", "/SRW/complaint/confirmation", "/SRW/complaint/my-complaints").hasRole("CUSTOMER")
 
                         /*
                          * Require authentication for any other request.
