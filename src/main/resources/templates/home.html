@@ -18,6 +18,9 @@
         <!-- Welcome message -->
         <h3>Welcome to Srinivasa Refrigeration Works.</h3> <br> <hr>
 
+        <!-- Button to navigate to the complaint registration page for booking a repair -->
+        <a th:href="@{/SRW/complaint/register}" class="btn btn-primary btn-sm mb-3">Register Complaint</a> <br><br>
+
         <!-- Check if user is authenticated -->
         <div th:if="${#authorization.expression('isAuthenticated()')}">
 
