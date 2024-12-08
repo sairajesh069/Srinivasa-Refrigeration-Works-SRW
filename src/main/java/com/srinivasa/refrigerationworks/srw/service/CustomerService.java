@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * Service to handle Customer-related operations.
  */
@@ -31,5 +33,17 @@ public class CustomerService {
         customer.setCustomerId("SRW" + String.format("%07d", customer.getCustomerReference()));
         customerDTO.setCustomerId(customer.getCustomerId());
         return customer.getCustomerId();
+    }
+
+    /*
+     * Retrieves a list of all customers from the repository and maps them to CustomerDTO objects.
+     * Returns a list of CustomerDTO to be used in other services or controllers.
+     */
+    public List<CustomerDTO> getCustomerList() {
+        List<Customer> customers = customerRepository.findAll();
+        return customers
+                .stream()
+                .map(customerMapper::toDto)
+                .toList();
     }
 }
