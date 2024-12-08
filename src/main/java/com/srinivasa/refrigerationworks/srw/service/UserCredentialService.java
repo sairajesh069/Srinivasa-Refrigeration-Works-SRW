@@ -108,4 +108,12 @@ public class UserCredentialService {
         String username = passwordResetDTO.getUsername();
         userCredentialRepository.updatePassword(username, password);
     }
+
+    /*
+     * Retrieves the user ID associated with the given username.
+     * - Queries the database using the userCredentialRepository to find the user ID.
+     */
+    public String getUserIdByUsername(String username) {
+        return userCredentialRepository.findUserIdByUsername(username);
+    }
 }
