@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * Service layer for handling complaint-related operations.
  * Manages the business logic for registering complaints.
@@ -39,5 +41,14 @@ public class ComplaintService {
         complaint.setComplaintId("SRWC" + String.format("%08d", complaint.getComplaintReference()));
         complaintDTO.setComplaintId(complaint.getComplaintId());
         complaintDTO.setStatus(complaint.getStatus());
+    }
+
+    /*
+     * Retrieves a list of complaints based on the username.
+     * First, the user ID is fetched using the provided username, and then complaints associated with that user ID are retrieved.
+     */
+    public List<Complaint> getComplaintsByUsername(String username) {
+        String userId = userCredentialService.getUserIdByUsername(username);
+        return complaintRepository.findAllByBookedById(userId);
     }
 }
