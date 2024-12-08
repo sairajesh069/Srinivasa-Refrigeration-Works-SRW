@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * Service to handle Employee-related operations.
  */
@@ -32,4 +34,17 @@ public class EmployeeService {
         employeeDTO.setEmployeeId(employee.getEmployeeId());
         return employee.getEmployeeId();
     }
+
+    /*
+     * Retrieves a list of all employees from the repository and maps them to EmployeeDTO objects.
+     * Returns a list of EmployeeDTO to be used in other services or controllers.
+     */
+    public List<EmployeeDTO> getEmployeeList() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees
+                .stream()
+                .map(employeeMapper::toDto)
+                .toList();
+    }
+
 }

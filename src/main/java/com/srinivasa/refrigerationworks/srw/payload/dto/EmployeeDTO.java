@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /*
  * DTO class for transferring Employee data with validation annotations
@@ -95,6 +96,11 @@ public class EmployeeDTO {
     private String nationalIdNumber;
 
     /*
+     * Employee's date of hire
+     */
+    private LocalDateTime dateOfHire;
+
+    /*
      * Employee's designation (mandatory field)
      */
     @NotNull(message = "Designation is mandatory")
@@ -105,4 +111,9 @@ public class EmployeeDTO {
      */
     @NotNull(message = "Salary is mandatory")
     private Long salary;
+
+    /*
+     * Employee's date of exit
+     */
+    private LocalDateTime dateOfExit;
 }
