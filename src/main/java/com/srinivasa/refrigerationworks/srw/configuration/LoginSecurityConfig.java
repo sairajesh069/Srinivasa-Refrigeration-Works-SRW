@@ -107,6 +107,11 @@ public class LoginSecurityConfig {
                         .requestMatchers("/SRW/employee/register", "/SRW/employee/confirmation").hasRole("OWNER")
 
                         /*
+                         * Restrict access to complaint registration and confirmation to users with the "CUSTOMER" role.
+                         */
+                        .requestMatchers("/SRW/complaint/register", "/SRW/complaint/confirmation").hasRole("CUSTOMER")
+
+                        /*
                          * Require authentication for any other request.
                          */
                         .anyRequest().authenticated())
