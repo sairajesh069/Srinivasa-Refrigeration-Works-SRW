@@ -51,4 +51,12 @@ public class ComplaintService {
         String userId = userCredentialService.getUserIdByUsername(username);
         return complaintRepository.findAllByBookedById(userId);
     }
+
+    /*
+     * Retrieves all complaints from the repository.
+     * Returns the list of complaints to be used in other services or controllers.
+     */
+    public List<Complaint> getComplaintList() {
+        return complaintRepository.findAll();
+    }
 }

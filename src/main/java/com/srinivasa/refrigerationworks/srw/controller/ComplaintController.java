@@ -81,4 +81,14 @@ public class ComplaintController {
         ComplaintModel.addComplaintListToModel(complaintService.getComplaintsByUsername(principal.getName()), model);
         return "complaint/complaint-list";
     }
+
+    /*
+     * Handles the GET request to display the list of all complaints.
+     * Retrieves all complaints and adds them to the model for rendering.
+     */
+    @GetMapping("/list")
+    public String getComplaintList(Model model) {
+        ComplaintModel.addComplaintListToModel(complaintService.getComplaintList(), model);
+        return "complaint/complaint-list";
+    }
 }
