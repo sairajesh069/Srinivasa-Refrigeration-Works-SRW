@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -20,5 +21,23 @@ public class EmployeeModel {
         model.addAttribute(
                 employees.isEmpty() ? "noEmployeesFound" : "employees",
                 employees.isEmpty() ? "No Employee Entries in Database" : employees);
+    }
+
+    /*
+     * Adds a new UserIdentifierDTO object to the model.
+     * Used to capture user input for searching an employee.
+     */
+    public static void addUserIdentifierDTOToModel(Model model) {
+        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+    }
+
+    /*
+     * Adds employee details or a fallback message to the model.
+     * If the employee is found, adds the EmployeeDTO object; otherwise, adds an error message.
+     */
+    public static void addEmployeeDetailsToModel(EmployeeDTO employee, Model model) {
+        model.addAttribute(
+                employee == null ? "noEmployeeFound" : "employee",
+                employee == null ? "Employee not found for the given details." : employee);
     }
 }
