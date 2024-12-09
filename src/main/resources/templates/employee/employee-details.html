@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!-- Meta tags for character set and responsive design -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Bootstrap CSS for styling -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" th:href="@{/css/user-details.css}">
+
+        <title>Srinivasa Refrigeration Works - Employee Details</title>
+    </head>
+    <body>
+        <!-- Heading indicating the employee details page -->
+        <h3>Employees Details</h3>
+
+        <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
+
+            <!-- Identifier input field with error handling -->
+            <label for="identifier">Identifier:</label>
+            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
+            <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span> <br><br>
+
+            <!-- Button to submit the form for fetching employee details -->
+            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Employee"> <br><br>
+        </form>
+
+        <!-- Display a message if no employee is found with given identifier -->
+        <p th:if="${noEmployeeFound}" class="error" th:text="${noEmployeeFound}"></p>
+
+        <!-- Display the employee details if employee with identifier exist -->
+        <div th:if="${employee}">
+            <p>
+                <!-- Unique identifier for the employee -->
+                <span class="bold"> Employee Id: </span> <span th:text="${employee.employeeId}"></span> <br>
+
+                <!-- Employee's first name -->
+                <span class="bold"> First Name: </span> <span th:text="${employee.firstName}"></span> <br>
+
+                <!-- Employee's last name -->
+                <span class="bold"> Last Name: </span> <span th:text="${employee.lastName}"></span> <br>
+
+                <!-- Employee's date of birth -->
+                <span class="bold"> Date of Birth: </span> <span th:text="${employee.dateOfBirth}"></span> <br>
+
+                <!-- Employee's gender -->
+                <span class="bold"> Gender: </span> <span th:text="${employee.gender}"></span> <br>
+
+                <!-- Employee's contact number -->
+                <span class="bold"> Phone Number: </span> <span th:text="${employee.phoneNumber}"></span> <br>
+
+                <!-- Employee's email address -->
+                <span class="bold"> Email: </span> <span th:text="${employee.email}"></span> <br>
+
+                <!-- Employee's residential address -->
+                <span class="bold"> Address: </span> <span th:text="${employee.address}"></span> <br>
+
+                <!-- National id number of the employee -->
+                <span class="bold"> National Id Number: </span> <span th:text="${employee.nationalIdNumber}"></span> <br>
+
+                <!-- Job title or role of the employee -->
+                <span class="bold"> Designation: </span> <span th:text="${employee.designation}"></span> <br>
+
+                <!-- Date the employee joined -->
+                <span class="bold"> Date of Hire: </span> <span th:text="${employee.dateOfHire}"></span> <br>
+
+                <!-- Employee's salary -->
+                <span class="bold"> Salary: </span> <span th:text="${employee.salary}"></span> <br>
+
+                <!-- Date the employee left or employment status -->
+                <span class="bold"> Date of Exit: </span> <span th:text="${employee.dateOfExit != null ? employee.dateOfExit : 'Ongoing Employment'}"></span> <br>
+            </p>
+        </div>
+
+        <!-- Button to navigate back to the home page -->
+        <a th:href="@{/SRW/home}" class="btn btn-primary btn-sm mb-3">Back to Home</a>
+
+        <!-- Button to navigate to management portal -->
+        <a th:href="@{/SRW/management-portal}" class="btn btn-secondary btn-sm mb-3" title="management portal">Back to Management Portal</a>
+    </body>
+</html>
