@@ -46,4 +46,17 @@ public class CustomerService {
                 .map(customerMapper::toDto)
                 .toList();
     }
+
+    /*
+     * Retrieves the customer details based on the provided identifier (phone number, email, or customer ID).
+     * If the identifier is a 10-digit phone number, it prefixes it with "+91".
+     * Converts the customer entity to a DTO before returning.
+     */
+    public CustomerDTO getCustomerByIdentifier(String identifier) {
+        if(identifier.matches("\\d{10}")) {
+            identifier = "+91" + identifier;
+        }
+        Customer customer = customerRepository.findByIdentifier(identifier);
+        return customerMapper.toDto(customer);
+    }
 }

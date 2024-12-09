@@ -24,4 +24,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      */
     @Query("SELECT COUNT(c)>0 FROM Customer c WHERE c.email = :email")
     public boolean existsByEmail(@Param("email") String email);
+
+    /*
+     * Query to find a Customer entity based on the identifier.
+     * The identifier can match the customer's ID, phone number, or email.
+     */
+    @Query("SELECT c FROM Customer c WHERE c.customerId = :identifier OR c.phoneNumber = :identifier OR c.email = :identifier")
+    public Customer findByIdentifier(@Param("identifier") String identifier);
 }
