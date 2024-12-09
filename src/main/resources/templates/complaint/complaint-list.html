@@ -16,7 +16,7 @@
         <h3>Complaint List</h3> <br>
 
         <!-- Display a message if no records are found -->
-        <p th:if="${noRecordsFound}" th:text="${noRecordsFound}"></p>
+        <p th:if="${noComplaintsFound}" th:text="${noComplaintsFound}"></p>
 
         <!-- Display a table if there are complaints available -->
         <div th:if="${complaints}">

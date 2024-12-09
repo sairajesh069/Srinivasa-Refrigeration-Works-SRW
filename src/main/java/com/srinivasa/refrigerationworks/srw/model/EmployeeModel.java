@@ -14,11 +14,11 @@ public class EmployeeModel {
     /*
      * Adds a list of employees to the model, or a message if no employees are found.
      * The employees list is added to the model under the attribute "employees" if not empty,
-     * otherwise a "noUsersFound" message is added.
+     * otherwise a "noEmployeesFound" message is added.
      */
     public static void addEmployeeListToModel(List<EmployeeDTO> employees, Model model) {
         model.addAttribute(
-                employees.isEmpty() ? "noUsersFound" : "employees",
+                employees.isEmpty() ? "noEmployeesFound" : "employees",
                 employees.isEmpty() ? "No Employee Entries in Database" : employees);
     }
 }

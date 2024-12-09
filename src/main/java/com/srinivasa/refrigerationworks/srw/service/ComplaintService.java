@@ -47,16 +47,24 @@ public class ComplaintService {
      * Retrieves a list of complaints based on the username.
      * First, the user ID is fetched using the provided username, and then complaints associated with that user ID are retrieved.
      */
-    public List<Complaint> getComplaintsByUsername(String username) {
+    public List<ComplaintDTO> getComplaintsByUsername(String username) {
         String userId = userCredentialService.getUserIdByUsername(username);
-        return complaintRepository.findAllByBookedById(userId);
+        List<Complaint> complaints = complaintRepository.findAllByBookedById(userId);
+        return complaints
+                .stream()
+                .map(complaintMapper::toDto)
+                .toList();
     }
 
     /*
      * Retrieves all complaints from the repository.
      * Returns the list of complaints to be used in other services or controllers.
      */
-    public List<Complaint> getComplaintList() {
-        return complaintRepository.findAll();
+    public List<ComplaintDTO> getComplaintList() {
+        List<Complaint> complaints =  complaintRepository.findAll();
+        return complaints
+                .stream()
+                .map(complaintMapper::toDto)
+                .toList();
     }
 }

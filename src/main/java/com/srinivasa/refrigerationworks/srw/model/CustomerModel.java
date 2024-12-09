@@ -14,11 +14,11 @@ public class CustomerModel {
     /*
      * Adds a list of customers to the model, or a message if no customers are found.
      * The customers list is added to the model under the attribute "customers" if not empty,
-     * otherwise a "noUsersFound" message is added.
+     * otherwise a "noCustomersFound" message is added.
      */
     public static void addCustomerListToModel(List<CustomerDTO> customers, Model model) {
         model.addAttribute(
-                customers.isEmpty() ? "noUsersFound" : "customers",
+                customers.isEmpty() ? "noCustomersFound" : "customers",
                 customers.isEmpty() ? "No Customer Entries in Database" : customers);
     }
 }

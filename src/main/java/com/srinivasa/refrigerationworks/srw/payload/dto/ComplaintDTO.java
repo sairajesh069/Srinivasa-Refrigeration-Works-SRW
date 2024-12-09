@@ -90,6 +90,11 @@ public class ComplaintDTO {
     private String description;
 
     /*
+     * Date and time when the complaint is created.
+     */
+    private LocalDateTime createdAt;
+
+    /*
      * Status of the complaint (e.g., OPEN, IN_PROGRESS, RESOLVED).
      */
     private ComplaintStatus status;

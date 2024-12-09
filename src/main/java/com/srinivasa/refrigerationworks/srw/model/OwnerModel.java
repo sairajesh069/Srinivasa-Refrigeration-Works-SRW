@@ -13,11 +13,11 @@ public class OwnerModel {
     /*
      * Adds a list of owners to the model, or a message if no owners are found.
      * The owners list is added to the model under the attribute "owners" if not empty,
-     * otherwise a "noUsersFound" message is added.
+     * otherwise a "noOwnersFound" message is added.
      */
     public static void addOwnerListToModel(List<OwnerDTO> owners, Model model) {
         model.addAttribute(
-                owners.isEmpty() ? "noUsersFound" : "owners",
+                owners.isEmpty() ? "noOwnersFound" : "owners",
                 owners.isEmpty() ? "No Owner Entries in Database" : owners);
     }
 }
