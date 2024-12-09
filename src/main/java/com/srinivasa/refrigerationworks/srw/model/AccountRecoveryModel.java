@@ -10,7 +10,7 @@ public class AccountRecoveryModel {
      * Adds a new instance of UsernameRecoveryDTO to the model.
      * This is used to bind form data during username recovery.
      */
-    public static void addUserCredentialDTOToModel(Model model) {
+    public static void addUsernameRecoveryDTOToModel(Model model) {
         model.addAttribute("usernameRecoveryDTO", new UsernameRecoveryDTO());
     }
 

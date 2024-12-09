@@ -45,7 +45,7 @@ public class AccountRecoveryController {
      */
     @GetMapping("/username-recovery")
     public String getUsername(Model model) {
-        AccountRecoveryModel.addUserCredentialDTOToModel(model);
+        AccountRecoveryModel.addUsernameRecoveryDTOToModel(model);
         return "account-recovery/username-recovery";
     }
 

@@ -19,6 +19,6 @@ public class UserIdentifierDTO {
     /*
      * Identifier representing userId, phoneNumber, or email (mandatory field).
      */
-    @NotBlank(message = "Invalid input: Please provide a valid owner ID, phone number, or email")
+    @NotBlank(message = "Invalid input: Please provide a valid user ID, phone number, or email")
     private String identifier;
 }
