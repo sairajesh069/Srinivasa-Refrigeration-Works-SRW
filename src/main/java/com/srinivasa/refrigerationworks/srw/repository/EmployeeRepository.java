@@ -24,4 +24,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     @Query("SELECT COUNT(e)>0 FROM Employee e WHERE e.email = :email")
     public boolean existsByEmail(@Param("email") String email);
+
+    /*
+     * Query to find an Employee entity based on the identifier.
+     * The identifier can match the employee's ID, phone number, or email.
+     */
+    @Query("SELECT e FROM Employee e WHERE e.employeeId = :identifier OR e.phoneNumber = :identifier OR e.email = :identifier")
+    public Employee findByIdentifier(@Param("identifier") String identifier);
 }

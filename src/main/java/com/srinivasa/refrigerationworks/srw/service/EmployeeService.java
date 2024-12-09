@@ -47,4 +47,16 @@ public class EmployeeService {
                 .toList();
     }
 
+    /*
+     * Retrieves the employee details based on the provided identifier (phone number, email, or employee ID).
+     * If the identifier is a 10-digit phone number, it prefixes it with "+91".
+     * Converts the employee entity to a DTO before returning.
+     */
+    public EmployeeDTO getEmployeeByIdentifier(String identifier) {
+        if(identifier.matches("\\d{10}")) {
+            identifier = "+91" + identifier;
+        }
+        Employee employee = employeeRepository.findByIdentifier(identifier);
+        return employeeMapper.toDto(employee);
+    }
 }
