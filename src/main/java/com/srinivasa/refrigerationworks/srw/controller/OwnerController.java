@@ -1,11 +1,15 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /*
@@ -27,5 +31,28 @@ public class OwnerController {
     public String getOwnerList(Model model) {
         OwnerModel.addOwnerListToModel(ownerService.getOwnerList(), model);
         return "owner/owner-list";
+    }
+
+    /*
+     * Handles requests related to searching and displaying owner details.
+     */
+    @GetMapping("/search")
+    public String getOwner(Model model) {
+        OwnerModel.addUserIdentifierDTOToModel(model);
+        return "owner/owner-details";
+    }
+
+    /*
+     * Processes the owner search request.
+     * Validates the user identifier and retrieves owner details.
+     */
+    @PostMapping("/search")
+    public String getOwner(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "owner/owner-details";
+        }
+        OwnerModel.addOwnerDetailsToModel(
+                ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+        return "owner/owner-details";
     }
 }
