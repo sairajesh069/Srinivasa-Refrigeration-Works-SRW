@@ -24,4 +24,11 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
      */
     @Query("SELECT COUNT(o)>0 FROM Owner o WHERE o.email = :email")
     public boolean existsByEmail(@Param("email") String email);
+
+    /*
+     * Query to find an Owner entity based on the identifier.
+     * The identifier can match the owner's ID, phone number, or email.
+     */
+    @Query("SELECT o FROM Owner o WHERE o.ownerId = :identifier OR o.phoneNumber = :identifier OR o.email = :identifier")
+    public Owner findByIdentifier(@Param("identifier") String identifier);
 }

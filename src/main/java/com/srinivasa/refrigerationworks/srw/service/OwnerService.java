@@ -46,4 +46,17 @@ public class OwnerService {
                 .map(ownerMapper::toDto)
                 .toList();
     }
+
+    /*
+     * Retrieves the owner details based on the provided identifier (phone number, email, or owner ID).
+     * If the identifier is a 10-digit phone number, it prefixes it with "+91".
+     * Converts the owner entity to a DTO before returning.
+     */
+    public OwnerDTO getOwnerByIdentifier(String identifier) {
+        if(identifier.matches("\\d{10}")) {
+            identifier = "+91" + identifier;
+        }
+        Owner owner = ownerRepository.findByIdentifier(identifier);
+        return ownerMapper.toDto(owner);
+    }
 }
