@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -20,5 +21,23 @@ public class CustomerModel {
         model.addAttribute(
                 customers.isEmpty() ? "noCustomersFound" : "customers",
                 customers.isEmpty() ? "No Customer Entries in Database" : customers);
+    }
+
+    /*
+     * Adds a new UserIdentifierDTO object to the model.
+     * Used to capture user input for searching a customer.
+     */
+    public static void addUserIdentifierDTOToModel(Model model) {
+        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+    }
+
+    /*
+     * Adds customer details or a fallback message to the model.
+     * If the customer is found, adds the CustomerDTO object; otherwise, adds an error message.
+     */
+    public static void addCustomerDetailsToModel(CustomerDTO customer, Model model) {
+        model.addAttribute(
+                customer == null ? "noCustomerFound" : "customer",
+                customer == null ? "Customer not found for the given details." : customer);
     }
 }
