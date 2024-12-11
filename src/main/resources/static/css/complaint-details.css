@@ -1,0 +1,12 @@
+.helper-message {
+    color: green;
+    font-style: italic;
+}
+
+.error {
+    color: red;
+}
+
+.bold {
+    font-weight: bold;
+}
