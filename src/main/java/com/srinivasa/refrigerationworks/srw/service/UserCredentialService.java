@@ -116,4 +116,11 @@ public class UserCredentialService {
     public String getUserIdByUsername(String username) {
         return userCredentialRepository.findUserIdByUsername(username);
     }
+
+    /*
+     * Fetches the user type (role) associated with the provided username.
+     */
+    public String getUserTypeByUsername(String username) {
+        return userCredentialRepository.findUserTypeByUsername(username);
+    }
 }
