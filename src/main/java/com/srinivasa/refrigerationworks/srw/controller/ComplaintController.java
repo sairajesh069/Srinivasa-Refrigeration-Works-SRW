@@ -2,8 +2,10 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.ComplaintModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.ComplaintService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import com.srinivasa.refrigerationworks.srw.validation.ComplaintIdentifierValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -90,5 +92,33 @@ public class ComplaintController {
     public String getComplaintList(Model model) {
         ComplaintModel.addComplaintListToModel(complaintService.getComplaintList(), model);
         return "complaint/complaint-list";
+    }
+
+    /*
+     * Handles GET requests to display the complaint search form.
+     * Adds a ComplaintIdentifierDTO object to the model for capturing user input.
+     */
+    @GetMapping("/search")
+    public String getComplaint(Model model) {
+        ComplaintModel.addComplaintIdentifierDTOToModel(model);
+        return "complaint/complaint-details";
+    }
+
+    /*
+     * Handles POST requests to search for complaints based on the identifier.
+     * Validates the identifier and fetches complaint details or a list of complaints.
+     * Displays complaint details if one result is found, or a list view for multiple results.
+     */
+    @PostMapping("/search")
+    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult, Principal principal, Model model) {
+        ComplaintIdentifierValidation.identifierValidation(complaintIdentifierDTO, bindingResult);
+        if(bindingResult.hasErrors()) {
+            return "complaint/complaint-details";
+        }
+        ComplaintModel.addComplaintDetailsToModel(
+                complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName()), model);
+        return
+                (complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName()).size() <= 1)
+                        ? "complaint/complaint-details" : "complaint/complaint-list";
     }
 }

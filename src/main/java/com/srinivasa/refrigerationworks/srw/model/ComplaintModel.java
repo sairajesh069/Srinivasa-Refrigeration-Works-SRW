@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
 import org.springframework.ui.Model;
 
@@ -66,4 +67,26 @@ public class ComplaintModel {
                 complaints.isEmpty() ? "You have not registered any complaints." : complaints);
     }
 
+    /*
+     * Adds an empty ComplaintIdentifierDTO object to the model, used for capturing the complaint identifier input.
+     */
+    public static void addComplaintIdentifierDTOToModel(Model model) {
+        model.addAttribute("complaintIdentifierDTO", new ComplaintIdentifierDTO());
+    }
+
+    /*
+     * Adds complaint details to the model based on the size of the complaint list.
+     * - If no complaints, adds a "noComplaintFound" attribute with a message.
+     * - If exactly one complaint, adds the "complaint" attribute with the single complaint.
+     * - If multiple complaints, adds the "complaints" attribute with the list of complaints.
+     */
+    public static void addComplaintDetailsToModel(List<ComplaintDTO> complaint, Model model) {
+        switch(complaint.size()) {
+            case 0 -> model.addAttribute("noComplaintFound", "Complaint not found for the given details.");
+
+            case 1 -> model.addAttribute("complaint", complaint.get(0));
+
+            default -> model.addAttribute("complaints", complaint);
+        }
+    }
 }
