@@ -2,12 +2,15 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.Complaint;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.repository.ComplaintRepository;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.ComplaintMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /*
@@ -65,6 +68,28 @@ public class ComplaintService {
         return complaints
                 .stream()
                 .map(complaintMapper::toDto)
+                .toList();
+    }
+
+    /*
+     * Fetches complaints based on the identifier and user role.
+     * If the user is not an OWNER, retrieves complaints for the logged-in user.
+     * Filters complaints by complaint ID or contact number and registration date.
+     */
+    public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String userName) {
+        String identifier = complaintIdentifierDTO.getIdentifier();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate registeredDate = complaintIdentifierDTO.getRegisteredDate();
+        String registeredDateFormatted = registeredDate!=null ? registeredDate.format(formatter) : null;
+        String role = userCredentialService.getUserTypeByUsername(userName);
+        List<ComplaintDTO> complaints = !role.equals("OWNER") ? getComplaintsByUsername(userName)
+                : complaintRepository.findAll().stream().map(complaintMapper::toDto).toList();
+        return complaints
+                .stream()
+                .filter(complaint ->
+                        complaint.getComplaintId().equals(identifier) ||
+                                (complaint.getContactNumber().equals("+91" + identifier) &&
+                                        complaint.getCreatedAt().format(formatter).equals(registeredDateFormatted)))
                 .toList();
     }
 }
