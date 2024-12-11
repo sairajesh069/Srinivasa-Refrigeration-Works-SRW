@@ -20,6 +20,10 @@
 
         <!-- Display a table if there are complaints available -->
         <div th:if="${complaints}">
+
+            <!-- Button to navigate to the complaint search page -->
+            <a th:href="@{/SRW/complaint/search}" class="btn btn-secondary btn-sm mb-3" title="Fetch complaint">Fetch Complaint</a>
+
             <!-- Table structure for complaint details -->
             <table class="table table-bordered table-striped">
                 <!-- Table header row -->
