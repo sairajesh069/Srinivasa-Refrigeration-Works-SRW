@@ -80,13 +80,13 @@ public class ComplaintModel {
      * - If exactly one complaint, adds the "complaint" attribute with the single complaint.
      * - If multiple complaints, adds the "complaints" attribute with the list of complaints.
      */
-    public static void addComplaintDetailsToModel(List<ComplaintDTO> complaint, Model model) {
-        switch(complaint.size()) {
+    public static void addComplaintDetailsToModel(List<ComplaintDTO> complaints, Model model) {
+        switch(complaints.size()) {
             case 0 -> model.addAttribute("noComplaintFound", "Complaint not found for the given details.");
 
-            case 1 -> model.addAttribute("complaint", complaint.get(0));
+            case 1 -> model.addAttribute("complaint", complaints.get(0));
 
-            default -> model.addAttribute("complaints", complaint);
+            default -> model.addAttribute("complaints", complaints);
         }
     }
 }

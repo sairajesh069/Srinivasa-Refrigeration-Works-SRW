@@ -15,6 +15,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 /*
  * Controller class to handle complaint-related operations like registering a complaint and updating dropdowns.
@@ -115,10 +116,8 @@ public class ComplaintController {
         if(bindingResult.hasErrors()) {
             return "complaint/complaint-details";
         }
-        ComplaintModel.addComplaintDetailsToModel(
-                complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName()), model);
-        return
-                (complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName()).size() <= 1)
-                        ? "complaint/complaint-details" : "complaint/complaint-list";
+        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName());
+        ComplaintModel.addComplaintDetailsToModel(complaints, model);
+        return (complaints.size() <= 1) ? "complaint/complaint-details" : "complaint/complaint-list";
     }
 }
