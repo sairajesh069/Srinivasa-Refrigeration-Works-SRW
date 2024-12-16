@@ -16,12 +16,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /*
- * DTO class for transferring Employee data with validation annotations
+ * DTO class for transferring Employee data with validation annotations.
+ * Ensures that fields are validated for non-null, uniqueness, and correct formats.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@UniqueValue(fieldName = "phoneNumber", userIdField = "employeeId", message = "This phone number is already registered")
+@UniqueValue(fieldName = "email", userIdField = "employeeId", message = "This email address is already registered")
+@UniqueValue(fieldName = "nationalIdNumber", entityClass = Employee.class, inEveryUserEntity = false, userIdField = "employeeId", message = "This national Id number already exists")
 public class EmployeeDTO {
 
     /*
@@ -66,7 +70,6 @@ public class EmployeeDTO {
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
-    @UniqueValue(fieldName = "phoneNumber", entityClass = Employee.class, inEveryUserEntity = true, message = "This phone number is already registered")
     private String phoneNumber;
 
     /*
@@ -77,7 +80,6 @@ public class EmployeeDTO {
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
-    @UniqueValue(fieldName = "email", entityClass = Employee.class, inEveryUserEntity = true, message = "This email address is already registered")
     private String email;
 
     /*
@@ -88,11 +90,10 @@ public class EmployeeDTO {
 
     /*
      * Employee's national id number.
-     * - Mandatory field
+     * - Mandatory field.
      * - Ensures uniqueness within the Employee entity.
      */
     @NotNull(message = "National Id number is mandatory")
-    @UniqueValue(fieldName = "nationalIdNumber", entityClass = Employee.class, inEveryUserEntity = false, message = "This national Id number already exists")
     private String nationalIdNumber;
 
     /*

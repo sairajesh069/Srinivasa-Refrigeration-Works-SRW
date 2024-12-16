@@ -14,33 +14,36 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 /*
- * DTO class for transferring Customer data with validation annotations
+ * DTO class for transferring Customer data with validation annotations.
+ * - Ensures fields are validated with constraints such as uniqueness, null checks, and format validation.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@UniqueValue(fieldName = "phoneNumber", userIdField = "customerId", message = "This phone number is already registered")
+@UniqueValue(fieldName = "email", userIdField = "customerId", message = "This email address is already registered")
 public class CustomerDTO {
 
     /*
-     * Customer's unique Id
+     * Customer's unique Id.
      */
     private String customerId;
 
     /*
-     * Customer's first name (mandatory field)
+     * Customer's first name (mandatory field).
      */
     @NotNull(message = "First name is mandatory")
     private String firstName;
 
     /*
-     * Customer's last name (mandatory field)
+     * Customer's last name (mandatory field).
      */
     @NotNull(message = "Last name is mandatory")
     private String lastName;
 
     /*
-     * Customer's date of birth
+     * Customer's date of birth.
      * - NotNull: Ensures that the date of birth is provided.
      * - Past: Ensures that the date of birth is in the past.
      * - DateTimeFormat: Validates the date format (yyyy-MM-dd).
@@ -51,7 +54,7 @@ public class CustomerDTO {
     private LocalDate dateOfBirth;
 
     /*
-     * Customer's gender (mandatory field)
+     * Customer's gender (mandatory field).
      */
     @NotNull(message = "Gender is mandatory")
     private String gender;
@@ -64,7 +67,6 @@ public class CustomerDTO {
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
-    @UniqueValue(fieldName = "phoneNumber", entityClass = Customer.class, inEveryUserEntity = true, message = "This phone number is already registered")
     private String phoneNumber;
 
     /*
@@ -75,11 +77,10 @@ public class CustomerDTO {
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
-    @UniqueValue(fieldName = "email", entityClass = Customer.class, inEveryUserEntity = true, message = "This email address is already registered")
     private String email;
 
     /*
-     * Customer's address (mandatory field)
+     * Customer's address (mandatory field).
      */
     @NotNull(message = "Address is mandatory")
     private String address;

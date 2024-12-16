@@ -15,12 +15,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 /*
- * DTO class for transferring Owner data with validation annotations
+ * DTO class for transferring Owner data with validation annotations.
+ * Ensures that fields are validated for non-null, uniqueness, and correct formats.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@UniqueValue(fieldName = "phoneNumber", userIdField = "ownerId", message = "This phone number is already registered")
+@UniqueValue(fieldName = "email", userIdField = "ownerId", message = "This email address is already registered")
 public class OwnerDTO {
 
     /*
@@ -65,7 +68,6 @@ public class OwnerDTO {
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
-    @UniqueValue(fieldName = "phoneNumber", entityClass = Owner.class, inEveryUserEntity = true, message = "This phone number is already registered")
     private String phoneNumber;
 
     /*
@@ -76,7 +78,6 @@ public class OwnerDTO {
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
-    @UniqueValue(fieldName = "email", entityClass = Owner.class, inEveryUserEntity = true, message = "This email address is already registered")
     private String email;
 
     /*

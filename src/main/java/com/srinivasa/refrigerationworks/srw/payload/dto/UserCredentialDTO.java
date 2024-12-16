@@ -12,7 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * DTO class for user credentials with validation annotations
+ * DTO class for user credentials with validation annotations.
+ * Ensures validation of username, password, and confirmation fields with custom messages and uniqueness checks.
  */
 @Data
 @Builder
@@ -24,7 +25,13 @@ import lombok.NoArgsConstructor;
  * - Displays a custom error message if they do not match.
  */
 @FieldMatch(firstField = "password", secondField = "confirmPassword", message = "The passwords do not match. Please try again.")
+@UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, userIdField = "userId", message = "This username is already taken")
 public class UserCredentialDTO {
+
+    /*
+     * Unique identifier for the user.
+     */
+    private String userId;
 
     /*
      * Username.
@@ -34,7 +41,6 @@ public class UserCredentialDTO {
      */
     @NotNull(message = "Username is required")
     @Size(min = 6, message = "Username must be at least 6 characters long")
-    @UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, message = "This username is already taken")
     private String username;
 
     /*
