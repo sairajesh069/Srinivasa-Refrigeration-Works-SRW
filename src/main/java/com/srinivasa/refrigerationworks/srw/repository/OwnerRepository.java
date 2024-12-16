@@ -14,18 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     /*
-     * Checks if an owner with the given phone number exists in the database.
-     */
-    @Query("SELECT COUNT(o)>0 FROM Owner o WHERE o.phoneNumber = :phoneNumber")
-    public boolean existsByPhoneNumber(@Param("phoneNumber") String phoneNumber);
-
-    /*
-     * Checks if an owner with the given email exists in the database.
-     */
-    @Query("SELECT COUNT(o)>0 FROM Owner o WHERE o.email = :email")
-    public boolean existsByEmail(@Param("email") String email);
-
-    /*
      * Query to find an Owner entity based on the identifier.
      * The identifier can match the owner's ID, phone number, or email.
      */
