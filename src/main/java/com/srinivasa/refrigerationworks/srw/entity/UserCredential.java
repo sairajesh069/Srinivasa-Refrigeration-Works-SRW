@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,10 @@ public class UserCredential {
     private UserType userType;
 
     /*
-     * List of roles assigned to the user
+     * List of roles assigned to the user.
+     * Excluded from toString method.
      */
+    @ToString.Exclude
     @OneToMany(mappedBy = "userCredential", cascade = CascadeType.ALL)
     private List<UserRole> userRoles;
 
