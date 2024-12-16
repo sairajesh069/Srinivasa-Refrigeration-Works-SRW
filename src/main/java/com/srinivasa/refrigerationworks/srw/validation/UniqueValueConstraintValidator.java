@@ -1,47 +1,61 @@
 package com.srinivasa.refrigerationworks.srw.validation;
 
+import com.srinivasa.refrigerationworks.srw.entity.Customer;
+import com.srinivasa.refrigerationworks.srw.entity.Employee;
+import com.srinivasa.refrigerationworks.srw.entity.Owner;
 import com.srinivasa.refrigerationworks.srw.repository.CustomerRepository;
 import com.srinivasa.refrigerationworks.srw.repository.EmployeeRepository;
 import com.srinivasa.refrigerationworks.srw.repository.OwnerRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.stereotype.Component;
 
 /*
- * Validator for the @UniqueValue annotation.
- * Ensures that the annotated field's value is unique within the specified entity or across multiple user-related entities.
+ * Validator implementation for the @UniqueValue annotation.
+ * Validates that a specified field's value is unique either within a single entity
+ * or across multiple user-related entities (Owner, Employee, Customer).
  */
 @Component
 @RequiredArgsConstructor
 public class UniqueValueConstraintValidator implements ConstraintValidator<UniqueValue, Object> {
 
     /*
-     * Name of the field to check for uniqueness.
+     * Field name to validate for uniqueness.
      */
     private String fieldName;
 
     /*
-     * Entity class containing the field.
+     * Entity class containing the field to validate.
      */
     private Class<?> entityClass;
 
     /*
-     * Flag to determine if the field should be unique across all user-related entities.
+     * Flag indicating if the field should be unique across all user-related entities.
      */
     private boolean inEveryUserEntity;
 
     /*
-     * EntityManager used for executing dynamic queries.
+     * Name of the user ID field for comparison during updates.
+     */
+    private String userIdField;
+
+    /*
+     * Custom error message for validation failures.
+     */
+    private String message;
+
+    /*
+     * EntityManager for dynamic query execution.
      */
     @PersistenceContext
     private EntityManager entityManager;
 
     /*
-     * Repositories for user-related entities to support multi-entity uniqueness checks.
+     * Repositories for user-related entities for cross-entity uniqueness checks.
      */
     private final OwnerRepository ownerRepository;
     private final EmployeeRepository employeeRepository;
@@ -52,59 +66,86 @@ public class UniqueValueConstraintValidator implements ConstraintValidator<Uniqu
         this.fieldName = uniqueValue.fieldName();
         this.entityClass = uniqueValue.entityClass();
         this.inEveryUserEntity = uniqueValue.inEveryUserEntity();
+        this.userIdField = uniqueValue.userIdField();
+        this.message = uniqueValue.message();
     }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
+
         /*
-         * Skip validation if the field value is null.
+         * Access field values using BeanWrapperImpl.
          */
-        if (value == null) {
+        BeanWrapperImpl beanWrapper = new BeanWrapperImpl(value);
+        String userIdValue = (String) beanWrapper.getPropertyValue(userIdField);
+        String fieldValue = (String) beanWrapper.getPropertyValue(fieldName);
+
+        /*
+         * Skip validation if field is null.
+         */
+        if (fieldValue == null) {
             return true;
         }
 
         /*
-         * Normalize phone number by appending the country code if missing.
+         * Normalize phone numbers by appending country code if necessary.
          */
-        if (fieldName.equals("phoneNumber")) {
-            value = value.toString().startsWith("+91") ? value : "+91" + value;
-        }
+        fieldValue = fieldValue.matches("\\d{10}") ? "+91" + fieldValue : fieldValue;
 
-        /*
-         * Holds the result of the uniqueness check:
-         * - True if the value is unique (does not exist in the specified entities).
-         * - False if the value already exists.
-         */
         boolean isUnique = false;
 
         if (inEveryUserEntity) {
             /*
-             * Check uniqueness across Owner, Employee, and Customer entities.
+             * Validate uniqueness across Owner, Employee, and Customer entities.
              */
-            if (fieldName.equals("phoneNumber")) {
-                isUnique = !(ownerRepository.existsByPhoneNumber((String) value)
-                        || employeeRepository.existsByPhoneNumber((String) value)
-                        || customerRepository.existsByPhoneNumber((String) value));
-            } else if (fieldName.equals("email")) {
-                isUnique = !(ownerRepository.existsByEmail((String) value)
-                        || employeeRepository.existsByEmail((String) value)
-                        || customerRepository.existsByEmail((String) value));
+            boolean isEntityNull = false;
+
+            Customer customer = customerRepository.findByIdentifier(fieldValue);
+            isEntityNull = customer == null;
+            if (customer == null || customer.getCustomerId().equals(userIdValue)) {
+                isUnique = true;
+            }
+
+            if (isEntityNull) {
+                Employee employee = employeeRepository.findByIdentifier(fieldValue);
+                isEntityNull = employee == null;
+                if (!(employee == null || employee.getEmployeeId().equals(userIdValue))) {
+                    isUnique = false;
+                }
+            }
+
+            if (isEntityNull) {
+                Owner owner = ownerRepository.findByIdentifier(fieldValue);
+                if (!(owner == null || owner.getOwnerId().equals(userIdValue))) {
+                    isUnique = false;
+                }
             }
         } else {
             /*
-             * Check uniqueness within a single specified entity.
+             * Validate uniqueness within the specified entity class.
              */
-            String query = "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e WHERE e." + fieldName + " = :value";
+            String query = "SELECT CASE WHEN COUNT(e) > 0 THEN e." + userIdField + " ELSE NULL END " +
+                    "FROM " + entityClass.getSimpleName() + " e WHERE e." + fieldName + " = :value";
 
             /*
-             * Execute query and determine if the value is unique.
+             * Execute query to determine uniqueness.
              */
-            Long count = entityManager
-                    .createQuery(query, Long.class)
-                    .setParameter("value", value)
+            String entityId = entityManager
+                    .createQuery(query, String.class)
+                    .setParameter("value", fieldValue)
                     .getSingleResult();
 
-            isUnique = count == 0;
+            isUnique = (entityId == null || entityId.equals(userIdValue));
+        }
+
+        if (!isUnique) {
+            /*
+             * Add custom validation error message if the field value is not unique.
+             */
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(message)
+                    .addPropertyNode(fieldName)
+                    .addConstraintViolation();
         }
 
         return isUnique;

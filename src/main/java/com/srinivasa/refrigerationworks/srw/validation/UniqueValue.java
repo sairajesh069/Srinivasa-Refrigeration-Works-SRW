@@ -1,32 +1,28 @@
 package com.srinivasa.refrigerationworks.srw.validation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /*
- * Custom annotation for unique value validation.
- * - Ensures the annotated field's value is unique in the database.
- * - fieldName: Specifies the field to check for uniqueness.
- * - entityClass: Specifies the entity to query.
- * - inEveryUserEntity: Determines if uniqueness is checked across multiple user-related entities.
+ * Custom annotation for validating the uniqueness of a field's value.
+ * - Ensures that the value of the annotated field is unique within a specified entity or across multiple user-related entities.
+ * - The annotation can be repeated multiple times on the same element using the @Repeatable annotation.
  */
 @Constraint(validatedBy = UniqueValueConstraintValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(UniqueValues.class)
 public @interface UniqueValue {
 
     /*
-     * Error message when validation fails.
+     * Default error message when validation fails.
      */
     public String message() default "Value already exists.";
 
     /*
-     * Validation groups.
+     * Validation groups to categorize constraints.
      */
     public Class<?>[] groups() default {};
 
@@ -41,13 +37,17 @@ public @interface UniqueValue {
     String fieldName();
 
     /*
-     * The entity class where the field resides.
+     * The entity class containing the field.
      */
-    Class<?> entityClass();
+    Class<?> entityClass() default Void.class;
 
     /*
-     * Indicates whether the field should be unique across multiple user entities.
+     * Determines if uniqueness is checked across multiple user entities.
      */
-    boolean inEveryUserEntity();
+    boolean inEveryUserEntity() default true;
 
+    /*
+     * The user identifier field used in comparison.
+     */
+    String userIdField();
 }
