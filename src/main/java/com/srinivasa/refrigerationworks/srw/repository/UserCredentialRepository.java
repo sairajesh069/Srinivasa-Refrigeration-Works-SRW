@@ -50,4 +50,12 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
      */
     @Query("SELECT userType FROM UserCredential WHERE username = :username")
     public String findUserTypeByUsername(@Param("username") String username);
+
+    /*
+     * Updates the phone number of a user based on their userId.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserCredential SET phoneNumber = :phoneNumber WHERE userId = :userId")
+    public void updateUserPhoneNumber(@Param("userId") String userId, @Param("phoneNumber") String phoneNumber);
 }
