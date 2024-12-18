@@ -166,4 +166,21 @@ public class UserCredentialService {
             }
         }
     }
+
+    /*
+     * Updates customer details if changes are detected and synchronizes phone number.
+     * - Checks for changes between initial and updated DTOs.
+     * - Updates customer and phone number only if modified.
+     */
+    @Transactional
+    public void updateCustomer(CustomerDTO initialCustomerDTO, CustomerDTO updatedCustomerDTO) {
+        if(!initialCustomerDTO.equals(updatedCustomerDTO)) {
+            customerService.updateCustomer(updatedCustomerDTO);
+            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialCustomerDTO.getPhoneNumber());
+            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedCustomerDTO.getPhoneNumber());
+            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
+                updateUserPhoneNumber(updatedCustomerDTO.getCustomerId(), updatedPhoneNumber);
+            }
+        }
+    }
 }

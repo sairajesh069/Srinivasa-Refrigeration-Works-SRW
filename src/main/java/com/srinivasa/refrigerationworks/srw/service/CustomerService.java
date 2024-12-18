@@ -3,11 +3,13 @@ package com.srinivasa.refrigerationworks.srw.service;
 import com.srinivasa.refrigerationworks.srw.entity.Customer;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.repository.CustomerRepository;
+import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.CustomerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /*
@@ -58,5 +60,19 @@ public class CustomerService {
         }
         Customer customer = customerRepository.findByIdentifier(identifier);
         return customerMapper.toDto(customer);
+    }
+
+    /*
+     * Updates customer details by mapping DTO to entity, formatting phone number,
+     * and setting updated timestamp before saving to the repository.
+     */
+    public void updateCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.toEntity(customerDTO);
+        customer.setCustomerId(customerDTO.getCustomerId());
+        customer.setCustomerReference(Long.parseLong(customerDTO.getCustomerId().substring(3,10)));
+        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber());
+        customer.setPhoneNumber(updatedPhoneNumber);
+        customer.setUpdatedAt(LocalDateTime.now());
+        customerRepository.save(customer);
     }
 }
