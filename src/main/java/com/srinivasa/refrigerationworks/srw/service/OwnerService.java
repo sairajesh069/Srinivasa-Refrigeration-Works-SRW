@@ -30,7 +30,7 @@ public class OwnerService {
     @Transactional
     public String addOwner(OwnerDTO ownerDTO) {
         Owner owner = ownerMapper.toEntity(ownerDTO);
-        owner.setPhoneNumber("+91" + owner.getPhoneNumber());
+        owner.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber()));
         ownerRepository.save(owner);
         owner.setOwnerId("SRW" + String.format("%03d", owner.getOwnerReference()));
         ownerDTO.setOwnerId(owner.getOwnerId());
@@ -55,9 +55,7 @@ public class OwnerService {
      * Converts the owner entity to a DTO before returning.
      */
     public OwnerDTO getOwnerByIdentifier(String identifier) {
-        if(identifier.matches("\\d{10}")) {
-            identifier = "+91" + identifier;
-        }
+        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         Owner owner = ownerRepository.findByIdentifier(identifier);
         return ownerMapper.toDto(owner);
     }

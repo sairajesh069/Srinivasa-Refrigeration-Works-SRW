@@ -30,7 +30,7 @@ public class CustomerService {
     @Transactional
     public String addCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
-        customer.setPhoneNumber("+91" + customer.getPhoneNumber());
+        customer.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber()));
         customerRepository.save(customer);
         customer.setCustomerId("SRW" + String.format("%07d", customer.getCustomerReference()));
         customerDTO.setCustomerId(customer.getCustomerId());
@@ -55,9 +55,7 @@ public class CustomerService {
      * Converts the customer entity to a DTO before returning.
      */
     public CustomerDTO getCustomerByIdentifier(String identifier) {
-        if(identifier.matches("\\d{10}")) {
-            identifier = "+91" + identifier;
-        }
+        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         Customer customer = customerRepository.findByIdentifier(identifier);
         return customerMapper.toDto(customer);
     }

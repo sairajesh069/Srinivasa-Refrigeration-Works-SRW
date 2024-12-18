@@ -83,8 +83,7 @@ public class UserCredentialService {
      * - Delegates the query execution to the repository.
      */
     public String fetchUsername(UsernameRecoveryDTO usernameRecoveryDTO) {
-        String phoneNumber = usernameRecoveryDTO.getPhoneNumber();
-        phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
+        String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(usernameRecoveryDTO.getPhoneNumber());
         return userCredentialRepository.fetchUsernameByPhoneNumber(phoneNumber);
     }
 
@@ -94,8 +93,7 @@ public class UserCredentialService {
      * - Returns true if a matching user is found.
      */
     public boolean validateUser(PasswordResetDTO passwordResetDTO) {
-        String phoneNumber = passwordResetDTO.getPhoneNumber();
-        phoneNumber = phoneNumber.startsWith("+91") ? phoneNumber : "+91" + phoneNumber;
+        String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(passwordResetDTO.getPhoneNumber());
         String username = passwordResetDTO.getUsername();
         return userCredentialRepository.existsByPhoneNumberAndUsername(phoneNumber, username);
     }

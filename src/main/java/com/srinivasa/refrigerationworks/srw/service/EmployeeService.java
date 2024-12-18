@@ -30,7 +30,7 @@ public class EmployeeService {
     @Transactional
     public String addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.toEntity(employeeDTO);
-        employee.setPhoneNumber("+91" + employee.getPhoneNumber());
+        employee.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber()));
         employeeRepository.save(employee);
         employee.setEmployeeId("SRW" + String.format("%04d", employee.getEmployeeReference()));
         employeeDTO.setEmployeeId(employee.getEmployeeId());
@@ -55,9 +55,7 @@ public class EmployeeService {
      * Converts the employee entity to a DTO before returning.
      */
     public EmployeeDTO getEmployeeByIdentifier(String identifier) {
-        if(identifier.matches("\\d{10}")) {
-            identifier = "+91" + identifier;
-        }
+        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         Employee employee = employeeRepository.findByIdentifier(identifier);
         return employeeMapper.toDto(employee);
     }
