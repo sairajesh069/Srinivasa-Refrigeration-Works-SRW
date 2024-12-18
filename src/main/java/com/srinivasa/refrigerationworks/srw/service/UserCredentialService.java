@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.entity.UserRole;
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
+import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.UserCredentialMapper;
 import jakarta.transaction.Transactional;
@@ -123,4 +124,30 @@ public class UserCredentialService {
     public String getUserTypeByUsername(String username) {
         return userCredentialRepository.findUserTypeByUsername(username);
     }
+
+    /*
+     * Updates the user's phone number by delegating to the repository.
+     */
+    public void updateUserPhoneNumber(String userId, String phoneNumber) {
+        userCredentialRepository.updateUserPhoneNumber(userId, phoneNumber);
+    }
+
+    /*
+     * Updates owner details if changes are detected and synchronizes phone number.
+     * - Checks for changes between initial and updated DTOs.
+     * - Updates owner and phone number only if modified.
+     */
+
+    @Transactional
+    public void updateOwner(OwnerDTO initialOwnerDTO, OwnerDTO updatedOwnerDTO) {
+        if(!initialOwnerDTO.equals(updatedOwnerDTO)) {
+            ownerService.updateOwner(updatedOwnerDTO);
+            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialOwnerDTO.getPhoneNumber());
+            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedOwnerDTO.getPhoneNumber());
+            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
+                updateUserPhoneNumber(updatedOwnerDTO.getOwnerId(), updatedPhoneNumber);
+            }
+        }
+    }
+
 }

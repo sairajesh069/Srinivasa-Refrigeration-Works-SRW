@@ -3,11 +3,13 @@ package com.srinivasa.refrigerationworks.srw.service;
 import com.srinivasa.refrigerationworks.srw.entity.Owner;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.repository.OwnerRepository;
+import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.OwnerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /*
@@ -58,5 +60,19 @@ public class OwnerService {
         }
         Owner owner = ownerRepository.findByIdentifier(identifier);
         return ownerMapper.toDto(owner);
+    }
+
+    /*
+     * Updates owner details by mapping DTO to entity, formatting phone number,
+     * and setting updated timestamp before saving to the repository.
+     */
+    public void updateOwner(OwnerDTO ownerDTO) {
+        Owner owner = ownerMapper.toEntity(ownerDTO);
+        owner.setOwnerId(ownerDTO.getOwnerId());
+        owner.setOwnerReference(Long.parseLong(ownerDTO.getOwnerId().substring(3,6)));
+        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber());
+        owner.setPhoneNumber(updatedPhoneNumber);
+        owner.setUpdatedAt(LocalDateTime.now());
+        ownerRepository.save(owner);
     }
 }
