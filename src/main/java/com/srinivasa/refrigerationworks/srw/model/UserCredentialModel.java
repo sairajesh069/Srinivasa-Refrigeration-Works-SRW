@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.UserFormConstants;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 /*
@@ -50,5 +51,13 @@ public class UserCredentialModel {
      */
     public static void addUserFormConstantsToModel(Model model) {
         model.addAttribute("genders", UserFormConstants.GENDERS);
+    }
+
+    /*
+     * Adds OwnerDTO to the model and stores the initial state in the session for update comparison.
+     */
+    public static void addOwnerDTOForUpdateToModel(OwnerDTO ownerDTO, Model model, HttpSession session) {
+        model.addAttribute("ownerDTO", ownerDTO);
+        session.setAttribute("initialOwnerDTO", ownerDTO);
     }
 }

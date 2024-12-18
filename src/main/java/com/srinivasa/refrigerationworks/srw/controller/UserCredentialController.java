@@ -4,8 +4,11 @@ import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
+import com.srinivasa.refrigerationworks.srw.service.OwnerService;
 import com.srinivasa.refrigerationworks.srw.service.UserCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserCredentialController {
 
     private final UserCredentialService userCredentialService;
+
+    private final OwnerService ownerService;
 
     /*
      * Initializes the binder to trim strings
@@ -98,4 +103,27 @@ public class UserCredentialController {
         return "customer/customer-confirmation";
     }
 
+    /*
+     * Handles GET request to display owner update form with current owner data.
+     */
+    @GetMapping("/owner/update")
+    public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpSession session) {
+        UserCredentialModel.addOwnerDTOForUpdateToModel(ownerService.getOwnerByIdentifier(ownerId), model, session);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        return "owner/owner-update-form";
+    }
+
+    /*
+     * Handles POST request to update owner's details after validation.
+     * Redirects to owner list on success.
+     */
+    @PostMapping("/owner/update")
+    public String updateOwner(@ModelAttribute("ownerDTO") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult, Model model, HttpSession session) {
+        if(bindingResult.hasErrors()) {
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            return "owner/owner-update-form";
+        }
+        userCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
+        return "redirect:/SRW/owner/list";
+    }
 }
