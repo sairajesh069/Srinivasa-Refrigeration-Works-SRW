@@ -68,4 +68,12 @@ public class UserCredentialModel {
         model.addAttribute("employeeDTO", employeeDTO);
         session.setAttribute("initialEmployeeDTO", employeeDTO);
     }
+
+    /*
+     * Adds CustomerDTO to the model and stores the initial state in the session for update comparison.
+     */
+    public static void addCustomerDTOForUpdateToModel(CustomerDTO customerDTO, Model model, HttpSession session) {
+        model.addAttribute("customerDTO", customerDTO);
+        session.setAttribute("initialCustomerDTO", customerDTO);
+    }
 }

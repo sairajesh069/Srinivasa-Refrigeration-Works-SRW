@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
+import com.srinivasa.refrigerationworks.srw.service.CustomerService;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
 import com.srinivasa.refrigerationworks.srw.service.UserCredentialService;
@@ -27,7 +28,7 @@ public class UserCredentialController {
 
     private final OwnerService ownerService;
     private final EmployeeService employeeService;
-
+    private final CustomerService customerService;
 
     /*
      * Initializes the binder to trim strings
@@ -149,5 +150,29 @@ public class UserCredentialController {
         }
         userCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
         return "redirect:/SRW/employee/list";
+    }
+
+    /*
+     * Handles GET request to display customer update form with current customer data.
+     */
+    @GetMapping("/customer/update")
+    public String updateCustomer(@RequestParam("customerId") String customerId, Model model, HttpSession session) {
+        UserCredentialModel.addCustomerDTOForUpdateToModel(customerService.getCustomerByIdentifier(customerId), model, session);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        return "customer/customer-update-form";
+    }
+
+    /*
+     * Handles POST request to update customer's details after validation.
+     * Redirects to customer list on success.
+     */
+    @PostMapping("/customer/update")
+    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult, Model model, HttpSession session) {
+        if(bindingResult.hasErrors()) {
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            return "customer/customer-update-form";
+        }
+        userCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
+        return "redirect:/SRW/customer/list";
     }
 }
