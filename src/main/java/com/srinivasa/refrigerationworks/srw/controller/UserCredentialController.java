@@ -1,10 +1,8 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
-import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
-import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.*;
+import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
 import com.srinivasa.refrigerationworks.srw.service.UserCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
@@ -28,6 +26,8 @@ public class UserCredentialController {
     private final UserCredentialService userCredentialService;
 
     private final OwnerService ownerService;
+    private final EmployeeService employeeService;
+
 
     /*
      * Initializes the binder to trim strings
@@ -125,5 +125,29 @@ public class UserCredentialController {
         }
         userCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
         return "redirect:/SRW/owner/list";
+    }
+
+    /*
+     * Handles GET request to display employee update form with current employee data.
+     */
+    @GetMapping("/employee/update")
+    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session) {
+        UserCredentialModel.addEmployeeDTOForUpdateToModel(employeeService.getEmployeeByIdentifier(employeeId), model, session);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        return "employee/employee-update-form";
+    }
+
+    /*
+     * Handles POST request to update employee's details after validation.
+     * Redirects to employee list on success.
+     */
+    @PostMapping("/employee/update")
+    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult, Model model, HttpSession session) {
+        if(bindingResult.hasErrors()) {
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            return "employee/employee-update-form";
+        }
+        userCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
+        return "redirect:/SRW/employee/list";
     }
 }
