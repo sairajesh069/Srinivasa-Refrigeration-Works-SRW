@@ -1,6 +1,5 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
-import com.srinivasa.refrigerationworks.srw.entity.Customer;
 import com.srinivasa.refrigerationworks.srw.validation.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
 /*

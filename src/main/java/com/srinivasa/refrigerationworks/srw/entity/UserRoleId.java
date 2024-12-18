@@ -25,4 +25,3 @@ public class UserRoleId implements Serializable {
     @Column(name = "roles")
     private String role;
 }
-

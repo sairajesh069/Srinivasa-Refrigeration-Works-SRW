@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /*
  * Controller for handling account recovery operations.
- * Provides endpoints for username recovery.
+ * Provides endpoints for username recovery and Password reset.
  */
 @Controller
 @RequestMapping("/SRW")
@@ -101,7 +101,8 @@ public class AccountRecoveryController {
          */
         if (!userCredentialService.validateUser(passwordResetDTO)) {
             AccountRecoveryModel.addIsUserValidatedToModel(false, model);
-        } else {
+        }
+        else {
             /*
              * If user validation succeeds, proceed to password validation.
              */
@@ -127,5 +128,4 @@ public class AccountRecoveryController {
          */
         return "account-recovery/password-reset";
     }
-
 }

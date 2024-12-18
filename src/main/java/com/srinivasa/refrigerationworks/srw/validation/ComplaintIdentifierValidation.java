@@ -21,12 +21,17 @@ public class ComplaintIdentifierValidation {
         String identifier = complaintIdentifier.getIdentifier();
         LocalDate date = complaintIdentifier.getRegisteredDate();
 
-        /* If the identifier is empty, it's like asking for a recipe but forgetting to mention the key ingredient. */
+        /*
+         * Validation message to be displayed if the identifier is empty.
+         */
         if(identifier == null || identifier.isEmpty()) {
             bindingResult.rejectValue("identifier", "error.phoneNumber", "Invalid input: Please provide a valid complaint ID or phone number");
         }
 
-        /* If the identifier is a phone number, but there's no registered date, it's like asking for an appointment but not mentioning the date. */
+        /*
+         * Validation message to be displayed if the identifier is a phone number,
+         * but not mentioning the date.
+         */
         else if(identifier.matches("\\d{10}") && date == null) {
             bindingResult.rejectValue("registeredDate", "error.registeredDate", "Registered date is required when fetching details using a phone number");
         }

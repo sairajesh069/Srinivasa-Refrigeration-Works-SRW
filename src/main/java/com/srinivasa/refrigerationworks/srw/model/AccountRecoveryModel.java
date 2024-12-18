@@ -4,6 +4,9 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.PasswordResetDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UsernameRecoveryDTO;
 import org.springframework.ui.Model;
 
+/*
+ * Contains methods for adding account-recovery related data to the model.
+ */
 public class AccountRecoveryModel {
 
     /*
@@ -67,5 +70,4 @@ public class AccountRecoveryModel {
         model.addAttribute("passwordUpdated", "Your password has been successfully updated.");
         addUserNotValidatedToModel(model);
     }
-
 }

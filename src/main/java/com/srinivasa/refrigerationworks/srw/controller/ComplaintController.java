@@ -18,8 +18,7 @@ import java.security.Principal;
 import java.util.List;
 
 /*
- * Controller class to handle complaint-related operations like registering a complaint and updating dropdowns.
- * It manages the interactions with the ComplaintService and handles form submissions for complaints.
+ * Controller class to handle complaint-related operations.
  */
 @Controller
 @RequestMapping("/SRW/complaint")

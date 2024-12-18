@@ -32,5 +32,4 @@ public class ComplaintFormConstants {
      * List of refrigerator models available for selection in the complaint form.
      */
     public static final List<String> REFRIGERATOR_MODELS = Arrays.asList("Single-door Non-Inverter Technology", "Single-door Inverter Technology", "Double-door Non-Inverter Technology", "Double-door Inverter Technology");
-
 }

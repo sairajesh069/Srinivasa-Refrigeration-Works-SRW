@@ -8,15 +8,23 @@ import jakarta.validation.ConstraintValidatorContext;
 
 /*
  * Custom validator to check if two fields match in an object.
- * - firstField: The first field to compare.
- * - secondField: The second field to compare.
- * - message: The error message to show when fields do not match.
  */
 @Component
 public class FieldMatchConstraintValidator implements ConstraintValidator<FieldMatch, Object> {
 
+    /*
+     * firstField: The first field to compare.
+     */
     private String firstField;
+
+    /*
+     * secondField: The second field to compare.
+     */
     private String secondField;
+
+    /*
+     * message: The error message to show when fields do not match.
+     */
     private String message;
 
     @Override
@@ -29,7 +37,9 @@ public class FieldMatchConstraintValidator implements ConstraintValidator<FieldM
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
 
-        /* If value is null, validation is not needed */
+        /*
+         * If value is null, validation is not needed
+         */
         if (value==null) {
             return true;
         }
@@ -57,7 +67,5 @@ public class FieldMatchConstraintValidator implements ConstraintValidator<FieldM
                     .addConstraintViolation();
             return false;
         }
-
     }
-
 }

@@ -28,4 +28,3 @@ public interface UserCredentialMapper {
      */
     UserCredentialDTO toDto(UserCredential userCredential);
 }
-

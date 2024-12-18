@@ -40,7 +40,7 @@ public class CustomRoleHierarchy implements RoleHierarchy {
                      * If the user has the ROLE_EMPLOYEE authority,
                      * they also have the rights of ROLE_CUSTOMER.
                      */
-                        reachableAuthorities.add(() -> "ROLE_CUSTOMER");
+                    reachableAuthorities.add(() -> "ROLE_CUSTOMER");
             }
         }
 

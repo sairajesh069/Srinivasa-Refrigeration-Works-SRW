@@ -86,5 +86,4 @@ public class Customer {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

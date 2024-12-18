@@ -65,7 +65,7 @@
             <span th:if="${#fields.hasErrors('employeeDTO.address')}" th:errors="*{employeeDTO.address}" class="error"></span> <br><br>
 
             <!-- National id number input field with error handling -->
-            <label for="nationalIdNumber">First name:</label>
+            <label for="nationalIdNumber">National Id Number:</label>
             <input id="nationalIdNumber" type="text" th:field="*{employeeDTO.nationalIdNumber}" placeholder="Enter national id number">
             <span th:if="${#fields.hasErrors('employeeDTO.nationalIdNumber')}" th:errors="*{employeeDTO.nationalIdNumber}" class="error"></span> <br><br>
 

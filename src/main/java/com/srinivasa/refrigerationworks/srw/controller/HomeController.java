@@ -35,5 +35,4 @@ public class HomeController {
     public String managementPortal() {
         return "management-portal";
     }
-
 }

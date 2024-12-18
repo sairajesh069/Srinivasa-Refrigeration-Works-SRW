@@ -147,7 +147,6 @@ public class UniqueValueConstraintValidator implements ConstraintValidator<Uniqu
                     .addPropertyNode(fieldName)
                     .addConstraintViolation();
         }
-
         return isUnique;
     }
 }

@@ -8,8 +8,7 @@ import org.springframework.ui.Model;
 import java.util.List;
 
 /*
- * Model class for handling complaint-related attributes in the view.
- * Provides methods to add and populate complaint-related data to the model for rendering.
+ * Contains methods for adding complaint-related data to the model.
  */
 public class ComplaintModel {
 
