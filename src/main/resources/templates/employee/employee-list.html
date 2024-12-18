@@ -37,6 +37,7 @@
                     <th>Date of Hire</th> <!-- Date the employee joined -->
                     <th>Salary</th> <!-- Employee's salary -->
                     <th>Date of Exit</th> <!-- Date the employee left or employment status -->
+                    <th>Manage</th> <!-- Modification or deletion of employee details -->
                 </tr>
                 </thead>
                 <!-- Table body dynamically populated with employee data -->
@@ -55,6 +56,10 @@
                     <td th:text="${employee.dateOfHire}"></td> <!-- Hire Date -->
                     <td th:text="${employee.salary}"></td> <!-- Salary -->
                     <td th:text="${employee.dateOfExit != null ? employee.dateOfExit : 'Ongoing Employment'}"></td> <!-- Exit Date or employment status -->
+                    <td>
+                        <!-- Update button with dynamic URL for employee update -->
+                        <a th:href="@{/SRW/employee/update(employeeId=${employee.employeeId})}" class="btn btn-info btn-sm">Update</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
