@@ -1,8 +1,10 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
+import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -11,10 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /*
  * Controller that handles requests related to the Owner entity.
- * It provides a mapping to fetch and display the list of owners in the owner-list view.
  */
 @Controller
 @RequestMapping("/SRW/owner")
@@ -22,6 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class OwnerController {
 
     private final OwnerService ownerService;
+
+    /*
+     * Displays the owner registration form
+     */
+    @GetMapping("/register")
+    public String createOwner(Model model) {
+        UserCredentialModel.addOwnerCredentialToModel(model);
+        return "owner/owner-register-form";
+    }
 
     /*
      * Handles GET requests to fetch the list of all owners.
@@ -54,5 +65,15 @@ public class OwnerController {
         OwnerModel.addOwnerDetailsToModel(
                 ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
         return "owner/owner-details";
+    }
+
+    /*
+     * Handles GET request to display owner update form with current owner data.
+     */
+    @GetMapping("/update")
+    public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpSession session) {
+        OwnerModel.addOwnerDTOForUpdateToModel(ownerService.getOwnerByIdentifier(ownerId), model, session);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        return "owner/owner-update-form";
     }
 }

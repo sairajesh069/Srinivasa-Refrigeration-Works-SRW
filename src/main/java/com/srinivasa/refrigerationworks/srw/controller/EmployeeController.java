@@ -1,8 +1,10 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
+import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -11,10 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /*
  * Controller that handles requests related to the Employee entity.
- * It provides a mapping to fetch and display the list of employees in the employee-list view.
  */
 @Controller
 @RequestMapping("/SRW/employee")
@@ -22,6 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+
+    /*
+     * Displays the employee registration form
+     */
+    @GetMapping("/register")
+    public String createEmployee(Model model) {
+        UserCredentialModel.addEmployeeCredentialToModel(model);
+        return "employee/employee-register-form";
+    }
 
     /*
      * Handles GET requests to fetch the list of all employees.
@@ -54,5 +65,15 @@ public class EmployeeController {
         EmployeeModel.addEmployeeDetailsToModel(
                 employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), model);
         return "employee/employee-details";
+    }
+
+    /*
+     * Handles GET request to display employee update form with current employee data.
+     */
+    @GetMapping("/update")
+    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session) {
+        EmployeeModel.addEmployeeDTOForUpdateToModel(employeeService.getEmployeeByIdentifier(employeeId), model, session);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        return "employee/employee-update-form";
     }
 }

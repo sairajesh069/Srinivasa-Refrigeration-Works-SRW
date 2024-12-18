@@ -2,13 +2,13 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 import java.util.List;
 
 /*
  * Contains methods for adding employee-related data to the model.
- * It provides functionality for adding a list of employees to the model.
  */
 public class EmployeeModel {
 
@@ -39,5 +39,13 @@ public class EmployeeModel {
         model.addAttribute(
                 employee == null ? "noEmployeeFound" : "employee",
                 employee == null ? "Employee not found for the given details." : employee);
+    }
+
+    /*
+     * Adds EmployeeDTO to the model and stores the initial state in the session for update comparison.
+     */
+    public static void addEmployeeDTOForUpdateToModel(EmployeeDTO employeeDTO, Model model, HttpSession session) {
+        model.addAttribute("employeeDTO", employeeDTO);
+        session.setAttribute("initialEmployeeDTO", employeeDTO);
     }
 }

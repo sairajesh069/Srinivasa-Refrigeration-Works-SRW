@@ -2,13 +2,13 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 import java.util.List;
 
 /*
  * Contains methods for adding customer-related data to the model.
- * It provides functionality for adding a list of customers to the model.
  */
 public class CustomerModel {
 
@@ -39,5 +39,13 @@ public class CustomerModel {
         model.addAttribute(
                 customer == null ? "noCustomerFound" : "customer",
                 customer == null ? "Customer not found for the given details." : customer);
+    }
+
+    /*
+     * Adds CustomerDTO to the model and stores the initial state in the session for update comparison.
+     */
+    public static void addCustomerDTOForUpdateToModel(CustomerDTO customerDTO, Model model, HttpSession session) {
+        model.addAttribute("customerDTO", customerDTO);
+        session.setAttribute("initialCustomerDTO", customerDTO);
     }
 }

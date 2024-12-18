@@ -2,11 +2,10 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.UserFormConstants;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 /*
- * Model class for handling user registration form data.
+ * Model class for handling user and credential related form data.
  */
 public class UserCredentialModel {
 
@@ -51,29 +50,5 @@ public class UserCredentialModel {
      */
     public static void addUserFormConstantsToModel(Model model) {
         model.addAttribute("genders", UserFormConstants.GENDERS);
-    }
-
-    /*
-     * Adds OwnerDTO to the model and stores the initial state in the session for update comparison.
-     */
-    public static void addOwnerDTOForUpdateToModel(OwnerDTO ownerDTO, Model model, HttpSession session) {
-        model.addAttribute("ownerDTO", ownerDTO);
-        session.setAttribute("initialOwnerDTO", ownerDTO);
-    }
-
-    /*
-     * Adds EmployeeDTO to the model and stores the initial state in the session for update comparison.
-     */
-    public static void addEmployeeDTOForUpdateToModel(EmployeeDTO employeeDTO, Model model, HttpSession session) {
-        model.addAttribute("employeeDTO", employeeDTO);
-        session.setAttribute("initialEmployeeDTO", employeeDTO);
-    }
-
-    /*
-     * Adds CustomerDTO to the model and stores the initial state in the session for update comparison.
-     */
-    public static void addCustomerDTOForUpdateToModel(CustomerDTO customerDTO, Model model, HttpSession session) {
-        model.addAttribute("customerDTO", customerDTO);
-        session.setAttribute("initialCustomerDTO", customerDTO);
     }
 }

@@ -2,12 +2,12 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 import java.util.List;
 
 /*
  * Contains methods for adding owner-related data to the model.
- * It provides functionality for adding a list of owners to the model.
  */
 public class OwnerModel {
 
@@ -40,4 +40,11 @@ public class OwnerModel {
                 owner == null ? "Owner not found for the given details." : owner);
     }
 
+    /*
+     * Adds OwnerDTO to the model and stores the initial state in the session for update comparison.
+     */
+    public static void addOwnerDTOForUpdateToModel(OwnerDTO ownerDTO, Model model, HttpSession session) {
+        model.addAttribute("ownerDTO", ownerDTO);
+        session.setAttribute("initialOwnerDTO", ownerDTO);
+    }
 }
