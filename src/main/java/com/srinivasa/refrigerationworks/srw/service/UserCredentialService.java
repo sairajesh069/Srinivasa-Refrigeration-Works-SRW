@@ -137,7 +137,6 @@ public class UserCredentialService {
      * - Checks for changes between initial and updated DTOs.
      * - Updates owner and phone number only if modified.
      */
-
     @Transactional
     public void updateOwner(OwnerDTO initialOwnerDTO, OwnerDTO updatedOwnerDTO) {
         if(!initialOwnerDTO.equals(updatedOwnerDTO)) {
@@ -150,4 +149,21 @@ public class UserCredentialService {
         }
     }
 
+    /*
+     * Updates employee details if changes are detected and synchronizes phone number.
+     * - Checks for changes between initial and updated DTOs.
+     * - Updates employee and phone number only if modified.
+     */
+    @Transactional
+    public void updateEmployee(EmployeeDTO initialEmployeeDTO, EmployeeDTO updatedEmployeeDTO) {
+        updatedEmployeeDTO.setDateOfHire(initialEmployeeDTO.getDateOfHire());
+        if(!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
+            employeeService.updateEmployee(updatedEmployeeDTO);
+            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialEmployeeDTO.getPhoneNumber());
+            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedEmployeeDTO.getPhoneNumber());
+            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
+                updateUserPhoneNumber(updatedEmployeeDTO.getEmployeeId(), updatedPhoneNumber);
+            }
+        }
+    }
 }

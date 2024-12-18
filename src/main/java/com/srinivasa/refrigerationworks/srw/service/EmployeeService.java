@@ -3,11 +3,13 @@ package com.srinivasa.refrigerationworks.srw.service;
 import com.srinivasa.refrigerationworks.srw.entity.Employee;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.repository.EmployeeRepository;
+import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.EmployeeMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /*
@@ -48,7 +50,7 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves the employee details based on the provided identifier (phone number, email, or employee ID).
+     * Retrieves the employee details based on the provided identifier (phone number, email, national id number or employee ID).
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the employee entity to a DTO before returning.
      */
@@ -58,5 +60,19 @@ public class EmployeeService {
         }
         Employee employee = employeeRepository.findByIdentifier(identifier);
         return employeeMapper.toDto(employee);
+    }
+
+    /*
+     * Updates employee details by mapping DTO to entity, formatting phone number,
+     * and setting updated timestamp before saving to the repository.
+     */
+    public void updateEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = employeeMapper.toEntity(employeeDTO);
+        employee.setEmployeeId(employeeDTO.getEmployeeId());
+        employee.setEmployeeReference(Long.parseLong(employeeDTO.getEmployeeId().substring(3,7)));
+        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber());
+        employee.setPhoneNumber(updatedPhoneNumber);
+        employee.setUpdatedAt(LocalDateTime.now());
+        employeeRepository.save(employee);
     }
 }
