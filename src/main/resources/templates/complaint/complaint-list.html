@@ -45,6 +45,7 @@
                     <th>Assigned To</th>
                     <th>Closure Date</th>
                     <th>Feedback</th>
+                    <th>Manage</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -70,6 +71,10 @@
                     <td th:text="${complaint.closedAt != null ? complaint.closedAt : 'Not Closed Yet'}"></td>
                     <!-- Display customer feedback or 'No Feedback' if not provided -->
                     <td th:text="${complaint.customerFeedback != null ? complaint.customerFeedback : 'No Feedback'}"></td>
+                    <td>
+                        <!-- Update button with dynamic URL for complaint update -->
+                        <a th:href="@{/SRW/complaint/update(complaintId=${complaint.complaintId})}" class="btn btn-info btn-sm">Update</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
