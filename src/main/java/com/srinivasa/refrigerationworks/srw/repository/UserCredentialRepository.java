@@ -46,12 +46,6 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
     public String findUserIdByUsername(@Param("username") String username);
 
     /*
-     * Custom query to fetch the user type (role) for a given username from the UserCredential table.
-     */
-    @Query("SELECT userType FROM UserCredential WHERE username = :username")
-    public String findUserTypeByUsername(@Param("username") String username);
-
-    /*
      * Updates the phone number of a user based on their userId.
      */
     @Modifying

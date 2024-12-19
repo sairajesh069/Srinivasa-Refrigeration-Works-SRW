@@ -79,14 +79,13 @@ public class ComplaintService {
      * If the user is not an OWNER, retrieves complaints for the logged-in user.
      * Filters complaints by complaint ID or contact number and registration date.
      */
-    public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String userName) {
+    public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String userName, String userRole) {
         String identifier = complaintIdentifierDTO.getIdentifier();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate registeredDate = complaintIdentifierDTO.getRegisteredDate();
         String registeredDateFormatted = registeredDate!=null ? registeredDate.format(formatter) : null;
         String phoneNumberFormatted = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
-        String role = userCredentialService.getUserTypeByUsername(userName);
-        List<ComplaintDTO> complaints = !role.equals("OWNER") ? getComplaintsByUsername(userName)
+        List<ComplaintDTO> complaints = !userRole.equals("ROLE_OWNER") ? getComplaintsByUsername(userName)
                 : complaintRepository.findAll().stream().map(complaintMapper::toDto).toList();
         return complaints
                 .stream()

@@ -117,13 +117,6 @@ public class UserCredentialService {
     }
 
     /*
-     * Fetches the user type (role) associated with the provided username.
-     */
-    public String getUserTypeByUsername(String username) {
-        return userCredentialRepository.findUserTypeByUsername(username);
-    }
-
-    /*
      * Updates the user's phone number by delegating to the repository.
      */
     public void updateUserPhoneNumber(String userId, String phoneNumber) {

@@ -116,12 +116,12 @@ public class ComplaintController {
      * Displays complaint details if one result is found, or a list view for multiple results.
      */
     @PostMapping("/search")
-    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult, Principal principal, Model model) {
+    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult, HttpSession session, Model model, Principal principal) {
         ComplaintIdentifierValidation.identifierValidation(complaintIdentifierDTO, bindingResult);
         if(bindingResult.hasErrors()) {
             return "complaint/complaint-details";
         }
-        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName());
+        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName(), UserRoleProvider.fetchUserRole(session));
         ComplaintModel.addComplaintDetailsToModel(complaints, model);
         return (complaints.size() <= 1) ? "complaint/complaint-details" : "complaint/complaint-list";
     }
