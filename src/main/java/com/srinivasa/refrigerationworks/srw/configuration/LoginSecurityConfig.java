@@ -101,18 +101,21 @@ public class LoginSecurityConfig {
                          * - "/SRW/owner/**", "/SRW/management-portal": Full access to owner-related endpoints and the management portal.
                          * - "/SRW/employee/register", "/SRW/employee/confirmation": Access to employee registration and confirmation pages.
                          * - "/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list": Access to various list pages.
-                         * - "/SRW/employee/search", "/SRW/customer/search", "/SRW/complaint/search": Access to various search pages.
+                         * - "/SRW/employee/search", "/SRW/customer/search": Access to various search pages.
+                         * - "/SRW/employee/update", "/SRW/customer/update": Access to various update pages.
                          */
                         .requestMatchers("/SRW/owner/**", "/SRW/management-portal").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/register", "/SRW/employee/confirmation").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list").hasRole("OWNER")
-                        .requestMatchers("/SRW/employee/search", "/SRW/customer/search", "/SRW/complaint/search").hasRole("OWNER")
+                        .requestMatchers("/SRW/employee/search", "/SRW/customer/search").hasRole("OWNER")
+                        .requestMatchers("/SRW/employee/update", "/SRW/customer/update").hasRole("OWNER")
 
                         /*
-                         * Restrict access to complaint registration, confirmation, viewing and fetching own complaints to "CUSTOMER" role.
+                         * Restrict access to complaint registration, confirmation, viewing, fetching and updating own complaints to "CUSTOMER" role.
                          */
                         .requestMatchers("/SRW/complaint/register", "/SRW/complaint/confirmation").hasRole("CUSTOMER")
                         .requestMatchers("/SRW/complaint/my-complaints", "/SRW/complaint/search").hasRole("CUSTOMER")
+                        .requestMatchers("/SRW/complaint/update").hasRole("CUSTOMER")
 
                         /*
                          * Require authentication for any other request.
