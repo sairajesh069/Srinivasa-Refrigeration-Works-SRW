@@ -94,4 +94,12 @@ public class ComplaintService {
                                         complaint.getCreatedAt().format(formatter).equals(registeredDateFormatted)))
                 .toList();
     }
+
+    /*
+     * Fetches the ComplaintDTO by its complaintId.
+     */
+    public ComplaintDTO getComplaintById(String complaintId) {
+        Complaint complaint = complaintRepository.findByComplaintId(complaintId);
+        return complaintMapper.toDto(complaint);
+    }
 }

@@ -18,4 +18,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
      * Returns all complaints associated with the given bookedById (userId).
      */
     public List<Complaint> findAllByBookedById(String userId);
+
+    /*
+     * Finds and returns a Complaint entity by its complaintId.
+     */
+    public Complaint findByComplaintId(String complaintId);
 }
