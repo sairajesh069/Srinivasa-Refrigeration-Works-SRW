@@ -5,12 +5,14 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.repository.ComplaintRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.ComplaintMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -101,5 +103,37 @@ public class ComplaintService {
     public ComplaintDTO getComplaintById(String complaintId) {
         Complaint complaint = complaintRepository.findByComplaintId(complaintId);
         return complaintMapper.toDto(complaint);
+    }
+
+    /*
+     * Updates the complaint details by comparing initial and updated ComplaintDTOs.
+     * Sets the relevant values and saves the updated complaint to the repository.
+     */
+    public void updateComplaint(ComplaintDTO initialComplaintDTO, ComplaintDTO updatedComplaintDTO) {
+        updatedComplaintDTO.setCreatedAt(initialComplaintDTO.getCreatedAt());
+        updatedComplaintDTO.setBookedById(initialComplaintDTO.getBookedById());
+        updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
+        updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
+
+        updatedComplaintDTO.setStatus(updatedComplaintDTO.getStatus() == null
+                ? initialComplaintDTO.getStatus() : updatedComplaintDTO.getStatus());
+
+        updatedComplaintDTO.setTechnicianId(updatedComplaintDTO.getTechnicianId() == null
+                ? initialComplaintDTO.getTechnicianId() : updatedComplaintDTO.getTechnicianId());
+
+        updatedComplaintDTO.setCustomerFeedback(updatedComplaintDTO.getCustomerFeedback() == null
+                ? initialComplaintDTO.getCustomerFeedback() : updatedComplaintDTO.getCustomerFeedback());
+
+        if(!initialComplaintDTO.equals(updatedComplaintDTO)) {
+            Complaint complaint = complaintMapper.toEntity(updatedComplaintDTO);
+            complaint.setComplaintId(updatedComplaintDTO.getComplaintId());
+            complaint.setComplaintReference(Long.parseLong(complaint.getComplaintId().substring(4,12)));
+            complaint.setBookedById(updatedComplaintDTO.getBookedById());
+            complaint.setUpdatedAt(LocalDateTime.now());
+            if(updatedComplaintDTO.getStatus().equals(ComplaintStatus.RESOLVED) && updatedComplaintDTO.getClosedAt() == null) {
+                complaint.setClosedAt(LocalDateTime.now());
+            }
+            complaintRepository.save(complaint);
+        }
     }
 }

@@ -13,17 +13,13 @@ public interface ComplaintMapper {
 
     /*
      * Converts ComplaintDTO to Complaint entity
-     * (ignores complaintReference, complaintId, bookedById, createdAt, status, updatedAt, technicianId, closedAt, customerFeedback fields)
+     * (ignores complaintReference, complaintId, bookedById, createdAt and updatedAt fields)
      */
     @Mapping(target = "complaintReference", ignore = true)
     @Mapping(target = "complaintId", ignore = true)
     @Mapping(target = "bookedById", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "technicianId", ignore = true)
-    @Mapping(target = "closedAt", ignore = true)
-    @Mapping(target = "customerFeedback", ignore = true)
     Complaint toEntity(ComplaintDTO complaintDTO);
 
     /*
