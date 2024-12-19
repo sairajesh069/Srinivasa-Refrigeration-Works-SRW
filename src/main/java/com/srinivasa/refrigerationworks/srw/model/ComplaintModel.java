@@ -96,10 +96,13 @@ public class ComplaintModel {
      * Populates the dropdowns for product types and complaint statuses.
      */
     public static void addComplaintDTOForUpdateToModel(ComplaintDTO complaintDTO, Model model, HttpSession session) {
-        model.addAttribute("complaintDTO", complaintDTO);
-        session.setAttribute("initialComplaintDTO", complaintDTO);
-        populateDropDownsForProduct(complaintDTO.getProductType(), model);
-        populateComplaintStatus(model);
+        if(complaintDTO != null) {
+            model.addAttribute("complaintDTO", complaintDTO);
+            session.setAttribute("initialComplaintDTO", complaintDTO);
+            populateDropDownsForProduct(complaintDTO.getProductType(), model);
+            populateComplaintStatus(model);
+        }
+        session.setAttribute("canAccess", complaintDTO != null);
     }
 
     /*

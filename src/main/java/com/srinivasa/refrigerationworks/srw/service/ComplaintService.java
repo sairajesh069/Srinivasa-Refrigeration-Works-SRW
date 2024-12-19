@@ -99,8 +99,14 @@ public class ComplaintService {
     /*
      * Fetches the ComplaintDTO by its complaintId.
      */
-    public ComplaintDTO getComplaintById(String complaintId) {
+    public ComplaintDTO getComplaintById(String complaintId, boolean isOwner, String username) {
         Complaint complaint = complaintRepository.findByComplaintId(complaintId);
+        if(!isOwner) {
+            String userId = userCredentialService.getUserIdByUsername(username);
+            if(!complaint.getBookedById().equals(userId)) {
+                return null;
+            }
+        }
         return complaintMapper.toDto(complaint);
     }
 

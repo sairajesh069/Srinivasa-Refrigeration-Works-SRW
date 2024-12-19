@@ -130,9 +130,11 @@ public class ComplaintController {
      * Handles the GET request to display the complaint update form with the complaint's existing details.
      */
     @GetMapping("/update")
-    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session) {
-        ComplaintModel.addComplaintDTOForUpdateToModel(complaintService.getComplaintById(complaintId), model, session);
-        return "complaint/complaint-update-form";
+    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session, Principal principal) {
+        ComplaintModel.addComplaintDTOForUpdateToModel(
+                complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"), principal.getName()),
+                model, session);
+        return (boolean)session.getAttribute("canAccess") ? "complaint/complaint-update-form" : "access-denied";
     }
 
     /*
