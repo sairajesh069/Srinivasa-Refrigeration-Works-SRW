@@ -4,8 +4,10 @@ import com.srinivasa.refrigerationworks.srw.model.ComplaintModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.ComplaintService;
+import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.validation.ComplaintIdentifierValidation;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -71,6 +73,10 @@ public class ComplaintController {
     @PostMapping("/update-dropdown")
     public String bookRepair(ComplaintDTO complaintDTO, Model model) {
         ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
+        if(complaintDTO.getComplaintId() != null) {
+            ComplaintModel.populateComplaintStatus(model);
+            return "complaint/complaint-update-form";
+        }
         return "complaint/complaint-register-form";
     }
 
@@ -118,5 +124,31 @@ public class ComplaintController {
         List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName());
         ComplaintModel.addComplaintDetailsToModel(complaints, model);
         return (complaints.size() <= 1) ? "complaint/complaint-details" : "complaint/complaint-list";
+    }
+
+    /*
+     * Handles the GET request to display the complaint update form with the complaint's existing details.
+     */
+    @GetMapping("/update")
+    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session) {
+        ComplaintModel.addComplaintDTOForUpdateToModel(complaintService.getComplaintById(complaintId), model, session);
+        return "complaint/complaint-update-form";
+    }
+
+    /*
+     * Handles the POST request to update a complaint after validating the input.
+     * Redirects to the appropriate complaint list based on the user's role.
+     */
+    @PostMapping("/update")
+    public String updateComplaint(@ModelAttribute("complaintDTO") @Valid ComplaintDTO updatedComplaintDTO, BindingResult bindingResult, Model model, HttpSession session) {
+        if(bindingResult.hasErrors()) {
+            ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);
+            ComplaintModel.populateComplaintStatus(model);
+            return "complaint/complaint-update-form";
+        }
+        ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");
+        complaintService.updateComplaint(initialComplaintDTO, updatedComplaintDTO);
+        return (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")) ?
+                "redirect:/SRW/complaint/list" : "redirect:/SRW/complaint/my-complaints";
     }
 }

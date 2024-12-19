@@ -3,6 +3,8 @@ package com.srinivasa.refrigerationworks.srw.model;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -87,5 +89,23 @@ public class ComplaintModel {
 
             default -> model.addAttribute("complaints", complaints);
         }
+    }
+
+    /*
+     * Adds the complaint details for updating to the model and session.
+     * Populates the dropdowns for product types and complaint statuses.
+     */
+    public static void addComplaintDTOForUpdateToModel(ComplaintDTO complaintDTO, Model model, HttpSession session) {
+        model.addAttribute("complaintDTO", complaintDTO);
+        session.setAttribute("initialComplaintDTO", complaintDTO);
+        populateDropDownsForProduct(complaintDTO.getProductType(), model);
+        populateComplaintStatus(model);
+    }
+
+    /*
+     * Populates the model with available complaint statuses.
+     */
+    public static void populateComplaintStatus(Model model) {
+        model.addAttribute("statuses", ComplaintStatus.values());
     }
 }
