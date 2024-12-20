@@ -60,6 +60,17 @@ public class OwnerCredentialController {
     }
 
     /*
+     * Handles the GET request to activate an owner.
+     * - Activates the owner based on the provided ownerId.
+     * - Redirects to the owner list page upon success.
+     */
+    @GetMapping("/activate")
+    public String activateOwner(@RequestParam("ownerId") String ownerId) {
+        ownerCredentialService.activateOwner(ownerId);
+        return "redirect:/SRW/owner/list";
+    }
+
+    /*
      * Handles the GET request to deactivate an owner.
      * - Deactivates the owner based on the provided ownerId.
      * - Redirects to the owner list page upon success.
