@@ -70,6 +70,9 @@
 
                 <!-- Date the employee left or employment status -->
                 <span class="bold"> Date of Exit: </span> <span th:text="${employee.dateOfExit != null ? employee.dateOfExit : 'Ongoing Employment'}"></span> <br>
+
+                <!-- Employee's status -->
+                <span class="bold"> Status: </span> <span th:text="${employee.status}"></span> <br>
             </p>
         </div>
 

@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -112,4 +113,11 @@ public class Employee {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "date_of_exit")
     private LocalDateTime dateOfExit;
+
+    /*
+     * Status of the employee
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus status;
 }

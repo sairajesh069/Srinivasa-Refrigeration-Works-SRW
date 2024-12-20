@@ -148,6 +148,7 @@ public class UserCredentialService {
      */
     @Transactional
     public void updateEmployee(EmployeeDTO initialEmployeeDTO, EmployeeDTO updatedEmployeeDTO) {
+        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus()==null ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
         updatedEmployeeDTO.setDateOfHire(initialEmployeeDTO.getDateOfHire());
         if(!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
             employeeService.updateEmployee(updatedEmployeeDTO);

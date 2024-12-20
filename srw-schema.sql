@@ -52,7 +52,8 @@ CREATE TABLE employees (
     date_of_hire DATETIME NOT NULL,
     salary BIGINT NOT NULL,
     updated_at DATETIME,
-    date_of_exit DATETIME) AUTO_INCREMENT=101;
+    date_of_exit DATETIME,
+    status ENUM('ACTIVE', 'IN_ACTIVE') NOT NULL) AUTO_INCREMENT=101;
     
 -- Creating the customers table
 CREATE TABLE customers (

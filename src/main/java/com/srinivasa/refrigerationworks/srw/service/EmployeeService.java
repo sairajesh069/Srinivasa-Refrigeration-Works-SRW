@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.entity.Employee;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.repository.EmployeeRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.EmployeeMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class EmployeeService {
     public String addEmployee(EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.toEntity(employeeDTO);
         employee.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber()));
+        employee.setStatus(UserStatus.ACTIVE);
         employeeRepository.save(employee);
         employee.setEmployeeId("SRW" + String.format("%04d", employee.getEmployeeReference()));
         employeeDTO.setEmployeeId(employee.getEmployeeId());
