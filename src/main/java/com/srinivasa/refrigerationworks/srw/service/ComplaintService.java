@@ -149,4 +149,12 @@ public class ComplaintService {
             complaintRepository.save(complaint);
         }
     }
+
+    /*
+     * Deactivates a complaint by updating their state to inactive.
+     * - Sets the state to IN_ACTIVE and updates the timestamp.
+     */
+    public void deactivateComplaint(String complaintId) {
+        complaintRepository.deactivateComplaint(complaintId, LocalDateTime.now(), ComplaintState.IN_ACTIVE);
+    }
 }
