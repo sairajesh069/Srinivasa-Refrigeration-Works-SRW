@@ -52,4 +52,13 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
     @Transactional
     @Query("UPDATE UserCredential SET phoneNumber = :phoneNumber WHERE userId = :userId")
     public void updateUserPhoneNumber(@Param("userId") String userId, @Param("phoneNumber") String phoneNumber);
+
+    /*
+     * Deactivates a user by setting their 'enabled' status to false (0).
+     * - Updates the UserCredential entity for the specified userId.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserCredential SET enabled = 0 WHERE userId = :userId")
+    public void deactivateUser(@Param("userId") String userId);
 }
