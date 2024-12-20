@@ -122,4 +122,15 @@ public class UserCredentialController {
         userCredentialService.deactivateOwner(ownerId);
         return "redirect:/SRW/owner/list";
     }
+
+    /*
+     * Handles the GET request to deactivate an employee.
+     * - Deactivates the employee based on the provided employeeId.
+     * - Redirects to the employee list page upon success.
+     */
+    @GetMapping("/employee/deactivate")
+    public String deactivateEmployee(@RequestParam("employeeId") String employeeId) {
+        userCredentialService.deactivateEmployee(employeeId);
+        return "redirect:/SRW/employee/list";
+    }
 }
