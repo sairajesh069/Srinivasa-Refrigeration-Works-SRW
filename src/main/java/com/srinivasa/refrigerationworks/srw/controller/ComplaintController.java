@@ -153,4 +153,15 @@ public class ComplaintController {
         return (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")) ?
                 "redirect:/SRW/complaint/list" : "redirect:/SRW/complaint/my-complaints";
     }
+
+    /*
+     * Handles the GET request to deactivate a complaint.
+     * - Deactivates the complaint based on the provided complaintId.
+     * - Redirects to the complaint list page upon success.
+     */
+    @GetMapping("deactivate")
+    public String deactivateComplaint(@RequestParam("complaintId") String complaintId) {
+        complaintService.deactivateComplaint(complaintId);
+        return "redirect:/SRW/complaint/list";
+    }
 }
