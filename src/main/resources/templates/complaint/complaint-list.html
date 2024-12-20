@@ -45,6 +45,7 @@
                     <th>Assigned To</th>
                     <th>Closure Date</th>
                     <th>Feedback</th>
+                    <th>State</th>
                     <th>Manage</th>
                 </tr>
                 </thead>
@@ -55,7 +56,8 @@
                     <td th:text="${complaint.complaintId}"></td>
                     <td th:text="${complaint.customerName}"></td>
                     <td th:text="${complaint.contactNumber}"></td>
-                    <td th:text="${complaint.email}"></td>
+                    <!-- Display email or 'Not Provided' if email is not provided -->
+                    <td th:text="${complaint.email != null ? complaint.email : 'Not Provided'}"></td>
                     <td th:text="${complaint.address}"></td>
                     <td th:text="${complaint.productType}"></td>
                     <td th:text="${complaint.brand}"></td>
@@ -71,6 +73,7 @@
                     <td th:text="${complaint.closedAt != null ? complaint.closedAt : 'Not Closed Yet'}"></td>
                     <!-- Display customer feedback or 'No Feedback' if not provided -->
                     <td th:text="${complaint.customerFeedback != null ? complaint.customerFeedback : 'No Feedback'}"></td>
+                    <td th:text="${complaint.state}"></td> <!-- State -->
                     <td>
                         <!-- Update button with dynamic URL for complaint update -->
                         <a th:href="@{/SRW/complaint/update(complaintId=${complaint.complaintId})}" class="btn btn-info btn-sm">Update</a>

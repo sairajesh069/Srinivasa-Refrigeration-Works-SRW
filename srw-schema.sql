@@ -77,7 +77,7 @@ CREATE TABLE complaints (
     booked_by_id VARCHAR(10),
     customer_name VARCHAR(60) NOT NULL,
     contact_number VARCHAR(15) NOT NULL, 
-    email VARCHAR(45) NOT NULL,
+    email VARCHAR(45),
     address VARCHAR(108) NOT NULL,
     product_type VARCHAR(45) NOT NULL,
     brand VARCHAR(45) NOT NULL,
@@ -88,4 +88,5 @@ CREATE TABLE complaints (
     updated_at DATETIME NULL,
     technician_id VARCHAR(25),
     closed_at DATETIME NULL,
-    customer_feedback VARCHAR(250) NULL);
+    customer_feedback VARCHAR(250) NULL,
+    state ENUM('ACTIVE', 'IN_ACTIVE') NOT NULL);

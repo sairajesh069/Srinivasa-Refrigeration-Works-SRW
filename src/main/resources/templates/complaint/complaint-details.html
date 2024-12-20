@@ -53,7 +53,7 @@
                 <span class="bold"> Phone Number: </span> <span th:text="${complaint.contactNumber}"></span> <br>
 
                 <!-- User's email address -->
-                <span class="bold"> Email: </span> <span th:text="${complaint.email}"></span> <br>
+                <span class="bold"> Email: </span> <span th:text="${complaint.email != null ? complaint.email : 'Not Provided'}"></span> <br>
 
                 <!-- User's residential address -->
                 <span class="bold"> Address: </span> <span th:text="${complaint.address}"></span> <br>
@@ -86,7 +86,10 @@
                 <span class="bold"> Closure Date: </span> <span th:text="${complaint.closedAt != null ? complaint.closedAt : 'Not Closed Yet'}"></span> <br>
 
                 <!-- User feedback -->
-                <span class="bold"> Feedback: </span> <span th:text="${complaint.customerFeedback  != null ? complaint.customerFeedback : 'No Feedback'}"></span> <br>
+                <span class="bold"> Feedback: </span> <span th:text="${complaint.customerFeedback != null ? complaint.customerFeedback : 'No Feedback'}"></span> <br>
+
+                <!-- Complaint state -->
+                <span class="bold"> Status: </span> <span th:text="${complaint.state}"></span> <br>
             </p>
         </div>
 

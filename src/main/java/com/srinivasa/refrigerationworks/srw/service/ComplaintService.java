@@ -5,6 +5,7 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.repository.ComplaintRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintState;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.ComplaintMapper;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,8 @@ public class ComplaintService {
         complaint.setContactNumber(PhoneNumberFormatter.formatPhoneNumber(complaint.getContactNumber()));
         String bookedById = userCredentialService.getUserIdByUsername(username);
         complaint.setBookedById(bookedById);
+        complaint.setStatus(ComplaintStatus.OPEN);
+        complaint.setState(ComplaintState.ACTIVE);
         complaintRepository.save(complaint);
         complaint.setComplaintId("SRWC" + String.format("%08d", complaint.getComplaintReference()));
         complaintDTO.setComplaintId(complaint.getComplaintId());
@@ -97,7 +100,9 @@ public class ComplaintService {
     }
 
     /*
-     * Fetches the ComplaintDTO by its complaintId.
+     * Retrieves the ComplaintDTO by complaintId.
+     * - Checks if the user is an owner. If not, ensures the user has access to the complaint.
+     * - If the complaint is not booked by the current user (for non-owners), returns null.
      */
     public ComplaintDTO getComplaintById(String complaintId, boolean isOwner, String username) {
         Complaint complaint = complaintRepository.findByComplaintId(complaintId);
@@ -119,6 +124,9 @@ public class ComplaintService {
         updatedComplaintDTO.setBookedById(initialComplaintDTO.getBookedById());
         updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
         updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
+
+        updatedComplaintDTO.setState(updatedComplaintDTO.getState() == null
+                ? initialComplaintDTO.getState() : updatedComplaintDTO.getState());
 
         updatedComplaintDTO.setStatus(updatedComplaintDTO.getStatus() == null
                 ? initialComplaintDTO.getStatus() : updatedComplaintDTO.getStatus());

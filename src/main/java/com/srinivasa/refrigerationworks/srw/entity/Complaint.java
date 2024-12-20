@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintState;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -100,7 +101,7 @@ public class Complaint {
      */
     @Enumerated(EnumType.STRING)
     @Column(name="status")
-    private ComplaintStatus status = ComplaintStatus.OPEN;
+    private ComplaintStatus status;
 
     /*
      * Date and time when the complaint was last updated.
@@ -129,4 +130,11 @@ public class Complaint {
      */
     @Column(name = "customer_feedback")
     private String customerFeedback;
+
+    /*
+     * State of the complaint
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private ComplaintState state;
 }

@@ -1,7 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintState;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -48,10 +48,7 @@ public class ComplaintDTO {
 
     /*
      * Email address of the customer.
-     * This field is mandatory and must be a valid email format.
      */
-    @NotNull(message = "Email is mandatory")
-    @Email(message = "Please enter a valid email address")
     private String email;
 
     /*
@@ -119,4 +116,9 @@ public class ComplaintDTO {
      * Customer feedback after the resolution of the complaint.
      */
     private String customerFeedback;
+
+    /*
+     * State of the complaint
+     */
+    private ComplaintState state;
 }
