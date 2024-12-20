@@ -199,4 +199,15 @@ public class UserCredentialService {
         employeeService.deactivateEmployee(employeeId);
         userCredentialRepository.deactivateUser(employeeId);
     }
+
+    /*
+     * Deactivates a customer and their associated user credentials.
+     * - Updates the customer's status to inactive and timestamps the deactivation.
+     * - Deactivates the corresponding user credentials.
+     */
+    @Transactional
+    public void deactivateCustomer(String customerId) {
+        customerService.deactivateCustomer(customerId);
+        userCredentialRepository.deactivateUser(customerId);
+    }
 }

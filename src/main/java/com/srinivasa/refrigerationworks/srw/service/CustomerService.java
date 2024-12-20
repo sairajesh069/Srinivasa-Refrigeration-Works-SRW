@@ -75,4 +75,12 @@ public class CustomerService {
         customer.setUpdatedAt(LocalDateTime.now());
         customerRepository.save(customer);
     }
+
+    /*
+     * Deactivates a customer by updating their status to inactive.
+     * - Sets the status to IN_ACTIVE and updates the timestamp.
+     */
+    public void deactivateCustomer(String customerId) {
+        customerRepository.deactivateCustomer(customerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+    }
 }
