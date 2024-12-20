@@ -53,6 +53,17 @@ public class OwnerCredentialService {
     }
 
     /*
+     * Activates an owner and their associated user credentials.
+     * - Updates the owner's status to active and timestamps the activation.
+     * - Activates the corresponding user credentials.
+     */
+    @Transactional
+    public void activateOwner(String ownerId) {
+        ownerService.activateOwner(ownerId);
+        userCredentialService.updateUserStatus(ownerId, (byte) 1);
+    }
+
+    /*
      * Deactivates an owner and their associated user credentials.
      * - Updates the owner's status to inactive and timestamps the deactivation.
      * - Deactivates the corresponding user credentials.

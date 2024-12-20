@@ -77,6 +77,14 @@ public class OwnerService {
     }
 
     /*
+     * Activates an owner by updating their status to active.
+     * - Sets the status to ACTIVE and updates the timestamp.
+     */
+    public void activateOwner(String ownerId) {
+        ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.ACTIVE);
+    }
+
+    /*
      * Deactivates an owner by updating their status to inactive.
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */
