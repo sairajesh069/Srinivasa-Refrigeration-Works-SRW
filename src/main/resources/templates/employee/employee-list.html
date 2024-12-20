@@ -61,6 +61,11 @@
                     <td>
                         <!-- Update button with dynamic URL for employee update -->
                         <a th:href="@{/SRW/employee/update(employeeId=${employee.employeeId})}" class="btn btn-info btn-sm">Update</a>
+
+                        <!-- Deactivate button with dynamic URL for employee deactivation -->
+                        <a th:href="@{/SRW/employee/deactivate(employeeId=${employee.employeeId})}"
+                           onclick="if(!(confirm('Are you sure deactivating the employee?'))) return false"
+                           class="btn btn-danger btn-sm">Deactivate</a>
                     </td>
                 </tr>
                 </tbody>
