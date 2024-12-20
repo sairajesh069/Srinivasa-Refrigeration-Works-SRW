@@ -167,6 +167,7 @@ public class UserCredentialService {
      */
     @Transactional
     public void updateCustomer(CustomerDTO initialCustomerDTO, CustomerDTO updatedCustomerDTO) {
+        updatedCustomerDTO.setStatus(updatedCustomerDTO.getStatus()==null ? initialCustomerDTO.getStatus() : updatedCustomerDTO.getStatus());
         if(!initialCustomerDTO.equals(updatedCustomerDTO)) {
             customerService.updateCustomer(updatedCustomerDTO);
             String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialCustomerDTO.getPhoneNumber());

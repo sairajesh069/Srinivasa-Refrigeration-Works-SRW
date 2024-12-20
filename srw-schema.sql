@@ -67,7 +67,8 @@ CREATE TABLE customers (
     email VARCHAR(60) NOT NULL UNIQUE,
     address VARCHAR(108) NOT NULL,
     created_at DATETIME NOT NULL,
-    updated_at DATETIME) AUTO_INCREMENT=1001;
+    updated_at DATETIME,
+    status ENUM('ACTIVE', 'IN_ACTIVE') NOT NULL) AUTO_INCREMENT=1001;
     
 -- Creating the complaints table
 CREATE TABLE complaints (

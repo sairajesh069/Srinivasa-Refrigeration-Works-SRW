@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.validation.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -84,4 +85,9 @@ public class CustomerDTO {
      */
     @NotNull(message = "Address is mandatory")
     private String address;
+
+    /*
+     * Status of the customer
+     */
+    private UserStatus status;
 }

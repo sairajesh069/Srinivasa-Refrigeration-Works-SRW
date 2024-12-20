@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.entity.Customer;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.repository.CustomerRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.CustomerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class CustomerService {
     public String addCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
         customer.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber()));
+        customer.setStatus(UserStatus.ACTIVE);
         customerRepository.save(customer);
         customer.setCustomerId("SRW" + String.format("%07d", customer.getCustomerReference()));
         customerDTO.setCustomerId(customer.getCustomerId());

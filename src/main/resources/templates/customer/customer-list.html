@@ -33,6 +33,7 @@
                     <th>Phone Number</th> <!-- Contact number of the customer -->
                     <th>Email</th> <!-- Email address of the customer -->
                     <th>Address</th> <!-- Residential address of the customer -->
+                    <th>Status</th> <!-- Customer's status -->
                     <th>Manage</th> <!-- Modification or deletion of customer details -->
                 </tr>
                 </thead>
@@ -49,6 +50,7 @@
                     <td th:text="${customer.phoneNumber}"></td> <!-- Phone Number -->
                     <td th:text="${customer.email}"></td> <!-- Email -->
                     <td th:text="${customer.address}"></td> <!-- Address -->
+                    <td th:text="${customer.status}"></td> <!-- Status -->
                     <td>
                         <!-- Update button with dynamic URL for customer update -->
                         <a th:href="@{/SRW/customer/update(customerId=${customer.customerId})}" class="btn btn-info btn-sm">Update</a>
