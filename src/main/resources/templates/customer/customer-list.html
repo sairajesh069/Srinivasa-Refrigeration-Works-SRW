@@ -54,6 +54,11 @@
                     <td>
                         <!-- Update button with dynamic URL for customer update -->
                         <a th:href="@{/SRW/customer/update(customerId=${customer.customerId})}" class="btn btn-info btn-sm">Update</a>
+
+                        <!-- Deactivate button with dynamic URL for customer deactivation -->
+                        <a th:href="@{/SRW/customer/deactivate(customerId=${customer.customerId})}"
+                           onclick="if(!(confirm('Are you sure deactivating the customer?'))) return false"
+                           class="btn btn-danger btn-sm">Deactivate</a>
                     </td>
                 </tr>
                 </tbody>
