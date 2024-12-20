@@ -11,10 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /*
  * Controller for handling user credential operations
@@ -113,5 +110,16 @@ public class UserCredentialController {
         }
         userCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
         return "redirect:/SRW/customer/list";
+    }
+
+    /*
+     * Handles the GET request to deactivate an owner.
+     * - Deactivates the owner based on the provided ownerId.
+     * - Redirects to the owner list page upon success.
+     */
+    @GetMapping("/owner/deactivate")
+    public String deactivateOwner(@RequestParam("ownerId") String ownerId) {
+        userCredentialService.deactivateOwner(ownerId);
+        return "redirect:/SRW/owner/list";
     }
 }
