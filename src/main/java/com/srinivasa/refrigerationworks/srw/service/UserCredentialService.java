@@ -188,4 +188,15 @@ public class UserCredentialService {
         ownerService.deactivateOwner(ownerId);
         userCredentialRepository.deactivateUser(ownerId);
     }
+
+    /*
+     * Deactivates an employee and their associated user credentials.
+     * - Updates the employee's status to inactive and timestamps the deactivation.
+     * - Deactivates the corresponding user credentials.
+     */
+    @Transactional
+    public void deactivateEmployee(String employeeId) {
+        employeeService.deactivateEmployee(employeeId);
+        userCredentialRepository.deactivateUser(employeeId);
+    }
 }

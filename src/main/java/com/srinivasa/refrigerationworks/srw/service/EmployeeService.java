@@ -75,4 +75,12 @@ public class EmployeeService {
         employee.setUpdatedAt(LocalDateTime.now());
         employeeRepository.save(employee);
     }
+
+    /*
+     * Deactivates an employee by updating their status to inactive.
+     * - Sets the status to IN_ACTIVE and updates the timestamp for last updated and date of exit.
+     */
+    public void deactivateEmployee(String employeeId) {
+        employeeRepository.deactivateEmployee(employeeId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+    }
 }
