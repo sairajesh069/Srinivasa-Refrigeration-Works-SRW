@@ -2,7 +2,9 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
-import com.srinivasa.refrigerationworks.srw.service.UserCredentialService;
+import com.srinivasa.refrigerationworks.srw.service.CustomerCredentialService;
+import com.srinivasa.refrigerationworks.srw.service.EmployeeCredentialService;
+import com.srinivasa.refrigerationworks.srw.service.OwnerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserCredentialController {
 
-    private final UserCredentialService userCredentialService;
+    private final OwnerCredentialService ownerCredentialService;
+    private final EmployeeCredentialService employeeCredentialService;
+    private final CustomerCredentialService customerCredentialService;
 
     /*
      * Initializes the binder to trim strings
@@ -40,7 +44,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "owner/owner-register-form";
         }
-        userCredentialService.addOwnerCredential(ownerCredentialDTO);
+        ownerCredentialService.addOwnerCredential(ownerCredentialDTO);
         return "owner/owner-confirmation";
     }
 
@@ -53,7 +57,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "employee/employee-register-form";
         }
-        userCredentialService.addEmployeeCredential(employeeCredentialDTO);
+        employeeCredentialService.addEmployeeCredential(employeeCredentialDTO);
         return "employee/employee-confirmation";
     }
 
@@ -66,7 +70,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "customer/customer-register-form";
         }
-        userCredentialService.addCustomerCredential(customerCredentialDTO);
+        customerCredentialService.addCustomerCredential(customerCredentialDTO);
         return "customer/customer-confirmation";
     }
 
@@ -80,7 +84,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "owner/owner-update-form";
         }
-        userCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
+        ownerCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
         return "redirect:/SRW/owner/list";
     }
 
@@ -94,7 +98,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "employee/employee-update-form";
         }
-        userCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
+        employeeCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
         return "redirect:/SRW/employee/list";
     }
 
@@ -108,7 +112,7 @@ public class UserCredentialController {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "customer/customer-update-form";
         }
-        userCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
+        customerCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
         return "redirect:/SRW/customer/list";
     }
 
@@ -119,7 +123,7 @@ public class UserCredentialController {
      */
     @GetMapping("/owner/deactivate")
     public String deactivateOwner(@RequestParam("ownerId") String ownerId) {
-        userCredentialService.deactivateOwner(ownerId);
+        ownerCredentialService.deactivateOwner(ownerId);
         return "redirect:/SRW/owner/list";
     }
 
@@ -130,7 +134,7 @@ public class UserCredentialController {
      */
     @GetMapping("/employee/deactivate")
     public String deactivateEmployee(@RequestParam("employeeId") String employeeId) {
-        userCredentialService.deactivateEmployee(employeeId);
+        employeeCredentialService.deactivateEmployee(employeeId);
         return "redirect:/SRW/employee/list";
     }
 
@@ -141,7 +145,7 @@ public class UserCredentialController {
      */
     @GetMapping("/customer/deactivate")
     public String deactivateCustomer(@RequestParam("customerId") String customerId) {
-        userCredentialService.deactivateCustomer(customerId);
+        customerCredentialService.deactivateCustomer(customerId);
         return "redirect:/SRW/customer/list";
     }
 }

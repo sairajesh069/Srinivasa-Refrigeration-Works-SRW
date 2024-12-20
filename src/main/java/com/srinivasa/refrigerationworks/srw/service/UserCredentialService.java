@@ -2,11 +2,11 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.UserCredential;
 import com.srinivasa.refrigerationworks.srw.entity.UserRole;
-import com.srinivasa.refrigerationworks.srw.payload.dto.*;
+import com.srinivasa.refrigerationworks.srw.payload.dto.PasswordResetDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UsernameRecoveryDTO;
 import com.srinivasa.refrigerationworks.srw.repository.UserCredentialRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
-import com.srinivasa.refrigerationworks.srw.utility.mapper.UserCredentialMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +20,7 @@ import org.springframework.stereotype.Service;
 public class UserCredentialService {
 
     private final UserCredentialRepository userCredentialRepository;
-    private final UserCredentialMapper userCredentialMapper;
     private final PasswordEncoder passwordEncoder;
-    private final OwnerService ownerService;
-    private final EmployeeService employeeService;
-    private final CustomerService customerService;
 
     /*
      * Saves user credentials with the specified user type and role.
@@ -39,42 +35,6 @@ public class UserCredentialService {
         userRole.setUserCredential(userCredential);
         userCredential.addUserRole(userRole);
         userCredentialRepository.save(userCredential);
-    }
-
-    /*
-     * Adds user credential for the owner. The owner's details are added,
-     * and user credentials are saved with the role "ROLE_OWNER".
-     */
-    public void addOwnerCredential(OwnerCredentialDTO ownerCredentialDTO) {
-        String ownerId = ownerService.addOwner(ownerCredentialDTO.getOwnerDTO());
-        UserCredential userCredential = userCredentialMapper.toEntity(ownerCredentialDTO.getUserCredentialDTO());
-        userCredential.setUserId(ownerId);
-        userCredential.setPhoneNumber(ownerCredentialDTO.getOwnerDTO().getPhoneNumber());
-        saveCredential(userCredential, UserType.OWNER, "ROLE_OWNER");
-    }
-
-    /*
-     * Adds user credential for the employee. The employee's details are added,
-     * and user credentials are saved with the role "ROLE_EMPLOYEE".
-     */
-    public void addEmployeeCredential(EmployeeCredentialDTO employeeCredentialDTO) {
-        String employeeId = employeeService.addEmployee(employeeCredentialDTO.getEmployeeDTO());
-        UserCredential userCredential = userCredentialMapper.toEntity(employeeCredentialDTO.getUserCredentialDTO());
-        userCredential.setUserId(employeeId);
-        userCredential.setPhoneNumber(employeeCredentialDTO.getEmployeeDTO().getPhoneNumber());
-        saveCredential(userCredential, UserType.EMPLOYEE, "ROLE_EMPLOYEE");
-    }
-
-    /*
-     * Adds user credential for the customer. The customer's details are added,
-     * and user credentials are saved with the role "ROLE_CUSTOMER".
-     */
-    public void addCustomerCredential(CustomerCredentialDTO customerCredentialDTO) {
-        String customerId = customerService.addCustomer(customerCredentialDTO.getCustomerDTO());
-        UserCredential userCredential = userCredentialMapper.toEntity(customerCredentialDTO.getUserCredentialDTO());
-        userCredential.setUserId(customerId);
-        userCredential.setPhoneNumber(customerCredentialDTO.getCustomerDTO().getPhoneNumber());
-        saveCredential(userCredential, UserType.CUSTOMER, "ROLE_CUSTOMER");
     }
 
     /*
@@ -124,90 +84,9 @@ public class UserCredentialService {
     }
 
     /*
-     * Updates owner details if changes are detected and synchronizes phone number.
-     * - Checks for changes between initial and updated DTOs.
-     * - Updates owner and phone number only if modified.
+     * Deactivates a user's credentials by updating the 'enabled' status to false.
      */
-    @Transactional
-    public void updateOwner(OwnerDTO initialOwnerDTO, OwnerDTO updatedOwnerDTO) {
-        updatedOwnerDTO.setStatus(updatedOwnerDTO.getStatus()==null ? initialOwnerDTO.getStatus() : updatedOwnerDTO.getStatus());
-        if(!initialOwnerDTO.equals(updatedOwnerDTO)) {
-            ownerService.updateOwner(updatedOwnerDTO);
-            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialOwnerDTO.getPhoneNumber());
-            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedOwnerDTO.getPhoneNumber());
-            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
-                updateUserPhoneNumber(updatedOwnerDTO.getOwnerId(), updatedPhoneNumber);
-            }
-        }
-    }
-
-    /*
-     * Updates employee details if changes are detected and synchronizes phone number.
-     * - Checks for changes between initial and updated DTOs.
-     * - Updates employee and phone number only if modified.
-     */
-    @Transactional
-    public void updateEmployee(EmployeeDTO initialEmployeeDTO, EmployeeDTO updatedEmployeeDTO) {
-        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus()==null ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
-        updatedEmployeeDTO.setDateOfHire(initialEmployeeDTO.getDateOfHire());
-        if(!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
-            employeeService.updateEmployee(updatedEmployeeDTO);
-            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialEmployeeDTO.getPhoneNumber());
-            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedEmployeeDTO.getPhoneNumber());
-            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
-                updateUserPhoneNumber(updatedEmployeeDTO.getEmployeeId(), updatedPhoneNumber);
-            }
-        }
-    }
-
-    /*
-     * Updates customer details if changes are detected and synchronizes phone number.
-     * - Checks for changes between initial and updated DTOs.
-     * - Updates customer and phone number only if modified.
-     */
-    @Transactional
-    public void updateCustomer(CustomerDTO initialCustomerDTO, CustomerDTO updatedCustomerDTO) {
-        updatedCustomerDTO.setStatus(updatedCustomerDTO.getStatus()==null ? initialCustomerDTO.getStatus() : updatedCustomerDTO.getStatus());
-        if(!initialCustomerDTO.equals(updatedCustomerDTO)) {
-            customerService.updateCustomer(updatedCustomerDTO);
-            String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialCustomerDTO.getPhoneNumber());
-            String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedCustomerDTO.getPhoneNumber());
-            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
-                updateUserPhoneNumber(updatedCustomerDTO.getCustomerId(), updatedPhoneNumber);
-            }
-        }
-    }
-
-    /*
-     * Deactivates an owner and their associated user credentials.
-     * - Updates the owner's status to inactive and timestamps the deactivation.
-     * - Deactivates the corresponding user credentials.
-     */
-    @Transactional
-    public void deactivateOwner(String ownerId) {
-        ownerService.deactivateOwner(ownerId);
-        userCredentialRepository.deactivateUser(ownerId);
-    }
-
-    /*
-     * Deactivates an employee and their associated user credentials.
-     * - Updates the employee's status to inactive and timestamps the deactivation.
-     * - Deactivates the corresponding user credentials.
-     */
-    @Transactional
-    public void deactivateEmployee(String employeeId) {
-        employeeService.deactivateEmployee(employeeId);
-        userCredentialRepository.deactivateUser(employeeId);
-    }
-
-    /*
-     * Deactivates a customer and their associated user credentials.
-     * - Updates the customer's status to inactive and timestamps the deactivation.
-     * - Deactivates the corresponding user credentials.
-     */
-    @Transactional
-    public void deactivateCustomer(String customerId) {
-        customerService.deactivateCustomer(customerId);
-        userCredentialRepository.deactivateUser(customerId);
+    public void deactivateUser(String userId) {
+        userCredentialRepository.deactivateUser(userId);
     }
 }
