@@ -61,6 +61,6 @@ public class EmployeeCredentialService {
     @Transactional
     public void deactivateEmployee(String employeeId) {
         employeeService.deactivateEmployee(employeeId);
-        userCredentialService.deactivateUser(employeeId);
+        userCredentialService.updateUserStatus(employeeId, (byte) 0);
     }
 }

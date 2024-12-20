@@ -26,11 +26,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     public Customer findByIdentifier(@Param("identifier") String identifier);
 
     /*
-     * Deactivates a customer by updating their status and 'updatedAt' fields.
+     * Activates/Deactivates a customer by updating their status and 'updatedAt' fields.
      * - Updates the Customer entity for the specified customerId.
      */
     @Modifying
     @Transactional
     @Query("UPDATE Customer SET updatedAt = :updatedAt, status = :status WHERE customerId = :customerId")
-    public void deactivateCustomer(@Param("customerId") String customerId, @Param("updatedAt") LocalDateTime updatedAt, @Param("status") UserStatus status);
+    public void updateCustomerStatus(@Param("customerId") String customerId, @Param("updatedAt") LocalDateTime updatedAt, @Param("status") UserStatus status);
 }

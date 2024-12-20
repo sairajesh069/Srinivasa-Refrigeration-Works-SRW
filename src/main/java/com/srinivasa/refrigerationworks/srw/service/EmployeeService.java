@@ -81,6 +81,6 @@ public class EmployeeService {
      * - Sets the status to IN_ACTIVE and updates the timestamp for last updated and date of exit.
      */
     public void deactivateEmployee(String employeeId) {
-        employeeRepository.deactivateEmployee(employeeId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
 }

@@ -26,11 +26,11 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     public Owner findByIdentifier(@Param("identifier") String identifier);
 
     /*
-     * Deactivates an owner by updating their status and 'updatedAt' field.
+     * Activates/Deactivates an owner by updating their status and 'updatedAt' field.
      * - Updates the Owner entity for the specified ownerId.
      */
     @Modifying
     @Transactional
     @Query("UPDATE Owner SET updatedAt = :updatedAt, status = :status WHERE ownerId = :ownerId")
-    public void deactivateOwner(@Param("ownerId") String ownerId, @Param("updatedAt") LocalDateTime updatedAt, @Param("status") UserStatus status);
+    public void updateOwnerStatus(@Param("ownerId") String ownerId, @Param("updatedAt") LocalDateTime updatedAt, @Param("status") UserStatus status);
 }

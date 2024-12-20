@@ -60,6 +60,6 @@ public class CustomerCredentialService {
     @Transactional
     public void deactivateCustomer(String customerId) {
         customerService.deactivateCustomer(customerId);
-        userCredentialService.deactivateUser(customerId);
+        userCredentialService.updateUserStatus(customerId, (byte) 0);
     }
 }

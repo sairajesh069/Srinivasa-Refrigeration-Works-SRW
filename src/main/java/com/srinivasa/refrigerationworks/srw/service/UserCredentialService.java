@@ -84,9 +84,9 @@ public class UserCredentialService {
     }
 
     /*
-     * Deactivates a user's credentials by updating the 'enabled' status to false.
+     * Activates/Deactivates a user's credentials by updating the 'enabled' status to true or false.
      */
-    public void deactivateUser(String userId) {
-        userCredentialRepository.deactivateUser(userId);
+    public void updateUserStatus(String userId, byte enabled) {
+        userCredentialRepository.updateUserStatus(userId, enabled);
     }
 }

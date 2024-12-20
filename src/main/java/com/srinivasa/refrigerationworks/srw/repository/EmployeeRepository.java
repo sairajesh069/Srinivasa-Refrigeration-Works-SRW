@@ -26,11 +26,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     public Employee findByIdentifier(@Param("identifier") String identifier);
 
     /*
-     * Deactivates an employee by updating their status, 'updatedAt' and 'dateOfExit' fields.
+     * Activates/Deactivates an employee by updating their status, 'updatedAt' and 'dateOfExit' fields.
      * - Updates the Employee entity for the specified employeeId.
      */
     @Modifying
     @Transactional
     @Query("UPDATE Employee SET updatedAt = :timeStamp, dateOfExit = :timeStamp, status = :status WHERE employeeId = :employeeId")
-    public void deactivateEmployee(@Param("employeeId") String employeeId, @Param("timeStamp") LocalDateTime timeStamp, @Param("status") UserStatus status);
+    public void updateEmployeeStatus(@Param("employeeId") String employeeId, @Param("timeStamp") LocalDateTime timeStamp, @Param("status") UserStatus status);
 }

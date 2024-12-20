@@ -81,6 +81,6 @@ public class OwnerService {
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */
     public void deactivateOwner(String ownerId) {
-        ownerRepository.deactivateOwner(ownerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+        ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
 }

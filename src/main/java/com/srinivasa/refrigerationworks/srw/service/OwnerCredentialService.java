@@ -60,6 +60,6 @@ public class OwnerCredentialService {
     @Transactional
     public void deactivateOwner(String ownerId) {
         ownerService.deactivateOwner(ownerId);
-        userCredentialService.deactivateUser(ownerId);
+        userCredentialService.updateUserStatus(ownerId, (byte) 0);
     }
 }

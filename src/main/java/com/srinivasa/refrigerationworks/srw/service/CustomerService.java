@@ -81,6 +81,6 @@ public class CustomerService {
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */
     public void deactivateCustomer(String customerId) {
-        customerRepository.deactivateCustomer(customerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+        customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
 }
