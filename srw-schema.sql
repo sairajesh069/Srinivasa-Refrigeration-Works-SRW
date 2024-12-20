@@ -33,7 +33,8 @@ CREATE TABLE owners (
     email VARCHAR(60) NOT NULL UNIQUE,
     address VARCHAR(108) NOT NULL,
     created_at DATETIME NOT NULL,
-    updated_at DATETIME);
+    updated_at DATETIME,
+    status ENUM('ACTIVE', 'IN_ACTIVE') NOT NULL);
     
 -- Creating the employees table
 CREATE TABLE employees (

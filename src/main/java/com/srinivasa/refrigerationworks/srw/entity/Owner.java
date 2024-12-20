@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -86,4 +87,11 @@ public class Owner {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    /*
+     * Status of the owner
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus status;
 }

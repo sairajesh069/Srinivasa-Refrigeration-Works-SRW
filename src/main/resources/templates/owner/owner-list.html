@@ -33,6 +33,7 @@
                     <th>Phone Number</th> <!-- Owner's contact number -->
                     <th>Email</th> <!-- Owner's email address -->
                     <th>Address</th> <!-- Owner's residential address -->
+                    <th>Status</th> <!-- Owner's status -->
                     <th>Manage</th> <!-- Modification or deletion of owner details -->
                 </tr>
                 </thead>
@@ -47,6 +48,7 @@
                     <td th:text="${owner.phoneNumber}"></td> <!-- Phone Number -->
                     <td th:text="${owner.email}"></td> <!-- Email Address -->
                     <td th:text="${owner.address}"></td> <!-- Address -->
+                    <td th:text="${owner.status}"></td> <!-- Status -->
                     <td>
                         <!-- Update button with dynamic URL for owner update -->
                         <a th:href="@{/SRW/owner/update(ownerId=${owner.ownerId})}" class="btn btn-info btn-sm">Update</a>

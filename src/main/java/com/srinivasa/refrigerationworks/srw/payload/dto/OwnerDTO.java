@@ -1,6 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
-import com.srinivasa.refrigerationworks.srw.entity.Owner;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.validation.UniqueValue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -85,4 +85,9 @@ public class OwnerDTO {
      */
     @NotNull(message = "Address is mandatory")
     private String address;
+
+    /*
+     * Status of the owner
+     */
+    private UserStatus status;
 }

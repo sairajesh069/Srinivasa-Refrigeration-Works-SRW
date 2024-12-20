@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.entity.Owner;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.repository.OwnerRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.OwnerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class OwnerService {
     public String addOwner(OwnerDTO ownerDTO) {
         Owner owner = ownerMapper.toEntity(ownerDTO);
         owner.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber()));
+        owner.setStatus(UserStatus.ACTIVE);
         ownerRepository.save(owner);
         owner.setOwnerId("SRW" + String.format("%03d", owner.getOwnerReference()));
         ownerDTO.setOwnerId(owner.getOwnerId());

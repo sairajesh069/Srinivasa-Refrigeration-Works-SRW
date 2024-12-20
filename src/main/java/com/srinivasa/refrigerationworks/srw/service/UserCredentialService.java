@@ -130,6 +130,7 @@ public class UserCredentialService {
      */
     @Transactional
     public void updateOwner(OwnerDTO initialOwnerDTO, OwnerDTO updatedOwnerDTO) {
+        updatedOwnerDTO.setStatus(updatedOwnerDTO.getStatus()==null ? initialOwnerDTO.getStatus() : updatedOwnerDTO.getStatus());
         if(!initialOwnerDTO.equals(updatedOwnerDTO)) {
             ownerService.updateOwner(updatedOwnerDTO);
             String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialOwnerDTO.getPhoneNumber());
