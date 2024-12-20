@@ -75,4 +75,12 @@ public class OwnerService {
         owner.setUpdatedAt(LocalDateTime.now());
         ownerRepository.save(owner);
     }
+
+    /*
+     * Deactivates an owner by updating their status to inactive.
+     * - Sets the status to IN_ACTIVE and updates the timestamp.
+     */
+    public void deactivateOwner(String ownerId) {
+        ownerRepository.deactivateOwner(ownerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+    }
 }

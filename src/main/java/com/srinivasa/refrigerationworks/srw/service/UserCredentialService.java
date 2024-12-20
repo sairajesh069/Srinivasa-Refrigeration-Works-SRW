@@ -177,4 +177,15 @@ public class UserCredentialService {
             }
         }
     }
+
+    /*
+     * Deactivates an owner and their associated user credentials.
+     * - Updates the owner's status to inactive and timestamps the deactivation.
+     * - Deactivates the corresponding user credentials.
+     */
+    @Transactional
+    public void deactivateOwner(String ownerId) {
+        ownerService.deactivateOwner(ownerId);
+        userCredentialRepository.deactivateUser(ownerId);
+    }
 }
