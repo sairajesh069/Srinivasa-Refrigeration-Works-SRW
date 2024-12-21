@@ -60,6 +60,17 @@ public class EmployeeCredentialController {
     }
 
     /*
+     * Handles the GET request to activate an employee.
+     * - Activates the employee based on the provided employeeId.
+     * - Redirects to the employee list page upon success.
+     */
+    @GetMapping("/activate")
+    public String activateEmployee(@RequestParam("employeeId") String employeeId) {
+        employeeCredentialService.activateEmployee(employeeId);
+        return "redirect:/SRW/employee/list";
+    }
+
+    /*
      * Handles the GET request to deactivate an employee.
      * - Deactivates the employee based on the provided employeeId.
      * - Redirects to the employee list page upon success.
