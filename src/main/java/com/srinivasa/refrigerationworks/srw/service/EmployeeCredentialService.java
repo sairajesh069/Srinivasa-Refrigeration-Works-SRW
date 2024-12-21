@@ -54,6 +54,17 @@ public class EmployeeCredentialService {
     }
 
     /*
+     * Activates an employee and their associated user credentials.
+     * - Updates the employee's status to active and timestamps the activation.
+     * - Activates the corresponding user credentials.
+     */
+    @Transactional
+    public void activateEmployee(String employeeId) {
+        employeeService.activateEmployee(employeeId);
+        userCredentialService.updateUserStatus(employeeId, (byte) 1);
+    }
+
+    /*
      * Deactivates an employee and their associated user credentials.
      * - Updates the employee's status to inactive and timestamps the deactivation.
      * - Deactivates the corresponding user credentials.

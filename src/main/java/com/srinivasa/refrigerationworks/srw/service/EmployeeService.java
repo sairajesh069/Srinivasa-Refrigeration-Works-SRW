@@ -77,10 +77,18 @@ public class EmployeeService {
     }
 
     /*
+     * Activates an employee by updating their status to active.
+     * - Sets the status to ACTIVE and updates the timestamp for last updated and date of exit.
+     */
+    public void activateEmployee(String employeeId) {
+        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(),null, UserStatus.ACTIVE);
+    }
+
+    /*
      * Deactivates an employee by updating their status to inactive.
      * - Sets the status to IN_ACTIVE and updates the timestamp for last updated and date of exit.
      */
     public void deactivateEmployee(String employeeId) {
-        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
+        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(), LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
 }

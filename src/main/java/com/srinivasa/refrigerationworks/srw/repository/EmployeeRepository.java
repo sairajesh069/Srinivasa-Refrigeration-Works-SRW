@@ -31,6 +31,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     @Modifying
     @Transactional
-    @Query("UPDATE Employee SET updatedAt = :timeStamp, dateOfExit = :timeStamp, status = :status WHERE employeeId = :employeeId")
-    public void updateEmployeeStatus(@Param("employeeId") String employeeId, @Param("timeStamp") LocalDateTime timeStamp, @Param("status") UserStatus status);
+    @Query("UPDATE Employee SET updatedAt = :updatedAt, dateOfExit = :dateOfExit, status = :status WHERE employeeId = :employeeId")
+    public void updateEmployeeStatus(@Param("employeeId") String employeeId, @Param("updatedAt") LocalDateTime updatedAt, @Param("dateOfExit") LocalDateTime dateOfExit, @Param("status") UserStatus status);
 }
