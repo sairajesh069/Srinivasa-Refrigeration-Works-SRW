@@ -151,10 +151,18 @@ public class ComplaintService {
     }
 
     /*
+     * Activates a complaint by updating their state to active.
+     * - Sets the state to ACTIVE and updates the timestamp.
+     */
+    public void activateComplaint(String complaintId) {
+        complaintRepository.updateComplaintState(complaintId, LocalDateTime.now(), ComplaintState.ACTIVE);
+    }
+
+    /*
      * Deactivates a complaint by updating their state to inactive.
      * - Sets the state to IN_ACTIVE and updates the timestamp.
      */
     public void deactivateComplaint(String complaintId) {
-        complaintRepository.deactivateComplaint(complaintId, LocalDateTime.now(), ComplaintState.IN_ACTIVE);
+        complaintRepository.updateComplaintState(complaintId, LocalDateTime.now(), ComplaintState.IN_ACTIVE);
     }
 }

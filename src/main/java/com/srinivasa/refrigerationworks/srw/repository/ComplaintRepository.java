@@ -31,11 +31,11 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     public Complaint findByComplaintId(String complaintId);
 
     /*
-     * Deactivates a complaint by updating their state and 'updatedAt' fields.
+     * Activates/Deactivates a complaint by updating their state and 'updatedAt' fields.
      * - Updates the Complaint entity for the specified complaintId.
      */
     @Modifying
     @Transactional
     @Query("UPDATE Complaint SET updatedAt = :updatedAt, state = :state WHERE complaintId = :complaintId")
-    public void deactivateComplaint(@Param("complaintId") String complaintId, @Param("updatedAt") LocalDateTime updatedAt, @Param("state") ComplaintState state);
+    public void updateComplaintState(@Param("complaintId") String complaintId, @Param("updatedAt") LocalDateTime updatedAt, @Param("state") ComplaintState state);
 }
