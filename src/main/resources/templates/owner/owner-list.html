@@ -53,8 +53,15 @@
                         <!-- Update button with dynamic URL for owner update -->
                         <a th:href="@{/SRW/owner/update(ownerId=${owner.ownerId})}" class="btn btn-info btn-sm">Update</a>
 
-                        <!-- Deactivate button with dynamic URL for owner deactivation -->
-                        <a th:href="@{/SRW/owner/deactivate(ownerId=${owner.ownerId})}"
+                        <!-- Activate button visible only when status is IN_ACTIVE -->
+                        <a th:if="${owner.status.name() == 'IN_ACTIVE'}"
+                           th:href="@{/SRW/owner/activate(ownerId=${owner.ownerId})}"
+                           onclick="if(!(confirm('Are you sure activating the owner?'))) return false"
+                           class="btn btn-primary btn-sm">Activate</a>
+
+                        <!-- Deactivate button visible only when status is ACTIVE -->
+                        <a th:if="${owner.status.name() == 'ACTIVE'}"
+                           th:href="@{/SRW/owner/deactivate(ownerId=${owner.ownerId})}"
                            onclick="if(!(confirm('Are you sure deactivating the owner?'))) return false"
                            class="btn btn-danger btn-sm">Deactivate</a>
                     </td>
