@@ -60,6 +60,17 @@ public class CustomerCredentialController {
     }
 
     /*
+     * Handles the GET request to activate a customer.
+     * - Activates the customer based on the provided customerId.
+     * - Redirects to the customer list page upon success.
+     */
+    @GetMapping("/activate")
+    public String activateCustomer(@RequestParam("customerId") String customerId) {
+        customerCredentialService.activateCustomer(customerId);
+        return "redirect:/SRW/customer/list";
+    }
+
+    /*
      * Handles the GET request to deactivate a customer.
      * - Deactivates the customer based on the provided customerId.
      * - Redirects to the customer list page upon success.
