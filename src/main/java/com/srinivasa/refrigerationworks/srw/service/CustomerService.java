@@ -77,6 +77,14 @@ public class CustomerService {
     }
 
     /*
+     * Activates a customer by updating their status to active.
+     * - Sets the status to ACTIVE and updates the timestamp.
+     */
+    public void activateCustomer(String customerId) {
+        customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.ACTIVE);
+    }
+
+    /*
      * Deactivates a customer by updating their status to inactive.
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */

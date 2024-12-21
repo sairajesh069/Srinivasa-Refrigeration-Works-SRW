@@ -53,6 +53,17 @@ public class CustomerCredentialService {
     }
 
     /*
+     * Activates a customer and their associated user credentials.
+     * - Updates the customer's status to active and timestamps the activation.
+     * - Activates the corresponding user credentials.
+     */
+    @Transactional
+    public void activateCustomer(String customerId) {
+        customerService.activateCustomer(customerId);
+        userCredentialService.updateUserStatus(customerId, (byte) 1);
+    }
+
+    /*
      * Deactivates a customer and their associated user credentials.
      * - Updates the customer's status to inactive and timestamps the deactivation.
      * - Deactivates the corresponding user credentials.
