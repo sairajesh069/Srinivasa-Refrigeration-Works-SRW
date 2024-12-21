@@ -80,8 +80,15 @@
 
                         <!-- Check if user has the role 'OWNER' to display buttons -->
                         <div sec:authorize="hasRole('OWNER')">
-                            <!-- Deactivate button with dynamic URL for complaint deactivation -->
-                            <a th:href="@{/SRW/complaint/deactivate(complaintId=${complaint.complaintId})}"
+                            <!-- Activate button visible only when state is IN_ACTIVE -->
+                            <a th:if="${complaint.state.name() == 'IN_ACTIVE'}"
+                               th:href="@{/SRW/complaint/activate(complaintId=${complaint.complaintId})}"
+                               onclick="if(!(confirm('Are you sure activating the complaint?'))) return false"
+                               class="btn btn-primary btn-sm">Activate</a>
+
+                            <!-- Deactivate button visible only when state is ACTIVE -->
+                            <a th:if="${complaint.state.name() == 'ACTIVE'}"
+                               th:href="@{/SRW/complaint/deactivate(complaintId=${complaint.complaintId})}"
                                onclick="if(!(confirm('Are you sure deactivating the complaint?'))) return false"
                                class="btn btn-danger btn-sm">Deactivate</a>
                         </div>
