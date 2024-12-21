@@ -155,6 +155,17 @@ public class ComplaintController {
     }
 
     /*
+     * Handles the GET request to activate a complaint.
+     * - Activates the complaint based on the provided complaintId.
+     * - Redirects to the complaint list page upon success.
+     */
+    @GetMapping("activate")
+    public String activateComplaint(@RequestParam("complaintId") String complaintId) {
+        complaintService.activateComplaint(complaintId);
+        return "redirect:/SRW/complaint/list";
+    }
+
+    /*
      * Handles the GET request to deactivate a complaint.
      * - Deactivates the complaint based on the provided complaintId.
      * - Redirects to the complaint list page upon success.
