@@ -78,6 +78,19 @@ public class ComplaintService {
     }
 
     /*
+     * Retrieves all active complaints from the repository.
+     * Returns the list of active complaints to be used in other services or controllers.
+     */
+    public List<ComplaintDTO> getActiveComplaintList() {
+        List<Complaint> complaints =  complaintRepository.findAll();
+        return complaints
+                .stream()
+                .filter(complaint -> complaint.getState().name().equals("ACTIVE"))
+                .map(complaintMapper::toDto)
+                .toList();
+    }
+
+    /*
      * Fetches complaints based on the identifier and user role.
      * If the user is not an OWNER, retrieves complaints for the logged-in user.
      * Filters complaints by complaint ID or contact number and registration date.
