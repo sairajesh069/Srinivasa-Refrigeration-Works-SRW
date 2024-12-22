@@ -52,6 +52,19 @@ public class EmployeeService {
     }
 
     /*
+     * Retrieves a list of all active employees from the repository and maps them to EmployeeDTO objects.
+     * Returns a list of active EmployeeDTO to be used in other services or controllers.
+     */
+    public List<EmployeeDTO> getActiveEmployeeList() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees
+                .stream()
+                .filter(employee -> employee.getStatus().name().equals("ACTIVE"))
+                .map(employeeMapper::toDto)
+                .toList();
+    }
+
+    /*
      * Retrieves the employee details based on the provided identifier (phone number, email, national id number or employee ID).
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the employee entity to a DTO before returning.
