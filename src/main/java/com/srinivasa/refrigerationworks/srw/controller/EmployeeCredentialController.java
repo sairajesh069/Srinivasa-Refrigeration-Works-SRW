@@ -5,6 +5,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class EmployeeCredentialController {
 
     /*
      * Handles POST request to update employee's details after validation.
-     * Redirects to employee list on success.
+     * Redirects to origin employee page of update endpoint on success.
      */
     @PostMapping("/update")
     public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult, Model model, HttpSession session) {
@@ -56,28 +58,28 @@ public class EmployeeCredentialController {
             return "employee/employee-update-form";
         }
         employeeCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
-        return "redirect:/SRW/employee/list";
+        return "redirect:/SRW/employee/" + session.getAttribute("updateEndpointOrigin");
     }
 
     /*
      * Handles the GET request to activate an employee.
      * - Activates the employee based on the provided employeeId.
-     * - Redirects to the employee list page upon success.
+     * - Redirects to the originating employee page upon success.
      */
     @GetMapping("/activate")
-    public String activateEmployee(@RequestParam("employeeId") String employeeId) {
+    public String activateEmployee(@RequestParam("employeeId") String employeeId, HttpServletRequest request) {
         employeeCredentialService.activateEmployee(employeeId);
-        return "redirect:/SRW/employee/list";
+        return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
     }
 
     /*
      * Handles the GET request to deactivate an employee.
      * - Deactivates the employee based on the provided employeeId.
-     * - Redirects to the employee list page upon success.
+     * - Redirects to the originating employee page upon success.
      */
     @GetMapping("/deactivate")
-    public String deactivateEmployee(@RequestParam("employeeId") String employeeId) {
+    public String deactivateEmployee(@RequestParam("employeeId") String employeeId, HttpServletRequest request) {
         employeeCredentialService.deactivateEmployee(employeeId);
-        return "redirect:/SRW/employee/list";
+        return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
     }
 }

@@ -4,6 +4,8 @@ import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,16 @@ public class EmployeeController {
     }
 
     /*
+     * Handles GET requests to fetch the list of all active employees.
+     * Adds the list of active employees to the model and returns the view for displaying employee details.
+     */
+    @GetMapping("/active-list")
+    public String getActiveEmployeeList(Model model) {
+        EmployeeModel.addEmployeeListToModel(employeeService.getActiveEmployeeList(), model);
+        return "employee/employee-list";
+    }
+
+    /*
      * Handles requests related to searching and displaying employee details.
      */
     @GetMapping("/search")
@@ -69,11 +81,13 @@ public class EmployeeController {
 
     /*
      * Handles GET request to display employee update form with current employee data.
+     * Sets session attribute using substring from the "Referer" header.
      */
     @GetMapping("/update")
-    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session) {
+    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session, HttpServletRequest request) {
         EmployeeModel.addEmployeeDTOForUpdateToModel(employeeService.getEmployeeByIdentifier(employeeId), model, session);
         UserCredentialModel.addUserFormConstantsToModel(model);
+        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/"));
         return "employee/employee-update-form";
     }
 }
