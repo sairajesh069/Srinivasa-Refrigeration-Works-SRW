@@ -52,6 +52,19 @@ public class CustomerService {
     }
 
     /*
+     * Retrieves a list of all active customers from the repository and maps them to CustomerDTO objects.
+     * Returns a list of active CustomerDTO to be used in other services or controllers.
+     */
+    public List<CustomerDTO> getActiveCustomerList() {
+        List<Customer> customers = customerRepository.findAll();
+        return customers
+                .stream()
+                .filter(customer -> customer.getStatus().name().equals("ACTIVE"))
+                .map(customerMapper::toDto)
+                .toList();
+    }
+
+    /*
      * Retrieves the customer details based on the provided identifier (phone number, email, or customer ID).
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the customer entity to a DTO before returning.
