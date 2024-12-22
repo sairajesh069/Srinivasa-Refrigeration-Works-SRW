@@ -5,6 +5,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class OwnerCredentialController {
 
     /*
      * Handles POST request to update owner's details after validation.
-     * Redirects to owner list on success.
+     * Redirects to origin owner page of update endpoint on success.
      */
     @PostMapping("/update")
     public String updateOwner(@ModelAttribute("ownerDTO") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult, Model model, HttpSession session) {
@@ -56,18 +58,18 @@ public class OwnerCredentialController {
             return "owner/owner-update-form";
         }
         ownerCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
-        return "redirect:/SRW/owner/list";
+        return "redirect:/SRW/owner/" + session.getAttribute("updateEndpointOrigin");
     }
 
     /*
      * Handles the GET request to activate an owner.
      * - Activates the owner based on the provided ownerId.
-     * - Redirects to the owner list page upon success.
+     * - Redirects to the originating owner page on success.
      */
     @GetMapping("/activate")
-    public String activateOwner(@RequestParam("ownerId") String ownerId) {
+    public String activateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.activateOwner(ownerId);
-        return "redirect:/SRW/owner/list";
+        return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
     }
 
     /*
@@ -76,8 +78,8 @@ public class OwnerCredentialController {
      * - Redirects to the owner list page upon success.
      */
     @GetMapping("/deactivate")
-    public String deactivateOwner(@RequestParam("ownerId") String ownerId) {
+    public String deactivateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.deactivateOwner(ownerId);
-        return "redirect:/SRW/owner/list";
+        return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
     }
 }

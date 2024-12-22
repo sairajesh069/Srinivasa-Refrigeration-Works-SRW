@@ -4,6 +4,8 @@ import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,16 @@ public class OwnerController {
     }
 
     /*
+     * Handles GET requests to fetch the list of all active owners.
+     * Adds the list of active owners to the model and returns the view for displaying owner details.
+     */
+    @GetMapping("/active-list")
+    public String getActiveOwnerList(Model model) {
+        OwnerModel.addActiveOwnerListToModel(ownerService.getActiveOwnerList(), model);
+        return "owner/owner-list";
+    }
+
+    /*
      * Handles requests related to searching and displaying owner details.
      */
     @GetMapping("/search")
@@ -69,11 +81,13 @@ public class OwnerController {
 
     /*
      * Handles GET request to display owner update form with current owner data.
+     * Sets session attribute using substring from the "Referer" header.
      */
     @GetMapping("/update")
-    public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpSession session) {
+    public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpSession session, HttpServletRequest request) {
         OwnerModel.addOwnerDTOForUpdateToModel(ownerService.getOwnerByIdentifier(ownerId), model, session);
         UserCredentialModel.addUserFormConstantsToModel(model);
+        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"));
         return "owner/owner-update-form";
     }
 }
