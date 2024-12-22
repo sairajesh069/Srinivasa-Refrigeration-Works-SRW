@@ -52,7 +52,7 @@ public class OwnerController {
      */
     @GetMapping("/active-list")
     public String getActiveOwnerList(Model model) {
-        OwnerModel.addActiveOwnerListToModel(ownerService.getActiveOwnerList(), model);
+        OwnerModel.addOwnerListToModel(ownerService.getActiveOwnerList(), model);
         return "owner/owner-list";
     }
 
