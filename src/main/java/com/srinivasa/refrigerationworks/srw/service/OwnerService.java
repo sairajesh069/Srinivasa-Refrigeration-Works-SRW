@@ -52,6 +52,19 @@ public class OwnerService {
     }
 
     /*
+     * Retrieves a list of all active owners from the repository and maps them to OwnerDTO objects.
+     * Returns a list of active OwnerDTO to be used in other services or controllers.
+     */
+    public List<OwnerDTO> getActiveOwnerList() {
+        List<Owner> owners = ownerRepository.findAll();
+        return owners
+                .stream()
+                .filter(owner -> owner.getStatus().name().equals("ACTIVE"))
+                .map(ownerMapper::toDto)
+                .toList();
+    }
+
+    /*
      * Retrieves the owner details based on the provided identifier (phone number, email, or owner ID).
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the owner entity to a DTO before returning.
