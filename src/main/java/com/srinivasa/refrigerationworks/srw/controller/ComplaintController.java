@@ -6,7 +6,9 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.ComplaintService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import com.srinivasa.refrigerationworks.srw.validation.ComplaintIdentifierValidation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +103,16 @@ public class ComplaintController {
     }
 
     /*
+     * Handles the GET request to display the list of all active complaints.
+     * Retrieves all active complaints and adds them to the model for rendering.
+     */
+    @GetMapping("/active-list")
+    public String getActiveComplaintList(Model model) {
+        ComplaintModel.addComplaintListToModel(complaintService.getActiveComplaintList(), model);
+        return "complaint/complaint-list";
+    }
+
+    /*
      * Handles GET requests to display the complaint search form.
      * Adds a ComplaintIdentifierDTO object to the model for capturing user input.
      */
@@ -128,18 +140,20 @@ public class ComplaintController {
 
     /*
      * Handles the GET request to display the complaint update form with the complaint's existing details.
+     * Sets session attribute using substring from the "Referer" header.
      */
     @GetMapping("/update")
-    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session, Principal principal) {
+    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session, Principal principal, HttpServletRequest request) {
         ComplaintModel.addComplaintDTOForUpdateToModel(
                 complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"), principal.getName()),
                 model, session);
+        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"));
         return (boolean)session.getAttribute("canAccess") ? "complaint/complaint-update-form" : "access-denied";
     }
 
     /*
      * Handles the POST request to update a complaint after validating the input.
-     * Redirects to the appropriate complaint list based on the user's role.
+     * Redirects to the appropriate origin complaint page of update endpoint on success based on the user's role.
      */
     @PostMapping("/update")
     public String updateComplaint(@ModelAttribute("complaintDTO") @Valid ComplaintDTO updatedComplaintDTO, BindingResult bindingResult, Model model, HttpSession session) {
@@ -151,28 +165,28 @@ public class ComplaintController {
         ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");
         complaintService.updateComplaint(initialComplaintDTO, updatedComplaintDTO);
         return (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")) ?
-                "redirect:/SRW/complaint/list" : "redirect:/SRW/complaint/my-complaints";
+                "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin") : "redirect:/SRW/complaint/my-complaints";
     }
 
     /*
      * Handles the GET request to activate a complaint.
      * - Activates the complaint based on the provided complaintId.
-     * - Redirects to the complaint list page upon success.
+     * - Redirects to the originating complaint list page upon success.
      */
     @GetMapping("activate")
-    public String activateComplaint(@RequestParam("complaintId") String complaintId) {
+    public String activateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
         complaintService.activateComplaint(complaintId);
-        return "redirect:/SRW/complaint/list";
+        return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
     }
 
     /*
      * Handles the GET request to deactivate a complaint.
      * - Deactivates the complaint based on the provided complaintId.
-     * - Redirects to the complaint list page upon success.
+     * - Redirects to the originating complaint list page upon success.
      */
     @GetMapping("deactivate")
-    public String deactivateComplaint(@RequestParam("complaintId") String complaintId) {
+    public String deactivateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
         complaintService.deactivateComplaint(complaintId);
-        return "redirect:/SRW/complaint/list";
+        return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
     }
 }
