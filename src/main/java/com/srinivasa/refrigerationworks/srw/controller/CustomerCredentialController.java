@@ -5,6 +5,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +49,7 @@ public class CustomerCredentialController {
 
     /*
      * Handles POST request to update customer's details after validation.
-     * Redirects to customer list on success.
+     * Redirects to origin customer page of update endpoint on success.
      */
     @PostMapping("/update")
     public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult, Model model, HttpSession session) {
@@ -56,28 +58,28 @@ public class CustomerCredentialController {
             return "customer/customer-update-form";
         }
         customerCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
-        return "redirect:/SRW/customer/list";
+        return "redirect:/SRW/customer/" + session.getAttribute("updateEndpointOrigin");
     }
 
     /*
      * Handles the GET request to activate a customer.
      * - Activates the customer based on the provided customerId.
-     * - Redirects to the customer list page upon success.
+     * - Redirects to the originating customer page upon success.
      */
     @GetMapping("/activate")
-    public String activateCustomer(@RequestParam("customerId") String customerId) {
+    public String activateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.activateCustomer(customerId);
-        return "redirect:/SRW/customer/list";
+        return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
     }
 
     /*
      * Handles the GET request to deactivate a customer.
      * - Deactivates the customer based on the provided customerId.
-     * - Redirects to the customer list page upon success.
+     * - Redirects to the originating customer page upon success.
      */
     @GetMapping("/deactivate")
-    public String deactivateCustomer(@RequestParam("customerId") String customerId) {
+    public String deactivateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.deactivateCustomer(customerId);
-        return "redirect:/SRW/customer/list";
+        return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
     }
 }
