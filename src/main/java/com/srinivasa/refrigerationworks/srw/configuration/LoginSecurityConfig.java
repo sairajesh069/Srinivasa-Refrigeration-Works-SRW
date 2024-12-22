@@ -101,6 +101,7 @@ public class LoginSecurityConfig {
                          * - "/SRW/owner/**", "/SRW/management-portal": Full access to owner-related endpoints and the management portal.
                          * - "/SRW/employee/register", "/SRW/employee/confirmation": Access to employee registration and confirmation pages.
                          * - "/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list": Access to various list pages.
+                         * - "/SRW/employee/active-list", "/SRW/customer/active-list", "/SRW/complaint/active-list": Access to various active-list pages.
                          * - "/SRW/employee/search", "/SRW/customer/search": Access to various search pages.
                          * - "/SRW/employee/update", "/SRW/customer/update": Access to various update pages.
                          * - "/SRW/employee/activate", "/SRW/customer/activate", "/SRW/complaint/activate": Access to various activate pages.
@@ -109,6 +110,7 @@ public class LoginSecurityConfig {
                         .requestMatchers("/SRW/owner/**", "/SRW/management-portal").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/register", "/SRW/employee/confirmation").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list").hasRole("OWNER")
+                        .requestMatchers("/SRW/employee/active-list", "/SRW/customer/active-list", "/SRW/complaint/active-list").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/search", "/SRW/customer/search").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/update", "/SRW/customer/update").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/activate", "/SRW/customer/activate", "/SRW/complaint/activate").hasRole("OWNER")
