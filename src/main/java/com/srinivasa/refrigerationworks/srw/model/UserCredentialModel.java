@@ -1,6 +1,7 @@
 package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.*;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.UserFormConstants;
 import org.springframework.ui.Model;
 
@@ -50,5 +51,13 @@ public class UserCredentialModel {
      */
     public static void addUserFormConstantsToModel(Model model) {
         model.addAttribute("genders", UserFormConstants.GENDERS);
+    }
+
+    /*
+     * Adds a user profile link to the model based on the user type.
+     * - Extracts user type and constructs profile URL.
+     */
+    public static void addUserProfileHrefToModel(String userType, Model model) {
+        model.addAttribute("profileHref", "/SRW/" + SubStringExtractor.extractSubString(userType, "ROLE_").toLowerCase() + "/my-profile");
     }
 }
