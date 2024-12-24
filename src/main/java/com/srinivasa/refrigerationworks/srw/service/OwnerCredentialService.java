@@ -73,4 +73,12 @@ public class OwnerCredentialService {
         ownerService.deactivateOwner(ownerId);
         userCredentialService.updateUserStatus(ownerId, (byte) 0);
     }
+
+    /*
+     * Retrieves the OwnerDTO by username.
+     * - Fetches the user ID from the username and then gets the corresponding owner details.
+     */
+    public OwnerDTO getOwnerByUsername(String username) {
+        return ownerService.getOwnerByIdentifier(userCredentialService.getUserIdByUsername(username));
+    }
 }
