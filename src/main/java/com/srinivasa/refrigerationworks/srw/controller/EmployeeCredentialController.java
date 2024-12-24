@@ -17,8 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 /*
  * Controller for handling employee credential operations
  */
@@ -41,7 +39,9 @@ public class EmployeeCredentialController {
      * Confirms the employee registration and adds employee credentials
      */
     @PostMapping("/confirmation")
-    public String confirmEmployee(@ModelAttribute @Valid EmployeeCredentialDTO employeeCredentialDTO, BindingResult bindingResult, Model model) {
+    public String confirmEmployee(@ModelAttribute @Valid EmployeeCredentialDTO employeeCredentialDTO,
+                                  BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "employee/employee-register-form";
@@ -55,7 +55,9 @@ public class EmployeeCredentialController {
      * Redirects to origin employee page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO,
+                                 BindingResult bindingResult, Model model, HttpSession session) {
+
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "employee/employee-update-form";
@@ -88,11 +90,12 @@ public class EmployeeCredentialController {
 
     /*
      * Handles the GET request to fetch the logged-in employee's profile.
-     * - Retrieves the employee details using the username from the Principal object.
      */
     @GetMapping("/my-profile")
-    public String getEmployeeProfile(Model model, Principal principal, HttpSession session) {
-        EmployeeModel.addEmployeeDetailsToModel(employeeCredentialService.getEmployeeByUsername(principal.getName()), false, model, session);
+    public String getEmployeeProfile(Model model, HttpSession session) {
+        EmployeeModel.addEmployeeDetailsToModel(
+                employeeCredentialService.getEmployeeByEmployeeId((String) session.getAttribute("userId")),
+                false, model, session);
         return "employee/employee-details";
     }
 }

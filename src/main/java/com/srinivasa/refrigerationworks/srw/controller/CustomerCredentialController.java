@@ -17,8 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 /*
  * Controller for handling customer credential operations
  */
@@ -41,7 +39,9 @@ public class CustomerCredentialController {
      * Confirms the customer registration and adds customer credentials
      */
     @PostMapping("/confirmation")
-    public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO, BindingResult bindingResult, Model model) {
+    public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO,
+                                  BindingResult bindingResult, Model model) {
+
         if (bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "customer/customer-register-form";
@@ -55,7 +55,8 @@ public class CustomerCredentialController {
      * Redirects to origin customer page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO,
+                                 BindingResult bindingResult, Model model, HttpSession session) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "customer/customer-update-form";
@@ -88,11 +89,12 @@ public class CustomerCredentialController {
 
     /*
      * Handles the GET request to fetch the logged-in customer's profile.
-     * - Retrieves the customer details using the username from the Principal object.
      */
     @GetMapping("/my-profile")
-    public String getCustomerProfile(Model model, Principal principal, HttpSession session) {
-        CustomerModel.addCustomerDetailsToModel(customerCredentialService.getCustomerByUsername(principal.getName()), false, model, session);
+    public String getCustomerProfile(Model model, HttpSession session) {
+        CustomerModel.addCustomerDetailsToModel(
+                customerCredentialService.getCustomerByCustomerId((String) session.getAttribute("userId")),
+                false, model, session);
         return "customer/customer-details";
     }
 }

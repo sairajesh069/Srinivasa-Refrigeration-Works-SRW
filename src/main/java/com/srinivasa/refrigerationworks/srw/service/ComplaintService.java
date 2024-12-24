@@ -27,7 +27,6 @@ public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final ComplaintMapper complaintMapper;
-    private final UserCredentialService userCredentialService;
 
     /*
      * Registers a new complaint in the system.
@@ -39,10 +38,9 @@ public class ComplaintService {
      * @param username The username of the user registering the complaint.
      */
     @Transactional
-    public void registerComplaint(ComplaintDTO complaintDTO, String username) {
+    public void registerComplaint(ComplaintDTO complaintDTO, String bookedById) {
         Complaint complaint = complaintMapper.toEntity(complaintDTO);
         complaint.setContactNumber(PhoneNumberFormatter.formatPhoneNumber(complaint.getContactNumber()));
-        String bookedById = userCredentialService.getUserIdByUsername(username);
         complaint.setBookedById(bookedById);
         complaint.setStatus(ComplaintStatus.OPEN);
         complaint.setState(ComplaintState.ACTIVE);
@@ -53,12 +51,10 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves a list of complaints based on the username.
-     * First, the user ID is fetched using the provided username, and then complaints associated with that user ID are retrieved.
+     * Retrieves a list of complaints associated with the registered user's ID.
      */
-    public List<ComplaintDTO> getComplaintsByUsername(String username) {
-        String userId = userCredentialService.getUserIdByUsername(username);
-        List<Complaint> complaints = complaintRepository.findAllByBookedById(userId);
+    public List<ComplaintDTO> getComplaintsByBookedById(String bookedById) {
+        List<Complaint> complaints = complaintRepository.findAllByBookedById(bookedById);
         return complaints
                 .stream()
                 .map(complaintMapper::toDto)
@@ -95,13 +91,13 @@ public class ComplaintService {
      * If the user is not an OWNER, retrieves complaints for the logged-in user.
      * Filters complaints by complaint ID or contact number and registration date.
      */
-    public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String userName, String userRole) {
+    public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String bookedById, String userRole) {
         String identifier = complaintIdentifierDTO.getIdentifier();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate registeredDate = complaintIdentifierDTO.getRegisteredDate();
         String registeredDateFormatted = registeredDate!=null ? registeredDate.format(formatter) : null;
         String phoneNumberFormatted = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
-        List<ComplaintDTO> complaints = !userRole.equals("ROLE_OWNER") ? getComplaintsByUsername(userName)
+        List<ComplaintDTO> complaints = !userRole.equals("ROLE_OWNER") ? getComplaintsByBookedById(bookedById)
                 : complaintRepository.findAll().stream().map(complaintMapper::toDto).toList();
         return complaints
                 .stream()
@@ -117,11 +113,10 @@ public class ComplaintService {
      * - Checks if the user is an owner. If not, ensures the user has access to the complaint.
      * - If the complaint is not booked by the current user (for non-owners), returns null.
      */
-    public ComplaintDTO getComplaintById(String complaintId, boolean isOwner, String username) {
+    public ComplaintDTO getComplaintById(String complaintId, boolean isOwner, String userId) {
         Complaint complaint = complaintRepository.findByComplaintId(complaintId);
         if(!isOwner) {
-            String userId = userCredentialService.getUserIdByUsername(username);
-            if(!complaint.getBookedById().equals(userId) && !complaint.getTechnicianId().equals(userId)) {
+            if((!complaint.getBookedById().equals(userId) && !complaint.getTechnicianId().equals(userId))) {
                 return null;
             }
         }
@@ -138,7 +133,6 @@ public class ComplaintService {
         updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
         updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
         updatedComplaintDTO.setState(initialComplaintDTO.getState());
-
         if(!initialComplaintDTO.equals(updatedComplaintDTO)) {
             Complaint complaint = complaintMapper.toEntity(updatedComplaintDTO);
             complaint.setComplaintId(updatedComplaintDTO.getComplaintId());
@@ -170,11 +164,9 @@ public class ComplaintService {
 
     /*
      * Retrieves a list of complaints assigned to an employee.
-     * First, the user ID is fetched using the provided username, and then complaints associated with that user ID are retrieved.
      */
-    public List<ComplaintDTO> getComplaintsByTechnicianId(String username) {
-        String userId = userCredentialService.getUserIdByUsername(username);
-        List<Complaint> complaints = complaintRepository.findAllByTechnicianId(userId);
+    public List<ComplaintDTO> getComplaintsByTechnicianId(String technicianId) {
+        List<Complaint> complaints = complaintRepository.findAllByTechnicianId(technicianId);
         return complaints
                 .stream()
                 .map(complaintMapper::toDto)

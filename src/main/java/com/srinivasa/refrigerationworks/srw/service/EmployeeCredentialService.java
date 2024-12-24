@@ -76,10 +76,9 @@ public class EmployeeCredentialService {
     }
 
     /*
-     * Retrieves the EmployeeDTO by username.
-     * - Fetches the user ID from the username and then gets the corresponding employee details.
+     * Retrieves the EmployeeDTO by employeeId.
      */
-    public EmployeeDTO getEmployeeByUsername(String username) {
-        return employeeService.getEmployeeByIdentifier(userCredentialService.getUserIdByUsername(username));
+    public EmployeeDTO getEmployeeByEmployeeId(String employeeId) {
+        return employeeService.getEmployeeByIdentifier(employeeId);
     }
 }

@@ -17,8 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 /*
  * Controller for handling owner credential operations
  */
@@ -55,7 +53,9 @@ public class OwnerCredentialController {
      * Redirects to origin owner page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateOwner(@ModelAttribute("ownerDTO") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateOwner(@ModelAttribute("ownerDTO") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult,
+                              Model model, HttpSession session) {
+
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "owner/owner-update-form";
@@ -88,11 +88,12 @@ public class OwnerCredentialController {
 
     /*
      * Handles the GET request to fetch the logged-in owner's profile.
-     * - Retrieves the owner details using the username from the Principal object.
      */
     @GetMapping("/my-profile")
-    public String getOwnerProfile(Model model, Principal principal, HttpSession session) {
-        OwnerModel.addOwnerDetailsToModel(ownerCredentialService.getOwnerByUsername(principal.getName()), false, model, session);
+    public String getOwnerProfile(Model model, HttpSession session) {
+        OwnerModel.addOwnerDetailsToModel(
+                ownerCredentialService.getOwnerByOwnerId((String) session.getAttribute("userId")),
+                false, model, session);
         return "owner/owner-details";
     }
 }

@@ -18,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 /*
@@ -55,7 +54,8 @@ public class ComplaintController {
      * If validation fails, it re-displays the registration form with error messages.
      */
     @PostMapping("/confirmation")
-    public String registerComplaint(@ModelAttribute @Valid ComplaintDTO complaintDTO, BindingResult bindingResult, Model model, Principal principal) {
+    public String registerComplaint(@ModelAttribute @Valid ComplaintDTO complaintDTO, BindingResult bindingResult,
+                                    Model model, HttpSession session) {
         if(bindingResult.hasErrors()) {
             if(complaintDTO.getProductType() != null) {
                 ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
@@ -65,7 +65,7 @@ public class ComplaintController {
             }
             return "complaint/complaint-register-form";
         }
-        complaintService.registerComplaint(complaintDTO, principal.getName());
+        complaintService.registerComplaint(complaintDTO, (String) session.getAttribute("userId"));
         return "complaint/complaint-confirmation";
     }
 
@@ -84,11 +84,11 @@ public class ComplaintController {
 
     /*
      * Handles the GET request to display a list of complaints registered by the logged-in user.
-     * Retrieves complaints associated with the user's username and adds them to the model for rendering.
      */
     @GetMapping("/my-complaints")
-    public String getMyComplaints(Model model, Principal principal) {
-        ComplaintModel.addComplaintListToModel(complaintService.getComplaintsByUsername(principal.getName()), model);
+    public String getMyComplaints(Model model, HttpSession session) {
+        ComplaintModel.addComplaintListToModel(
+                complaintService.getComplaintsByBookedById((String) session.getAttribute("userId")), model);
         return "complaint/complaint-list";
     }
 
@@ -128,12 +128,15 @@ public class ComplaintController {
      * Displays complaint details if one result is found, or a list view for multiple results.
      */
     @PostMapping("/search")
-    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult, HttpSession session, Model model, Principal principal) {
+    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult,
+                               HttpSession session, Model model) {
+
         ComplaintIdentifierValidation.identifierValidation(complaintIdentifierDTO, bindingResult);
         if(bindingResult.hasErrors()) {
             return "complaint/complaint-details";
         }
-        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(complaintIdentifierDTO, principal.getName(), UserRoleProvider.fetchUserRole(session));
+        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(
+                complaintIdentifierDTO, (String) session.getAttribute("userId"), UserRoleProvider.fetchUserRole(session));
         ComplaintModel.addComplaintDetailsToModel(complaints, model);
         return (complaints.size() <= 1) ? "complaint/complaint-details" : "complaint/complaint-list";
     }
@@ -143,10 +146,13 @@ public class ComplaintController {
      * Sets session attribute using substring from the "Referer" header.
      */
     @GetMapping("/update")
-    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model, HttpSession session, Principal principal, HttpServletRequest request) {
+    public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model,
+                                  HttpSession session, HttpServletRequest request) {
+
         ComplaintModel.addComplaintDTOForUpdateToModel(
-                complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"), principal.getName()),
-                model, session);
+                complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
+                        (String) session.getAttribute("userId")), model, session);
+
         session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"));
         return (boolean)session.getAttribute("canAccess") ? "complaint/complaint-update-form" : "access-denied";
     }
@@ -156,7 +162,9 @@ public class ComplaintController {
      * Redirects to the appropriate origin complaint page of update endpoint on success based on the user's role.
      */
     @PostMapping("/update")
-    public String updateComplaint(@ModelAttribute("complaintDTO") @Valid ComplaintDTO updatedComplaintDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateComplaint(@ModelAttribute("complaintDTO") @Valid ComplaintDTO updatedComplaintDTO,
+                                  BindingResult bindingResult, Model model, HttpSession session) {
+
         if(bindingResult.hasErrors()) {
             ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);
             ComplaintModel.populateComplaintStatus(model);
@@ -164,8 +172,9 @@ public class ComplaintController {
         }
         ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");
         complaintService.updateComplaint(initialComplaintDTO, updatedComplaintDTO);
-        return (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")) ?
-                "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin") : "redirect:/SRW/complaint/my-complaints";
+        return UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")
+                ? "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin")
+                : "redirect:/SRW/complaint/my-complaints";
     }
 
     /*
@@ -195,8 +204,9 @@ public class ComplaintController {
      * Returns the view for displaying the list of complaints.
      */
     @GetMapping("/assigned-complaints")
-    public String getAssignedComplaints(Model model, Principal principal) {
-        ComplaintModel.addComplaintListToModel(complaintService.getComplaintsByTechnicianId(principal.getName()), model);
+    public String getAssignedComplaints(Model model, HttpSession session) {
+        ComplaintModel.addComplaintListToModel(
+                complaintService.getComplaintsByTechnicianId((String) session.getAttribute("userId")), model);
         return "complaint/complaint-list";
     }
 }

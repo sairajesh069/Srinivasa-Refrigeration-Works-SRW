@@ -75,10 +75,9 @@ public class OwnerCredentialService {
     }
 
     /*
-     * Retrieves the OwnerDTO by username.
-     * - Fetches the user ID from the username and then gets the corresponding owner details.
+     * Retrieves the OwnerDTO by ownerId.
      */
-    public OwnerDTO getOwnerByUsername(String username) {
-        return ownerService.getOwnerByIdentifier(userCredentialService.getUserIdByUsername(username));
+    public OwnerDTO getOwnerByOwnerId(String ownerId) {
+        return ownerService.getOwnerByIdentifier(ownerId);
     }
 }

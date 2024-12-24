@@ -75,10 +75,9 @@ public class CustomerCredentialService {
     }
 
     /*
-     * Retrieves the CustomerDTO by username.
-     * - Fetches the user ID from the username and then gets the corresponding customer details.
+     * Retrieves the CustomerDTO by customerId.
      */
-    public CustomerDTO getCustomerByUsername(String username) {
-        return customerService.getCustomerByIdentifier(userCredentialService.getUserIdByUsername(username));
+    public CustomerDTO getCustomerByCustomerId(String customerId) {
+        return customerService.getCustomerByIdentifier(customerId);
     }
 }
