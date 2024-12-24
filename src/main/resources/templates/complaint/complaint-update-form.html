@@ -85,19 +85,22 @@
             <!-- Error message for description field -->
             <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error"></span> <br><br>
 
+            <!-- Input for complaint status -->
             <label for="status">Status: </label>
             <input id="status" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status} + ' '" sec:authorize="hasRole('OWNER')">
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status} + ' '" sec:authorize="hasRole('CUSTOMER')">
             <input id="statusDisabled" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" sec:authorize="!hasRole('OWNER')" disabled> <br><br>
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" sec:authorize="!hasRole('CUSTOMER')" readonly> <br><br>
 
+            <!-- Input for assigning technician for complaint -->
             <label for="technicianId">Technician Id: </label>
             <input id="technicianId" type="text" th:field="*{technicianId}" placeholder="Enter technician id" sec:authorize="hasRole('OWNER')">
-            <input id="technicianIdDisabled" type="text" th:field="*{technicianId}" placeholder="Enter technician id" sec:authorize="!hasRole('OWNER')" disabled> <br><br>
+            <input id="technicianIdDisabled" type="text" th:field="*{technicianId}" placeholder="Enter technician id" sec:authorize="!hasRole('OWNER')" readonly> <br><br>
 
+            <!-- Input for complaint feedback -->
             <label for="customerFeedback">Feedback: </label>
-            <input id="customerFeedback" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" sec:authorize="!hasRole('OWNER')">
-            <input id="customerFeedbackDisabled" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" sec:authorize="hasRole('OWNER')" disabled> <br><br>
+            <input id="customerFeedback" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.updateEndpointOrigin == 'my-complaints'}">
+            <input id="customerFeedbackDisabled" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.updateEndpointOrigin != 'my-complaints'}" readonly> <br><br>
 
             <!-- Submit button for updating details -->
             <input type="submit" class="btn btn-primary btn-sm mb-3" value="Update"> <br><br>
