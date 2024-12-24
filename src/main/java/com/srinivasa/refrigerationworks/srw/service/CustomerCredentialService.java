@@ -73,4 +73,12 @@ public class CustomerCredentialService {
         customerService.deactivateCustomer(customerId);
         userCredentialService.updateUserStatus(customerId, (byte) 0);
     }
+
+    /*
+     * Retrieves the CustomerDTO by username.
+     * - Fetches the user ID from the username and then gets the corresponding customer details.
+     */
+    public CustomerDTO getCustomerByUsername(String username) {
+        return customerService.getCustomerByIdentifier(userCredentialService.getUserIdByUsername(username));
+    }
 }
