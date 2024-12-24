@@ -12,25 +12,35 @@
         <title>Srinivasa Refrigeration Works - Employee Details</title>
     </head>
     <body>
-        <!-- Heading indicating the employee details page -->
-        <h3>Employees Details</h3>
+        <!-- Content displayed if 'toFetch' is true -->
+        <div th:if="${toFetch}">
+            <!-- Heading indicating the employee details page -->
+            <h3>Employees Details</h3>
 
-        <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
+            <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
 
-            <!-- Identifier input field with error handling -->
-            <label for="identifier">Identifier:</label>
-            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
-            <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span> <br><br>
+                <!-- Identifier input field with error handling -->
+                <label for="identifier">Identifier:</label>
+                <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
+                <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span> <br><br>
 
-            <!-- Button to submit the form for fetching employee details -->
-            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Employee"> <br><br>
-        </form>
+                <!-- Button to submit the form for fetching employee details -->
+                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Employee"> <br><br>
+            </form>
 
-        <!-- Display a message if no employee is found with given identifier -->
-        <p th:if="${noEmployeeFound}" class="error" th:text="${noEmployeeFound}"></p>
+            <!-- Display a message if no employee is found with given identifier -->
+            <p th:if="${noEmployeeFound}" class="error" th:text="${noEmployeeFound}"></p>
+        </div>
+
+        <!-- Display Profile heading if 'toFetch' is false -->
+        <h3 th:if="${!toFetch}">Profile</h3>
 
         <!-- Display the employee details if employee with identifier exist -->
         <div th:if="${employee}">
+
+            <!-- Hidden input field for employee ID -->
+            <input type="hidden" th:field="*{employee.employeeId}">
+
             <p>
                 <!-- Unique identifier for the employee -->
                 <span class="bold"> Employee Id: </span> <span th:text="${employee.employeeId}"></span> <br>
@@ -74,6 +84,9 @@
                 <!-- Employee's status -->
                 <span class="bold"> Status: </span> <span th:text="${employee.status}"></span> <br>
             </p>
+
+            <!-- Conditional Update button, displayed only if 'toFetch' is false -->
+            <a th:if="${!toFetch}" th:href="@{/SRW/employee/update(employeeId=${employee.employeeId})}" class="btn btn-primary btn-sm mb-3">Update</a>
         </div>
 
         <!-- Button to navigate back to the home page -->
