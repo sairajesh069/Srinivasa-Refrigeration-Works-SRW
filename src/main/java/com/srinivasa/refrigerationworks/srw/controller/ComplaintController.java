@@ -173,7 +173,7 @@ public class ComplaintController {
      * - Activates the complaint based on the provided complaintId.
      * - Redirects to the originating complaint list page upon success.
      */
-    @GetMapping("activate")
+    @GetMapping("/activate")
     public String activateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
         complaintService.activateComplaint(complaintId);
         return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
@@ -184,9 +184,19 @@ public class ComplaintController {
      * - Deactivates the complaint based on the provided complaintId.
      * - Redirects to the originating complaint list page upon success.
      */
-    @GetMapping("deactivate")
+    @GetMapping("/deactivate")
     public String deactivateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
         complaintService.deactivateComplaint(complaintId);
         return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
+    }
+
+    /*
+     * Retrieves complaints assigned to the logged-in technician and adds them to the model.
+     * Returns the view for displaying the list of complaints.
+     */
+    @GetMapping("/assigned-complaints")
+    public String getAssignedComplaints(Model model, Principal principal) {
+        ComplaintModel.addComplaintListToModel(complaintService.getComplaintsByTechnicianId(principal.getName()), model);
+        return "complaint/complaint-list";
     }
 }
