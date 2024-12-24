@@ -30,6 +30,13 @@
             <!-- Button to navigate to the user profile -->
             <a th:href="@{${profileHref}}" class="btn btn-primary btn-sm mb-3">My Profile</a> <br><br>
 
+            <!-- Displayed for users with the 'EMPLOYEE' role -->
+            <div sec:authorize="hasRole('EMPLOYEE') and !hasRole('OWNER')">
+                <!-- Button linking to the assigned complaints page -->
+                <a th:href="@{/SRW/complaint/assigned-complaints}" class="btn btn-primary btn-sm mb-3"
+                   title="Assigned Complaints">Assigned Complaints</a>
+            </div>
+
             <!-- Check if user has the role 'OWNER' to display registration options -->
             <div sec:authorize="hasRole('OWNER')">
                 <!-- Button to navigate to management portal -->
@@ -50,6 +57,5 @@
         <!-- Login link for users who are not authenticated -->
         <a th:unless="${#authorization.expression('isAuthenticated()')}" th:href="@{/SRW/login}"
             class="btn btn-primary btn-sm mb-3" title="Navigate to the login page">Login</a>
-
     </body>
 </html>
