@@ -12,25 +12,35 @@
         <title>Srinivasa Refrigeration Works - Customer Details</title>
     </head>
     <body>
-        <!-- Heading indicating the customer details page -->
-        <h3>Customer Details</h3>
+        <!-- Content displayed if 'toFetch' is true -->
+        <div th:if="${toFetch}">
+            <!-- Heading indicating the customer details page -->
+            <h3>Customer Details</h3>
 
-        <form th:action="@{/SRW/customer/search}" th:object="${userIdentifierDTO}" method="POST">
+            <form th:action="@{/SRW/customer/search}" th:object="${userIdentifierDTO}" method="POST">
 
-            <!-- Identifier input field with error handling -->
-            <label for="identifier">Identifier:</label>
-            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter customer id or phone number or email">
-            <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span> <br><br>
+                <!-- Identifier input field with error handling -->
+                <label for="identifier">Identifier:</label>
+                <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter customer id or phone number or email">
+                <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span> <br><br>
 
-            <!-- Button to submit the form for fetching customer details -->
-            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Customer"> <br><br>
-        </form>
+                <!-- Button to submit the form for fetching customer details -->
+                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Customer"> <br><br>
+            </form>
 
-        <!-- Display a message if no customer is found with given identifier -->
-        <p th:if="${noCustomerFound}" class="error" th:text="${noCustomerFound}"></p>
+            <!-- Display a message if no customer is found with given identifier -->
+            <p th:if="${noCustomerFound}" class="error" th:text="${noCustomerFound}"></p>
+        </div>
+
+        <!-- Display Profile heading if 'toFetch' is false -->
+        <h3 th:if="${!toFetch}">Profile</h3>
 
         <!-- Display the customer details if customer with identifier exist -->
         <div th:if="${customer}">
+
+            <!-- Hidden input field for customer ID -->
+            <input type="hidden" th:field="*{customer.customerId}">
+
             <p>
                 <!-- Unique identifier for the customer -->
                 <span class="bold"> Customer Id: </span> <span th:text="${customer.customerId}"></span> <br>
@@ -59,6 +69,9 @@
                 <!-- Customer's status -->
                 <span class="bold"> Status: </span> <span th:text="${customer.status}"></span> <br>
             </p>
+
+            <!-- Conditional Update button, displayed only if 'toFetch' is false -->
+            <a th:if="${!toFetch}" th:href="@{/SRW/customer/update(customerId=${customer.customerId})}" class="btn btn-primary btn-sm mb-3">Update</a>
         </div>
 
         <!-- Button to navigate back to the home page -->
