@@ -121,7 +121,7 @@ public class ComplaintService {
         Complaint complaint = complaintRepository.findByComplaintId(complaintId);
         if(!isOwner) {
             String userId = userCredentialService.getUserIdByUsername(username);
-            if(!complaint.getBookedById().equals(userId)) {
+            if(!complaint.getBookedById().equals(userId) && !complaint.getTechnicianId().equals(userId)) {
                 return null;
             }
         }
@@ -137,18 +137,7 @@ public class ComplaintService {
         updatedComplaintDTO.setBookedById(initialComplaintDTO.getBookedById());
         updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
         updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
-
-        updatedComplaintDTO.setState(updatedComplaintDTO.getState() == null
-                ? initialComplaintDTO.getState() : updatedComplaintDTO.getState());
-
-        updatedComplaintDTO.setStatus(updatedComplaintDTO.getStatus() == null
-                ? initialComplaintDTO.getStatus() : updatedComplaintDTO.getStatus());
-
-        updatedComplaintDTO.setTechnicianId(updatedComplaintDTO.getTechnicianId() == null
-                ? initialComplaintDTO.getTechnicianId() : updatedComplaintDTO.getTechnicianId());
-
-        updatedComplaintDTO.setCustomerFeedback(updatedComplaintDTO.getCustomerFeedback() == null
-                ? initialComplaintDTO.getCustomerFeedback() : updatedComplaintDTO.getCustomerFeedback());
+        updatedComplaintDTO.setState(initialComplaintDTO.getState());
 
         if(!initialComplaintDTO.equals(updatedComplaintDTO)) {
             Complaint complaint = complaintMapper.toEntity(updatedComplaintDTO);
@@ -177,5 +166,18 @@ public class ComplaintService {
      */
     public void deactivateComplaint(String complaintId) {
         complaintRepository.updateComplaintState(complaintId, LocalDateTime.now(), ComplaintState.IN_ACTIVE);
+    }
+
+    /*
+     * Retrieves a list of complaints assigned to an employee.
+     * First, the user ID is fetched using the provided username, and then complaints associated with that user ID are retrieved.
+     */
+    public List<ComplaintDTO> getComplaintsByTechnicianId(String username) {
+        String userId = userCredentialService.getUserIdByUsername(username);
+        List<Complaint> complaints = complaintRepository.findAllByTechnicianId(userId);
+        return complaints
+                .stream()
+                .map(complaintMapper::toDto)
+                .toList();
     }
 }
