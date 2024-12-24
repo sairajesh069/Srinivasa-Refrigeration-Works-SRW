@@ -74,4 +74,12 @@ public class EmployeeCredentialService {
         employeeService.deactivateEmployee(employeeId);
         userCredentialService.updateUserStatus(employeeId, (byte) 0);
     }
+
+    /*
+     * Retrieves the EmployeeDTO by username.
+     * - Fetches the user ID from the username and then gets the corresponding employee details.
+     */
+    public EmployeeDTO getEmployeeByUsername(String username) {
+        return employeeService.getEmployeeByIdentifier(userCredentialService.getUserIdByUsername(username));
+    }
 }
