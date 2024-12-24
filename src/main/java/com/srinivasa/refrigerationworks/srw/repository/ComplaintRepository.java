@@ -38,4 +38,10 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     @Transactional
     @Query("UPDATE Complaint SET updatedAt = :updatedAt, state = :state WHERE complaintId = :complaintId")
     public void updateComplaintState(@Param("complaintId") String complaintId, @Param("updatedAt") LocalDateTime updatedAt, @Param("state") ComplaintState state);
+
+    /*
+     * Retrieves a list of complaints based on the user ID of the employee who got assigned to the complaint.
+     * Returns all complaints associated with the given technicianId (userId).
+     */
+    public List<Complaint> findAllByTechnicianId(String userId);
 }
