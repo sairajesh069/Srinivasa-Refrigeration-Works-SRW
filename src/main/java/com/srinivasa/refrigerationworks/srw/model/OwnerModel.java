@@ -23,21 +23,36 @@ public class OwnerModel {
     }
 
     /*
-     * Adds a new UserIdentifierDTO object to the model.
-     * Used to capture user input for searching an owner.
+     * Adds a new UserIdentifierDTO object to the model for user input.
+     * Also adds a flag to indicate that data should be fetched.
      */
     public static void addUserIdentifierDTOToModel(Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+        addToFetchToModel(true, model);
     }
 
     /*
-     * Adds owner details or a fallback message to the model.
-     * If the owner is found, adds the OwnerDTO object; otherwise, adds an error message.
+     * Adds owner details to the model.
+     * - If owner is null, adds a message indicating no owner found.
+     * - Otherwise, adds the owner details.
+     * - Also adds a flag to indicate whether data should be fetched.
      */
-    public static void addOwnerDetailsToModel(OwnerDTO owner, Model model) {
+    public static void addOwnerDetailsToModel(OwnerDTO owner, boolean toFetch, Model model, HttpSession session) {
         model.addAttribute(
                 owner == null ? "noOwnerFound" : "owner",
                 owner == null ? "Owner not found for the given details." : owner);
+        addToFetchToModel(toFetch, model);
+        if(!toFetch) {
+            session.setAttribute("ownerDetails", owner);
+        }
+    }
+
+    /*
+     * Adds a flag to the model indicating whether to fetch data.
+     * - `toFetch`: A boolean flag to determine if data should be fetched.
+     */
+    public static void addToFetchToModel(boolean toFetch, Model model) {
+        model.addAttribute("toFetch", toFetch);
     }
 
     /*

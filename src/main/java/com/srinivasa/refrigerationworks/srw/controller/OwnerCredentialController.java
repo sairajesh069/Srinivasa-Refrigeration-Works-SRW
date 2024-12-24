@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
+import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 /*
  * Controller for handling owner credential operations
@@ -81,5 +84,15 @@ public class OwnerCredentialController {
     public String deactivateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.deactivateOwner(ownerId);
         return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+    }
+
+    /*
+     * Handles the GET request to fetch the logged-in owner's profile.
+     * - Retrieves the owner details using the username from the Principal object.
+     */
+    @GetMapping("/my-profile")
+    public String getOwnerProfile(Model model, Principal principal, HttpSession session) {
+        OwnerModel.addOwnerDetailsToModel(ownerCredentialService.getOwnerByUsername(principal.getName()), false, model, session);
+        return "owner/owner-details";
     }
 }

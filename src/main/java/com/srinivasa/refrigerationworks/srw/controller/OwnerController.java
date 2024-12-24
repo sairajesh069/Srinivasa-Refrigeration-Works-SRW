@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
+import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
@@ -66,16 +67,17 @@ public class OwnerController {
     }
 
     /*
-     * Processes the owner search request.
-     * Validates the user identifier and retrieves owner details.
+     * Handles the POST request to search for an owner by their identifier.
+     * - Validates the input and displays the owner details if no errors occur.
      */
     @PostMapping("/search")
-    public String getOwner(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model) {
+    public String getOwner(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
+            OwnerModel.addToFetchToModel(true, model);
             return "owner/owner-details";
         }
         OwnerModel.addOwnerDetailsToModel(
-                ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+                ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
         return "owner/owner-details";
     }
 
@@ -85,9 +87,12 @@ public class OwnerController {
      */
     @GetMapping("/update")
     public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpSession session, HttpServletRequest request) {
-        OwnerModel.addOwnerDTOForUpdateToModel(ownerService.getOwnerByIdentifier(ownerId), model, session);
+        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+        OwnerModel.addOwnerDTOForUpdateToModel(
+                refererEndpoint.equals("my-profile") ? (OwnerDTO) session.getAttribute("ownerDetails") : ownerService.getOwnerByIdentifier(ownerId),
+                model, session);
         UserCredentialModel.addUserFormConstantsToModel(model);
-        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"));
+        session.setAttribute("updateEndpointOrigin", refererEndpoint);
         return "owner/owner-update-form";
     }
 }
