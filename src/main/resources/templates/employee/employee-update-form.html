@@ -64,19 +64,19 @@
             <!-- National ID Number input field with error handling; enabled only for users with the 'OWNER' role -->
             <label for="nationalIdNumber">National Id Number:</label>
             <input id="nationalIdNumber" type="text" th:field="*{nationalIdNumber}" placeholder="Enter national id number" sec:authorize="hasRole('OWNER')">
-            <input id="nationalIdNumberDisabled" type="text" th:field="*{nationalIdNumber}" placeholder="Enter national id number" sec:authorize="!hasRole('OWNER')" disabled>
+            <input id="nationalIdNumberReadOnly" type="text" th:field="*{nationalIdNumber}" placeholder="Enter national id number" sec:authorize="!hasRole('OWNER')" readonly>
             <span th:if="${#fields.hasErrors('nationalIdNumber')}" th:errors="*{nationalIdNumber}" class="error"></span> <br><br>
 
             <!-- Designation input field with error handling; enabled only for users with the 'OWNER' role -->
             <label for="designation">Designation:</label>
             <input id="designation" type="text" th:field="*{designation}" placeholder="Enter designation" sec:authorize="hasRole('OWNER')">
-            <input id="designationDisabled" type="text" th:field="*{designation}" placeholder="Enter designation" sec:authorize="!hasRole('OWNER')" disabled>
+            <input id="designationReadOnly" type="text" th:field="*{designation}" placeholder="Enter designation" sec:authorize="!hasRole('OWNER')" readonly>
             <span th:if="${#fields.hasErrors('designation')}" th:errors="*{designation}" class="error"></span> <br><br>
 
             <!-- Salary input field with error handling; enabled only for users with the 'OWNER' role -->
             <label for="salary">Salary:</label>
             <input id="salary" type="text" th:field="*{salary}" placeholder="Enter salary" sec:authorize="hasRole('OWNER')">
-            <input id="salaryDisabled" type="text" th:field="*{salary}" placeholder="Enter salary" sec:authorize="!hasRole('OWNER')" disabled>
+            <input id="salaryReadOnly" type="text" th:field="*{salary}" placeholder="Enter salary" sec:authorize="!hasRole('OWNER')" readonly >
             <span th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}" class="error"></span> <br><br> <hr>
 
             <!-- Submit button for updating details -->
