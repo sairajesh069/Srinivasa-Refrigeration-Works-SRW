@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
+import com.srinivasa.refrigerationworks.srw.model.CustomerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 /*
  * Controller for handling customer credential operations
@@ -81,5 +84,15 @@ public class CustomerCredentialController {
     public String deactivateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.deactivateCustomer(customerId);
         return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+    }
+
+    /*
+     * Handles the GET request to fetch the logged-in customer's profile.
+     * - Retrieves the customer details using the username from the Principal object.
+     */
+    @GetMapping("/my-profile")
+    public String getCustomerProfile(Model model, Principal principal, HttpSession session) {
+        CustomerModel.addCustomerDetailsToModel(customerCredentialService.getCustomerByUsername(principal.getName()), false, model, session);
+        return "customer/customer-details";
     }
 }

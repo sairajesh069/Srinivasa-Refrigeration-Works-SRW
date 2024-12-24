@@ -2,8 +2,10 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.CustomerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
+import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerService;
+import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -66,16 +68,16 @@ public class CustomerController {
     }
 
     /*
-     * Processes the customer search request.
-     * Validates the user identifier and retrieves customer details.
+     * Handles the POST request to search for a customer by their identifier.
+     * - Validates the input and displays the customer details if no errors occur.
      */
     @PostMapping("/search")
-    public String getCustomer(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model) {
+    public String getCustomer(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "customer/customer-details";
         }
         CustomerModel.addCustomerDetailsToModel(
-                customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+                customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
         return "customer/customer-details";
     }
 
@@ -85,9 +87,15 @@ public class CustomerController {
      */
     @GetMapping("/update")
     public String updateCustomer(@RequestParam("customerId") String customerId, Model model, HttpSession session, HttpServletRequest request) {
-        CustomerModel.addCustomerDTOForUpdateToModel(customerService.getCustomerByIdentifier(customerId), model, session);
-        UserCredentialModel.addUserFormConstantsToModel(model);
-        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/"));
-        return "customer/customer-update-form";
+        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        if(UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
+            CustomerModel.addCustomerDTOForUpdateToModel(
+                    refererEndpoint.equals("my-profile") ? (CustomerDTO) session.getAttribute("customerDetails") : customerService.getCustomerByIdentifier(customerId),
+                    model, session);
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/"));
+            return "customer/customer-update-form";
+        }
+        return "access-denied";
     }
 }

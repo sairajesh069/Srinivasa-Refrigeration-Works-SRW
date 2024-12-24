@@ -24,21 +24,36 @@ public class CustomerModel {
     }
 
     /*
-     * Adds a new UserIdentifierDTO object to the model.
-     * Used to capture user input for searching a customer.
+     * Adds a new UserIdentifierDTO object to the model for user input.
+     * Also adds a flag to indicate that data should be fetched.
      */
     public static void addUserIdentifierDTOToModel(Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+        addToFetchToModel(true, model);
     }
 
     /*
-     * Adds customer details or a fallback message to the model.
-     * If the customer is found, adds the CustomerDTO object; otherwise, adds an error message.
+     * Adds customer details to the model.
+     * - If customer is null, adds a message indicating no customer found.
+     * - Otherwise, adds the customer details.
+     * - Also adds a flag to indicate whether data should be fetched.
      */
-    public static void addCustomerDetailsToModel(CustomerDTO customer, Model model) {
+    public static void addCustomerDetailsToModel(CustomerDTO customer, boolean toFetch, Model model, HttpSession session) {
         model.addAttribute(
                 customer == null ? "noCustomerFound" : "customer",
                 customer == null ? "Customer not found for the given details." : customer);
+        addToFetchToModel(toFetch, model);
+        if(!toFetch) {
+            session.setAttribute("customerDetails", customer);
+        }
+    }
+
+    /*
+     * Adds a flag to the model indicating whether to fetch data.
+     * - `toFetch`: A boolean flag to determine if data should be fetched.
+     */
+    public static void addToFetchToModel(boolean toFetch, Model model) {
+        model.addAttribute("toFetch", toFetch);
     }
 
     /*
