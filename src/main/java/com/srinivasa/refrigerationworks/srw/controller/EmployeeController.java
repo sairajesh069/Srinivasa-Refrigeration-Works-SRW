@@ -2,8 +2,10 @@ package com.srinivasa.refrigerationworks.srw.controller;
 
 import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
+import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
+import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -66,16 +68,16 @@ public class EmployeeController {
     }
 
     /*
-     * Processes the employee search request.
-     * Validates the user identifier and retrieves employee details.
+     * Handles the POST request to search for an employee by their identifier.
+     * - Validates the input and displays the employee details if no errors occur.
      */
     @PostMapping("/search")
-    public String getEmployee(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model) {
+    public String getEmployee(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "employee/employee-details";
         }
         EmployeeModel.addEmployeeDetailsToModel(
-                employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), model);
+                employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
         return "employee/employee-details";
     }
 
@@ -85,9 +87,15 @@ public class EmployeeController {
      */
     @GetMapping("/update")
     public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session, HttpServletRequest request) {
-        EmployeeModel.addEmployeeDTOForUpdateToModel(employeeService.getEmployeeByIdentifier(employeeId), model, session);
-        UserCredentialModel.addUserFormConstantsToModel(model);
-        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/"));
-        return "employee/employee-update-form";
+        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        if(UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
+            EmployeeModel.addEmployeeDTOForUpdateToModel(
+                    refererEndpoint.equals("my-profile") ? (EmployeeDTO) session.getAttribute("employeeDetails") : employeeService.getEmployeeByIdentifier(employeeId),
+                    model, session);
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            session.setAttribute("updateEndpointOrigin", refererEndpoint);
+            return "employee/employee-update-form";
+        }
+        return "access-denied";
     }
 }

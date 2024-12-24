@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.controller;
 
+import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 /*
  * Controller for handling employee credential operations
@@ -81,5 +84,15 @@ public class EmployeeCredentialController {
     public String deactivateEmployee(@RequestParam("employeeId") String employeeId, HttpServletRequest request) {
         employeeCredentialService.deactivateEmployee(employeeId);
         return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+    }
+
+    /*
+     * Handles the GET request to fetch the logged-in employee's profile.
+     * - Retrieves the employee details using the username from the Principal object.
+     */
+    @GetMapping("/my-profile")
+    public String getEmployeeProfile(Model model, Principal principal, HttpSession session) {
+        EmployeeModel.addEmployeeDetailsToModel(employeeCredentialService.getEmployeeByUsername(principal.getName()), false, model, session);
+        return "employee/employee-details";
     }
 }

@@ -24,21 +24,36 @@ public class EmployeeModel {
     }
 
     /*
-     * Adds a new UserIdentifierDTO object to the model.
-     * Used to capture user input for searching an employee.
+     * Adds a new UserIdentifierDTO object to the model for user input.
+     * Also adds a flag to indicate that data should be fetched.
      */
     public static void addUserIdentifierDTOToModel(Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+        addToFetchToModel(true, model);
     }
 
     /*
-     * Adds employee details or a fallback message to the model.
-     * If the employee is found, adds the EmployeeDTO object; otherwise, adds an error message.
+     * Adds employee details to the model.
+     * - If employee is null, adds a message indicating no employee found.
+     * - Otherwise, adds the employee details.
+     * - Also adds a flag to indicate whether data should be fetched.
      */
-    public static void addEmployeeDetailsToModel(EmployeeDTO employee, Model model) {
+    public static void addEmployeeDetailsToModel(EmployeeDTO employee, boolean toFetch, Model model, HttpSession session) {
         model.addAttribute(
                 employee == null ? "noEmployeeFound" : "employee",
                 employee == null ? "Employee not found for the given details." : employee);
+        addToFetchToModel(toFetch, model);
+        if(!toFetch) {
+            session.setAttribute("employeeDetails", employee);
+        }
+    }
+
+    /*
+     * Adds a flag to the model indicating whether to fetch data.
+     * - `toFetch`: A boolean flag to determine if data should be fetched.
+     */
+    public static void addToFetchToModel(boolean toFetch, Model model) {
+        model.addAttribute("toFetch", toFetch);
     }
 
     /*
