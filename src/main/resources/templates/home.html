@@ -27,6 +27,9 @@
         <!-- Check if user is authenticated -->
         <div th:if="${#authorization.expression('isAuthenticated()')}">
 
+            <!-- Button to navigate to the user profile -->
+            <a th:href="@{${profileHref}}" class="btn btn-primary btn-sm mb-3">My Profile</a> <br><br>
+
             <!-- Check if user has the role 'OWNER' to display registration options -->
             <div sec:authorize="hasRole('OWNER')">
                 <!-- Button to navigate to management portal -->
