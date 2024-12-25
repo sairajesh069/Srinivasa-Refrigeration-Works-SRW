@@ -172,9 +172,7 @@ public class ComplaintController {
         }
         ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");
         complaintService.updateComplaint(initialComplaintDTO, updatedComplaintDTO);
-        return UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER")
-                ? "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin")
-                : "redirect:/SRW/complaint/my-complaints";
+        return "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin");
     }
 
     /*
