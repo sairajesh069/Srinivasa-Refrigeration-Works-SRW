@@ -104,4 +104,14 @@ public class EmployeeService {
     public void deactivateEmployee(String employeeId) {
         employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(), LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
+
+    /*
+     * Retrieves the list of active employee IDs by mapping active employees to their IDs.
+     */
+    public List<String> getActiveEmployeeIds() {
+        return getActiveEmployeeList()
+                .stream()
+                .map(EmployeeDTO::getEmployeeId)
+                .toList();
+    }
 }

@@ -95,7 +95,8 @@ public class ComplaintModel {
      * Adds the complaint details for updating to the model and session.
      * Populates the dropdowns for product types and complaint statuses.
      */
-    public static void addComplaintDTOForUpdateToModel(ComplaintDTO complaintDTO, Model model, HttpSession session) {
+    public static void addComplaintDTOForUpdateToModel(ComplaintDTO complaintDTO, List<String> technicianIds,
+                                                       Model model, HttpSession session) {
         if(complaintDTO != null) {
             model.addAttribute("complaintDTO", complaintDTO);
             session.setAttribute("initialComplaintDTO", complaintDTO);
@@ -103,6 +104,15 @@ public class ComplaintModel {
             populateComplaintStatus(model);
         }
         session.setAttribute("canAccess", complaintDTO != null);
+        populateTechnicianIds(technicianIds, model);
+        session.setAttribute("technicianIds", technicianIds);
+    }
+
+    /*
+     * Populates technician IDs into the model for use in views.
+     */
+    public static void populateTechnicianIds(List<String> technicianIds, Model model) {
+        model.addAttribute("technicianIds", technicianIds);
     }
 
     /*

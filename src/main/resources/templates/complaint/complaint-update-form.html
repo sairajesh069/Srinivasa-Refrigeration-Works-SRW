@@ -94,8 +94,19 @@
 
             <!-- Input for assigning technician for complaint -->
             <label for="technicianId">Technician Id: </label>
-            <input id="technicianId" type="text" th:field="*{technicianId}" placeholder="Enter technician id" sec:authorize="hasRole('OWNER')">
-            <input id="technicianIdReadOnly" type="text" th:field="*{technicianId}" placeholder="Enter technician id" sec:authorize="!hasRole('OWNER')" readonly> <br><br>
+            <select id="technicianId" th:field="*{technicianId}" th:if="${session.userId.length() == 6}">
+                <option value="" selected>--select--</option>
+                <!-- Iterate through available technicianId's and display them in options -->
+                <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
+            </select>
+            <select id="technicianIdDisabled" th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
+                <option value="" selected>--select--</option>
+                <!-- Iterate through available technicianId's and display them in options -->
+                <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
+            </select> <br><br>
+
+            <!-- Hidden input to store the value if the select is read-only -->
+            <input type="hidden" th:field="*{technicianId}" th:value="${technicianId}" th:if="${session.userId.length() != 6}">
 
             <!-- Input for complaint feedback -->
             <label for="customerFeedback">Feedback: </label>

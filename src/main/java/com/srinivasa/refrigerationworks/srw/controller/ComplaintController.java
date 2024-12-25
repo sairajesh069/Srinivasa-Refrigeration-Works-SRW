@@ -151,7 +151,8 @@ public class ComplaintController {
 
         ComplaintModel.addComplaintDTOForUpdateToModel(
                 complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
-                        (String) session.getAttribute("userId")), model, session);
+                        (String) session.getAttribute("userId")),
+                complaintService.getActiveEmployeeIds(), model, session);
 
         session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"));
         return (boolean)session.getAttribute("canAccess") ? "complaint/complaint-update-form" : "access-denied";
@@ -168,6 +169,7 @@ public class ComplaintController {
         if(bindingResult.hasErrors()) {
             ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);
             ComplaintModel.populateComplaintStatus(model);
+            ComplaintModel.populateTechnicianIds((List<String>) session.getAttribute("technicianIds"), model);
             return "complaint/complaint-update-form";
         }
         ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");

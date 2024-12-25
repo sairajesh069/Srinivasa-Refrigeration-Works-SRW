@@ -27,6 +27,7 @@ public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final ComplaintMapper complaintMapper;
+    private final EmployeeService employeeService;
 
     /*
      * Registers a new complaint in the system.
@@ -171,5 +172,12 @@ public class ComplaintService {
                 .stream()
                 .map(complaintMapper::toDto)
                 .toList();
+    }
+
+    /*
+     * Fetches the list of active employee IDs from the employee service.
+     */
+    public List<String> getActiveEmployeeIds() {
+        return employeeService.getActiveEmployeeIds();
     }
 }
