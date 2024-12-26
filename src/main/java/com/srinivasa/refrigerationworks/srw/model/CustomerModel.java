@@ -13,47 +13,28 @@ import java.util.List;
 public class CustomerModel {
 
     /*
+     * Adds UserIdentifierDTO to the model.
      * Adds a list of customers to the model, or a message if no customers are found.
      * The customers list is added to the model under the attribute "customers" if not empty,
      * otherwise a "noCustomersFound" message is added.
      */
     public static void addCustomerListToModel(List<CustomerDTO> customers, Model model) {
+        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
         model.addAttribute(
                 customers.isEmpty() ? "noCustomersFound" : "customers",
                 customers.isEmpty() ? "No Customer Entries in Database" : customers);
     }
 
     /*
-     * Adds a new UserIdentifierDTO object to the model for user input.
-     * Also adds a flag to indicate that data should be fetched.
-     */
-    public static void addUserIdentifierDTOToModel(Model model) {
-        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
-        addToFetchToModel(true, model);
-    }
-
-    /*
      * Adds customer details to the model.
      * - If customer is null, adds a message indicating no customer found.
      * - Otherwise, adds the customer details.
-     * - Also adds a flag to indicate whether data should be fetched.
      */
-    public static void addCustomerDetailsToModel(CustomerDTO customer, boolean toFetch, Model model, HttpSession session) {
+    public static void addCustomerDetailsToModel(CustomerDTO customer, Model model, HttpSession session) {
         model.addAttribute(
                 customer == null ? "noCustomerFound" : "customer",
                 customer == null ? "Customer not found for the given details." : customer);
-        addToFetchToModel(toFetch, model);
-        if(!toFetch) {
-            session.setAttribute("customerDetails", customer);
-        }
-    }
-
-    /*
-     * Adds a flag to the model indicating whether to fetch data.
-     * - `toFetch`: A boolean flag to determine if data should be fetched.
-     */
-    public static void addToFetchToModel(boolean toFetch, Model model) {
-        model.addAttribute("toFetch", toFetch);
+        session.setAttribute("customerDetails", customer);
     }
 
     /*

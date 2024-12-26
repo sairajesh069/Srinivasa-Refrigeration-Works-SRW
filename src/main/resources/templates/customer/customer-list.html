@@ -20,6 +20,16 @@
         <!-- Display the customer table if customers exist -->
         <div th:if="${customers}">
 
+            <form th:action="@{/SRW/customer/search}" th:object="${userIdentifierDTO}" method="POST">
+                <!-- Identifier input field with error handling -->
+                <label for="identifier">Search:</label>
+                <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter customer id or phone number or email">
+                <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span>
+
+                <!-- Button to submit the form for fetching customer details -->
+                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Customer"> <br><br>
+            </form>
+
             <!-- Table displaying customer details -->
             <table class="table table-bordered table-striped">
                 <!-- Table header section -->

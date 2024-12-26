@@ -93,8 +93,7 @@ public class CustomerCredentialController {
     @GetMapping("/my-profile")
     public String getCustomerProfile(Model model, HttpSession session) {
         CustomerModel.addCustomerDetailsToModel(
-                customerCredentialService.getCustomerByCustomerId((String) session.getAttribute("userId")),
-                false, model, session);
+                customerCredentialService.getCustomerByCustomerId((String) session.getAttribute("userId")), model, session);
         return "customer/customer-details";
     }
 }

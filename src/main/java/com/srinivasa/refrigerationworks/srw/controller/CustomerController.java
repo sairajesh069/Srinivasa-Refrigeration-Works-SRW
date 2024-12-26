@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /*
  * Controller that handles requests related to the Customer entity.
@@ -59,25 +56,16 @@ public class CustomerController {
     }
 
     /*
-     * Handles requests related to searching and displaying customer details.
-     */
-    @GetMapping("/search")
-    public String getCustomer(Model model) {
-        CustomerModel.addUserIdentifierDTOToModel(model);
-        return "customer/customer-details";
-    }
-
-    /*
      * Handles the POST request to search for a customer by their identifier.
      * - Validates the input and displays the customer details if no errors occur.
      */
     @PostMapping("/search")
-    public String getCustomer(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String getCustomer(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            return "customer/customer-details";
+            return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
         }
         CustomerModel.addCustomerDetailsToModel(
-                customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
+                customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), model, session);
         return "customer/customer-details";
     }
 
@@ -93,7 +81,7 @@ public class CustomerController {
                     refererEndpoint.equals("my-profile") ? (CustomerDTO) session.getAttribute("customerDetails") : customerService.getCustomerByIdentifier(customerId),
                     model, session);
             UserCredentialModel.addUserFormConstantsToModel(model);
-            session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/"));
+            session.setAttribute("updateEndpointOrigin", refererEndpoint);
             return "customer/customer-update-form";
         }
         return "access-denied";
