@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /*
  * Controller that handles requests related to the Owner entity.
@@ -58,26 +55,16 @@ public class OwnerController {
     }
 
     /*
-     * Handles requests related to searching and displaying owner details.
-     */
-    @GetMapping("/search")
-    public String getOwner(Model model) {
-        OwnerModel.addUserIdentifierDTOToModel(model);
-        return "owner/owner-details";
-    }
-
-    /*
      * Handles the POST request to search for an owner by their identifier.
      * - Validates the input and displays the owner details if no errors occur.
      */
     @PostMapping("/search")
-    public String getOwner(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String getOwner(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            OwnerModel.addToFetchToModel(true, model);
-            return "owner/owner-details";
+            return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
         }
         OwnerModel.addOwnerDetailsToModel(
-                ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
+                ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model, session);
         return "owner/owner-details";
     }
 

@@ -92,8 +92,7 @@ public class OwnerCredentialController {
     @GetMapping("/my-profile")
     public String getOwnerProfile(Model model, HttpSession session) {
         OwnerModel.addOwnerDetailsToModel(
-                ownerCredentialService.getOwnerByOwnerId((String) session.getAttribute("userId")),
-                false, model, session);
+                ownerCredentialService.getOwnerByOwnerId((String) session.getAttribute("userId")), model, session);
         return "owner/owner-details";
     }
 }
