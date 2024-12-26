@@ -20,8 +20,8 @@
         <!-- Display the owner table if owners exist -->
         <div th:if="${owners}">
 
+            <!-- Form to fetch owner details based on the identifier -->
             <form th:action="@{/SRW/owner/search}" th:object="${userIdentifierDTO}" method="POST">
-
                 <!-- Identifier input field with error handling -->
                 <label for="identifier">Search:</label>
                 <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter owner id or phone number or email">

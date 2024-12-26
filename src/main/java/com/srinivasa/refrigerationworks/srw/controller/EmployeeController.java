@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /*
  * Controller that handles requests related to the Employee entity.
@@ -63,7 +60,7 @@ public class EmployeeController {
      * - Validates the input and displays the employee details if no errors occur.
      */
     @PostMapping("/search")
-    public String getEmployee(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
+    public String getEmployee(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
         }

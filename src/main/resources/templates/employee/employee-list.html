@@ -20,6 +20,7 @@
         <!-- Display the employee table if employees exist -->
         <div th:if="${employees}">
 
+            <!-- Form to fetch employee details based on the identifier -->
             <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
                 <!-- Identifier input field with error handling -->
                 <label for="identifier">Search:</label>

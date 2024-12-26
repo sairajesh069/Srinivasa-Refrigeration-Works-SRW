@@ -20,6 +20,7 @@
         <!-- Display the customer table if customers exist -->
         <div th:if="${customers}">
 
+            <!-- Form to fetch customer details based on the identifier -->
             <form th:action="@{/SRW/customer/search}" th:object="${userIdentifierDTO}" method="POST">
                 <!-- Identifier input field with error handling -->
                 <label for="identifier">Search:</label>

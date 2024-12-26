@@ -13,7 +13,7 @@ import java.util.List;
 public class EmployeeModel {
 
     /*
-     * Adds UserCredentialDTO to the model.
+     * Adds UserIdentifierDTO to the model.
      * Adds a list of employees to the model, or a message if no employees are found.
      * The employees list is added to the model under the attribute "employees" if not empty,
      * otherwise a "noEmployeesFound" message is added.
