@@ -59,25 +59,16 @@ public class EmployeeController {
     }
 
     /*
-     * Handles requests related to searching and displaying employee details.
-     */
-    @GetMapping("/search")
-    public String getEmployee(Model model) {
-        EmployeeModel.addUserIdentifierDTOToModel(model);
-        return "employee/employee-details";
-    }
-
-    /*
      * Handles the POST request to search for an employee by their identifier.
      * - Validates the input and displays the employee details if no errors occur.
      */
     @PostMapping("/search")
-    public String getEmployee(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session) {
+    public String getEmployee(@Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult, Model model, HttpSession session, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            return "employee/employee-details";
+            return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
         }
         EmployeeModel.addEmployeeDetailsToModel(
-                employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), true, model, session);
+                employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), model, session);
         return "employee/employee-details";
     }
 

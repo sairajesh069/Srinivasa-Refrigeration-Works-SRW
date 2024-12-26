@@ -94,8 +94,7 @@ public class EmployeeCredentialController {
     @GetMapping("/my-profile")
     public String getEmployeeProfile(Model model, HttpSession session) {
         EmployeeModel.addEmployeeDetailsToModel(
-                employeeCredentialService.getEmployeeByEmployeeId((String) session.getAttribute("userId")),
-                false, model, session);
+                employeeCredentialService.getEmployeeByEmployeeId((String) session.getAttribute("userId")), model, session);
         return "employee/employee-details";
     }
 }
