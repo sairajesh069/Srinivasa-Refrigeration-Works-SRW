@@ -58,37 +58,16 @@ public class ComplaintModel {
     }
 
     /*
+     * Adds ComplaintIdentifierDTO to the model.
      * Adds a list of complaints to the model.
-     * If the list is empty, a "noRecordsFound" attribute with a message is added.
+     * If the list is empty, a "noComplaintsFound" attribute with a message is added.
      * Otherwise, the list of complaints is added under the "complaints" attribute.
      */
-    public static void addComplaintListToModel(List<ComplaintDTO> complaints, Model model) {
+    public static void addComplaintListToModel(List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
+        model.addAttribute("complaintIdentifierDTO", new ComplaintIdentifierDTO());
         model.addAttribute(
                 complaints.isEmpty() ? "noComplaintsFound" : "complaints",
-                complaints.isEmpty() ? "You have not registered any complaints." : complaints);
-    }
-
-    /*
-     * Adds an empty ComplaintIdentifierDTO object to the model, used for capturing the complaint identifier input.
-     */
-    public static void addComplaintIdentifierDTOToModel(Model model) {
-        model.addAttribute("complaintIdentifierDTO", new ComplaintIdentifierDTO());
-    }
-
-    /*
-     * Adds complaint details to the model based on the size of the complaint list.
-     * - If no complaints, adds a "noComplaintFound" attribute with a message.
-     * - If exactly one complaint, adds the "complaint" attribute with the single complaint.
-     * - If multiple complaints, adds the "complaints" attribute with the list of complaints.
-     */
-    public static void addComplaintDetailsToModel(List<ComplaintDTO> complaints, Model model) {
-        switch(complaints.size()) {
-            case 0 -> model.addAttribute("noComplaintFound", "Complaint not found for the given details.");
-
-            case 1 -> model.addAttribute("complaint", complaints.get(0));
-
-            default -> model.addAttribute("complaints", complaints);
-        }
+                complaints.isEmpty() ? noComplaintsMessage : complaints);
     }
 
     /*

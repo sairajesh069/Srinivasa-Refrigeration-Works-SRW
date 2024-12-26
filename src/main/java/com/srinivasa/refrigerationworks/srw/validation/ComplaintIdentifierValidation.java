@@ -25,7 +25,7 @@ public class ComplaintIdentifierValidation {
          * Validation message to be displayed if the identifier is empty.
          */
         if(identifier == null || identifier.isEmpty()) {
-            bindingResult.rejectValue("identifier", "error.phoneNumber", "Invalid input: Please provide a valid complaint ID or phone number");
+            bindingResult.rejectValue("identifier", "error.identifier", "Invalid input: Please provide a valid complaint ID or phone number");
         }
 
         /*

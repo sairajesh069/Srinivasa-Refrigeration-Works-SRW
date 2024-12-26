@@ -88,7 +88,7 @@ public class ComplaintController {
     @GetMapping("/my-complaints")
     public String getMyComplaints(Model model, HttpSession session) {
         ComplaintModel.addComplaintListToModel(
-                complaintService.getComplaintsByBookedById((String) session.getAttribute("userId")), model);
+                complaintService.getComplaintsByBookedById((String) session.getAttribute("userId")), "No complaints have been registered yet.", model);
         return "complaint/complaint-list";
     }
 
@@ -98,7 +98,7 @@ public class ComplaintController {
      */
     @GetMapping("/list")
     public String getComplaintList(Model model) {
-        ComplaintModel.addComplaintListToModel(complaintService.getComplaintList(), model);
+        ComplaintModel.addComplaintListToModel(complaintService.getComplaintList(), "No complaints have been registered yet.", model);
         return "complaint/complaint-list";
     }
 
@@ -108,18 +108,8 @@ public class ComplaintController {
      */
     @GetMapping("/active-list")
     public String getActiveComplaintList(Model model) {
-        ComplaintModel.addComplaintListToModel(complaintService.getActiveComplaintList(), model);
+        ComplaintModel.addComplaintListToModel(complaintService.getActiveComplaintList(), "No active complaints found.", model);
         return "complaint/complaint-list";
-    }
-
-    /*
-     * Handles GET requests to display the complaint search form.
-     * Adds a ComplaintIdentifierDTO object to the model for capturing user input.
-     */
-    @GetMapping("/search")
-    public String getComplaint(Model model) {
-        ComplaintModel.addComplaintIdentifierDTOToModel(model);
-        return "complaint/complaint-details";
     }
 
     /*
@@ -128,17 +118,17 @@ public class ComplaintController {
      * Displays complaint details if one result is found, or a list view for multiple results.
      */
     @PostMapping("/search")
-    public String getComplaint(ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult,
-                               HttpSession session, Model model) {
+    public String getComplaint(@ModelAttribute ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult,
+                               HttpSession session, Model model, HttpServletRequest request) {
 
         ComplaintIdentifierValidation.identifierValidation(complaintIdentifierDTO, bindingResult);
         if(bindingResult.hasErrors()) {
-            return "complaint/complaint-details";
+            return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
         }
         List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(
                 complaintIdentifierDTO, (String) session.getAttribute("userId"), UserRoleProvider.fetchUserRole(session));
-        ComplaintModel.addComplaintDetailsToModel(complaints, model);
-        return (complaints.size() <= 1) ? "complaint/complaint-details" : "complaint/complaint-list";
+        ComplaintModel.addComplaintListToModel(complaints, "No complaints found.", model);
+        return "complaint/complaint-list";
     }
 
     /*
@@ -206,7 +196,7 @@ public class ComplaintController {
     @GetMapping("/assigned-complaints")
     public String getAssignedComplaints(Model model, HttpSession session) {
         ComplaintModel.addComplaintListToModel(
-                complaintService.getComplaintsByTechnicianId((String) session.getAttribute("userId")), model);
+                complaintService.getComplaintsByTechnicianId((String) session.getAttribute("userId")), "No complaints have been assigned yet.", model);
         return "complaint/complaint-list";
     }
 }
