@@ -4,7 +4,29 @@ spring:
   application:
     name: SRW  # Name of the application
 
+  server:
+    port: 8080  # Correct key for server port
+
+  profiles:
+    active: dev  # Sets active profile to 'dev'.
+
   datasource:
-    url: jdbc:mysql://localhost:3306/srinivasa_refrigeration_works  # Database URL
-    username: root  # Database username
-    password: Sai@8500  # Database password
+    url: jdbc:mysql://localhost:3306/${DEV_DB_NAME}  # Dynamic database name
+    username: ${DEV_DB_USERNAME}  # Local database username
+    password: ${DEV_DB_PASSWORD}  # Local database password
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Auto-update schema
+    show-sql: true  # Enables logging of SQL queries.
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect  # For MySQL 8
+
+  cache:
+    type: redis  # Redis as the cache provider
+
+  redis:
+    host: localhost  # Redis host
+    port: 6379  # Redis port
+    time-to-live: 180000  # TTL in milliseconds (if supported by your cache implementation)
