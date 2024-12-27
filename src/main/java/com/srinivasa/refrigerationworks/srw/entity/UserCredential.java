@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,13 @@ import java.util.List;
 @Table(name = "user_credentials")
 @Data
 @NoArgsConstructor
-public class UserCredential {
+public class UserCredential implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 10L;
 
     /*
      * Unique user identifier

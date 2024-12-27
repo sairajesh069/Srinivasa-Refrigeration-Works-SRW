@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /*
@@ -12,6 +13,12 @@ import java.io.Serializable;
 @Embeddable
 @Data
 public class UserRoleId implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 21L;
 
     /*
      * User identifier (references UserCredential)
