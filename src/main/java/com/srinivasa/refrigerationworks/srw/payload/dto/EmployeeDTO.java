@@ -13,6 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,7 +29,13 @@ import java.time.LocalDateTime;
 @UniqueValue(fieldName = "phoneNumber", userIdField = "employeeId", message = "This phone number is already registered")
 @UniqueValue(fieldName = "email", userIdField = "employeeId", message = "This email address is already registered")
 @UniqueValue(fieldName = "nationalIdNumber", entityClass = Employee.class, inEveryUserEntity = false, userIdField = "employeeId", message = "This national Id number already exists")
-public class EmployeeDTO {
+public class EmployeeDTO implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 41L;
 
     /*
      * Employee's unique Id
