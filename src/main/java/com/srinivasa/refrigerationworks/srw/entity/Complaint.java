@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /*
@@ -17,7 +19,13 @@ import java.time.LocalDateTime;
 @Table(name="complaints")
 @Data
 @NoArgsConstructor
-public class Complaint {
+public class Complaint implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 60L;
 
     /*
      * Unique identifier for the complaint (generated automatically).
