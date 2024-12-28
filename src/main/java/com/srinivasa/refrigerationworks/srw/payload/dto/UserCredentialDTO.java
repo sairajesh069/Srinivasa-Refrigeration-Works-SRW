@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /*
  * DTO class for user credentials with validation annotations.
  * Ensures validation of username, password, and confirmation fields with custom messages and uniqueness checks.
@@ -26,7 +29,13 @@ import lombok.NoArgsConstructor;
  */
 @FieldMatch(firstField = "password", secondField = "confirmPassword", message = "The passwords do not match. Please try again.")
 @UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, userIdField = "userId", message = "This username is already taken")
-public class UserCredentialDTO {
+public class UserCredentialDTO implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 11L;
 
     /*
      * Unique identifier for the user.

@@ -9,6 +9,7 @@ import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,7 @@ public class UserCredentialService {
      * - Ensures the phone number includes the country code (+91).
      * - Delegates the query execution to the repository.
      */
+    @Cacheable(value = "user-credential", key = "'fetch_user-' + #usernameRecoveryDTO.phoneNumber")
     public String fetchUsername(UsernameRecoveryDTO usernameRecoveryDTO) {
         String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(usernameRecoveryDTO.getPhoneNumber());
         return userCredentialRepository.fetchUsernameByPhoneNumber(phoneNumber);
@@ -52,6 +54,7 @@ public class UserCredentialService {
      * - Ensures the phone number is normalized to include the country code.
      * - Returns true if a matching user is found.
      */
+    @Cacheable(value = "user-credential", key = "'validate-' + #passwordResetDTO.username + '&' + #passwordResetDTO.phoneNumber")
     public boolean validateUser(PasswordResetDTO passwordResetDTO) {
         String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(passwordResetDTO.getPhoneNumber());
         String username = passwordResetDTO.getUsername();
@@ -72,6 +75,7 @@ public class UserCredentialService {
      * Retrieves the user ID associated with the given username.
      * - Queries the database using the userCredentialRepository to find the user ID.
      */
+    @Cacheable(value = "user-credential", key = "'user-' + #username")
     public String getUserIdByUsername(String username) {
         return userCredentialRepository.findUserIdByUsername(username);
     }

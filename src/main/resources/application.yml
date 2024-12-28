@@ -29,4 +29,4 @@ spring:
   redis:
     host: localhost  # Redis host
     port: 6379  # Redis port
-    time-to-live: 180000  # TTL in milliseconds (if supported by your cache implementation)
+    time-to-live: 90000  # TTL in milliseconds
