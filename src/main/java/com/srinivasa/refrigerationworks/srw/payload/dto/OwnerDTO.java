@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /*
@@ -24,7 +26,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @UniqueValue(fieldName = "phoneNumber", userIdField = "ownerId", message = "This phone number is already registered")
 @UniqueValue(fieldName = "email", userIdField = "ownerId", message = "This email address is already registered")
-public class OwnerDTO {
+public class OwnerDTO implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 31L;
 
     /*
      * Owner's unique Id

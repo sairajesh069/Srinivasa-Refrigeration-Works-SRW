@@ -8,6 +8,10 @@ import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.OwnerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +33,7 @@ public class OwnerService {
      * generating an owner ID, and returning it.
      */
     @Transactional
+    @CacheEvict(cacheNames = "owners", allEntries = true)
     public String addOwner(OwnerDTO ownerDTO) {
         Owner owner = ownerMapper.toEntity(ownerDTO);
         owner.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber()));
@@ -43,6 +48,7 @@ public class OwnerService {
      * Retrieves a list of all owners from the repository and maps them to OwnerDTO objects.
      * Returns a list of OwnerDTO to be used in other services or controllers.
      */
+    @Cacheable(value = "owners", key = "'owner_list'")
     public List<OwnerDTO> getOwnerList() {
         List<Owner> owners = ownerRepository.findAll();
         return owners
@@ -55,6 +61,7 @@ public class OwnerService {
      * Retrieves a list of all active owners from the repository and maps them to OwnerDTO objects.
      * Returns a list of active OwnerDTO to be used in other services or controllers.
      */
+    @Cacheable(value = "owners", key = "'active_owner_list'")
     public List<OwnerDTO> getActiveOwnerList() {
         List<Owner> owners = ownerRepository.findAll();
         return owners
@@ -69,6 +76,7 @@ public class OwnerService {
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the owner entity to a DTO before returning.
      */
+    @Cacheable(value = "owner" , key = "'fetch-' + #identifier")
     public OwnerDTO getOwnerByIdentifier(String identifier) {
         identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         Owner owner = ownerRepository.findByIdentifier(identifier);
@@ -79,6 +87,11 @@ public class OwnerService {
      * Updates owner details by mapping DTO to entity, formatting phone number,
      * and setting updated timestamp before saving to the repository.
      */
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "owners", allEntries = true),
+                    @CacheEvict(cacheNames = "owner", key = "'fetch-' + #ownerDTO.ownerId")},
+            put = @CachePut(value = "owner", key = "'update-' + #ownerDTO.ownerId"))
     public void updateOwner(OwnerDTO ownerDTO) {
         Owner owner = ownerMapper.toEntity(ownerDTO);
         owner.setOwnerId(ownerDTO.getOwnerId());
@@ -93,6 +106,9 @@ public class OwnerService {
      * Activates an owner by updating their status to active.
      * - Sets the status to ACTIVE and updates the timestamp.
      */
+    @Caching(
+            evict = @CacheEvict(cacheNames = "owners", allEntries = true),
+            put = @CachePut(value = "owner", key = "'activate-' + #ownerId"))
     public void activateOwner(String ownerId) {
         ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.ACTIVE);
     }
@@ -101,6 +117,9 @@ public class OwnerService {
      * Deactivates an owner by updating their status to inactive.
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */
+    @Caching(
+            evict = @CacheEvict(cacheNames = "owners", allEntries = true),
+            put = @CachePut(value = "owner", key = "'deactivate-' + #ownerId"))
     public void deactivateOwner(String ownerId) {
         ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }
