@@ -8,6 +8,10 @@ import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.CustomerMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +33,7 @@ public class CustomerService {
      * generating a customer ID, and returning it.
      */
     @Transactional
+    @CacheEvict(cacheNames = "customers", allEntries = true)
     public String addCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
         customer.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber()));
@@ -43,6 +48,7 @@ public class CustomerService {
      * Retrieves a list of all customers from the repository and maps them to CustomerDTO objects.
      * Returns a list of CustomerDTO to be used in other services or controllers.
      */
+    @Cacheable(value = "customers", key = "'customer_list'")
     public List<CustomerDTO> getCustomerList() {
         List<Customer> customers = customerRepository.findAll();
         return customers
@@ -55,6 +61,7 @@ public class CustomerService {
      * Retrieves a list of all active customers from the repository and maps them to CustomerDTO objects.
      * Returns a list of active CustomerDTO to be used in other services or controllers.
      */
+    @Cacheable(value = "customers", key = "'active_customer_list'")
     public List<CustomerDTO> getActiveCustomerList() {
         List<Customer> customers = customerRepository.findAll();
         return customers
@@ -69,6 +76,7 @@ public class CustomerService {
      * If the identifier is a 10-digit phone number, it prefixes it with "+91".
      * Converts the customer entity to a DTO before returning.
      */
+    @Cacheable(value = "customer", key = "'fetch-' + #identifier")
     public CustomerDTO getCustomerByIdentifier(String identifier) {
         identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         Customer customer = customerRepository.findByIdentifier(identifier);
@@ -79,6 +87,11 @@ public class CustomerService {
      * Updates customer details by mapping DTO to entity, formatting phone number,
      * and setting updated timestamp before saving to the repository.
      */
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "customers", allEntries = true),
+                    @CacheEvict(cacheNames = "customer", key = "'fetch-' + #customerDTO.customerId")},
+            put = @CachePut(value = "customer", key = "'update-' + #customerDTO.customerId"))
     public void updateCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
         customer.setCustomerId(customerDTO.getCustomerId());
@@ -93,6 +106,9 @@ public class CustomerService {
      * Activates a customer by updating their status to active.
      * - Sets the status to ACTIVE and updates the timestamp.
      */
+    @Caching(
+            evict = @CacheEvict(cacheNames = "customers", allEntries = true),
+            put = @CachePut(value = "customer", key = "'activate-' + #customerId"))
     public void activateCustomer(String customerId) {
         customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.ACTIVE);
     }
@@ -101,6 +117,9 @@ public class CustomerService {
      * Deactivates a customer by updating their status to inactive.
      * - Sets the status to IN_ACTIVE and updates the timestamp.
      */
+    @Caching(
+            evict = @CacheEvict(cacheNames = "customers", allEntries = true),
+            put = @CachePut(value = "customer", key = "'deactivate-' + #customerId"))
     public void deactivateCustomer(String customerId) {
         customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }

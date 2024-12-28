@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -16,7 +18,13 @@ import java.time.LocalDateTime;
 @Table(name = "customers")
 @Data
 @NoArgsConstructor
-public class Customer {
+public class Customer implements Serializable {
+
+    /*
+     * Unique ID for serialization compatibility.
+     */
+    @Serial
+    private static final long serialVersionUID = 50L;
 
     /*
      * Primary key for the customer entity, auto-generated
