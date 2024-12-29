@@ -22,13 +22,13 @@
 
             <!-- Form to fetch employee details based on the identifier -->
             <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
-                <!-- Identifier input field with error handling -->
-                <label for="identifier">Search:</label>
+                <!-- Identifier input field -->
                 <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
-                <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span>
 
                 <!-- Button to submit the form for fetching employee details -->
-                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Employee"> <br><br>
+                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br><br>
+
+                <p>Search by Employee ID, Phone Number, or Email.</p>
             </form>
 
             <!-- Table displaying the employee details -->

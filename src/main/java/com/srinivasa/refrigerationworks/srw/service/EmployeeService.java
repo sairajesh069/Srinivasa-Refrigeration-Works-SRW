@@ -50,8 +50,8 @@ public class EmployeeService {
      */
     @Cacheable(value = "employees", key = "'employee_list'")
     public List<EmployeeDTO> getEmployeeList() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees
+        return employeeRepository
+                .findAll()
                 .stream()
                 .map(employeeMapper::toDto)
                 .toList();
@@ -63,10 +63,9 @@ public class EmployeeService {
      */
     @Cacheable(value = "employees", key = "'active_employee_list'")
     public List<EmployeeDTO> getActiveEmployeeList() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees
+        return employeeRepository
+                .findByStatus(UserStatus.ACTIVE)
                 .stream()
-                .filter(employee -> employee.getStatus().name().equals("ACTIVE"))
                 .map(employeeMapper::toDto)
                 .toList();
     }
@@ -78,8 +77,8 @@ public class EmployeeService {
      */
     @Cacheable(value = "employee", key = "'fetch-' + #identifier")
     public EmployeeDTO getEmployeeByIdentifier(String identifier) {
-        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
-        Employee employee = employeeRepository.findByIdentifier(identifier);
+        Employee employee = employeeRepository.findByIdentifier(
+                identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier);
         return employeeMapper.toDto(employee);
     }
 
@@ -90,14 +89,15 @@ public class EmployeeService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "employees", allEntries = true),
-                    @CacheEvict(cacheNames = "employee", key = "'fetch-' + #employeeDTO.employeeId")},
-            put = @CachePut(value = "employee", key = "'update-' + #employeeDTO.employeeId"))
+                    @CacheEvict(cacheNames = "employee", key = "'fetch-' + #employeeDTO.employeeId")
+            },
+            put = @CachePut(value = "employee", key = "'update-' + #employeeDTO.employeeId")
+    )
     public void updateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.toEntity(employeeDTO);
         employee.setEmployeeId(employeeDTO.getEmployeeId());
         employee.setEmployeeReference(Long.parseLong(employeeDTO.getEmployeeId().substring(3,7)));
-        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber());
-        employee.setPhoneNumber(updatedPhoneNumber);
+        employee.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber()));
         employee.setUpdatedAt(LocalDateTime.now());
         employeeRepository.save(employee);
     }
@@ -131,8 +131,8 @@ public class EmployeeService {
      */
     @Cacheable(value = "employeeIds", key = "'active_employee_ids'")
     public List<String> getActiveEmployeeIds() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees
+        return employeeRepository
+                .findByStatus(UserStatus.ACTIVE)
                 .stream()
                 .map(Employee::getEmployeeId)
                 .toList();

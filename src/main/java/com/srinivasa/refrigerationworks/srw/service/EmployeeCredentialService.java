@@ -40,8 +40,7 @@ public class EmployeeCredentialService {
      */
     @Transactional
     public void updateEmployee(EmployeeDTO initialEmployeeDTO, EmployeeDTO updatedEmployeeDTO) {
-        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus()==null
-                ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
+        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus()==null ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
         updatedEmployeeDTO.setDateOfHire(initialEmployeeDTO.getDateOfHire());
         if(!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
             employeeService.updateEmployee(updatedEmployeeDTO);
@@ -78,7 +77,7 @@ public class EmployeeCredentialService {
     /*
      * Retrieves the EmployeeDTO by employeeId.
      */
-    public EmployeeDTO getEmployeeByEmployeeId(String employeeId) {
+    public EmployeeDTO getEmployeeById(String employeeId) {
         return employeeService.getEmployeeByIdentifier(employeeId);
     }
 }

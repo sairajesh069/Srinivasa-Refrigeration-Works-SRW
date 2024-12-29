@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
  * Repository interface for Employee entity
@@ -24,6 +25,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     @Query("SELECT e FROM Employee e WHERE e.employeeId = :identifier OR e.phoneNumber = :identifier OR e.email = :identifier or e.nationalIdNumber = :identifier")
     public Employee findByIdentifier(@Param("identifier") String identifier);
+
+    /*
+     * Fetches a list of employees based on their status.
+     */
+    public List<Employee> findByStatus(UserStatus status);
 
     /*
      * Activates/Deactivates an employee by updating their status, 'updatedAt' and 'dateOfExit' fields.

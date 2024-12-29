@@ -5,6 +5,7 @@ import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeCredentialService;
+import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,12 +37,19 @@ public class EmployeeCredentialController {
     }
 
     /*
+     * Displays the employee registration form
+     */
+    @GetMapping("/register")
+    public String createEmployee(Model model) {
+        UserCredentialModel.addEmployeeCredentialToModel(model);
+        return "employee/employee-register-form";
+    }
+
+    /*
      * Confirms the employee registration and adds employee credentials
      */
     @PostMapping("/confirmation")
-    public String confirmEmployee(@ModelAttribute @Valid EmployeeCredentialDTO employeeCredentialDTO,
-                                  BindingResult bindingResult, Model model) {
-
+    public String confirmEmployee(@ModelAttribute @Valid EmployeeCredentialDTO employeeCredentialDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "employee/employee-register-form";
@@ -51,19 +59,36 @@ public class EmployeeCredentialController {
     }
 
     /*
+     * Handles GET request to display employee update form with current employee data.
+     * Sets session attribute using substring from the "Referer" header.
+     */
+    @GetMapping("/update")
+    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model,
+                                 HttpSession session, HttpServletRequest request) {
+        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        if(UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
+            EmployeeModel.addEmployeeToModel(employeeCredentialService.getEmployeeById(employeeId), model);
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            UserCredentialModel.addUpdateEndpointOriginToModel(refererEndpoint, model);
+            return "employee/employee-update-form";
+        }
+        return "access-denied";
+    }
+
+    /*
      * Handles POST request to update employee's details after validation.
      * Redirects to origin employee page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO,
-                                 BindingResult bindingResult, Model model, HttpSession session) {
-
+    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult,
+                                 @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
+            UserCredentialModel.addUpdateEndpointOriginToModel(updateEndpointOrigin, model);
             return "employee/employee-update-form";
         }
-        employeeCredentialService.updateEmployee((EmployeeDTO) session.getAttribute("initialEmployeeDTO"), updatedEmployeeDTO);
-        return "redirect:/SRW/employee/" + session.getAttribute("updateEndpointOrigin");
+        employeeCredentialService.updateEmployee(employeeCredentialService.getEmployeeById(updatedEmployeeDTO.getEmployeeId()), updatedEmployeeDTO);
+        return "redirect:/SRW/employee/" + updateEndpointOrigin;
     }
 
     /*
@@ -93,8 +118,7 @@ public class EmployeeCredentialController {
      */
     @GetMapping("/my-profile")
     public String getEmployeeProfile(Model model, HttpSession session) {
-        EmployeeModel.addEmployeeDetailsToModel(
-                employeeCredentialService.getEmployeeByEmployeeId((String) session.getAttribute("userId")), model, session);
+        EmployeeModel.addEmployeeToModel(employeeCredentialService.getEmployeeById(session.getAttribute("userId").toString()), model);
         return "employee/employee-details";
     }
 }

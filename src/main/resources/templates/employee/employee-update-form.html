@@ -17,7 +17,9 @@
         <h3>Update Details</h3>
 
         <!-- Update Employee Details Form -->
-        <form th:action="@{/SRW/employee/update}" th:object="${employeeDTO}" method="POST">
+        <form th:action="@{/SRW/employee/update}" th:object="${employee}" method="POST">
+
+            <input type="hidden" name="updateEndpointOrigin" th:value="${updateEndpointOrigin}">
 
             <!-- Hidden input field for employee ID -->
             <input type="hidden" th:field="*{employeeId}">
