@@ -59,10 +59,10 @@ public class ComplaintService {
     /*
      * Retrieves a list of complaints associated with the registered user's ID.
      */
-    @Cacheable(value = "complaints", key = "'my_complaint_list'")
+    @Cacheable(value = "complaints", key = "'my_complaint_list-' + #bookedById")
     public List<ComplaintDTO> getComplaintsByBookedById(String bookedById) {
-        List<Complaint> complaints = complaintRepository.findAllByBookedById(bookedById);
-        return complaints
+        return complaintRepository
+                .findByBookedById(bookedById)
                 .stream()
                 .map(complaintMapper::toDto)
                 .toList();
@@ -74,8 +74,8 @@ public class ComplaintService {
      */
     @Cacheable(value = "complaints", key = "'complaint_list'")
     public List<ComplaintDTO> getComplaintList() {
-        List<Complaint> complaints =  complaintRepository.findAll();
-        return complaints
+        return complaintRepository
+                .findAll()
                 .stream()
                 .map(complaintMapper::toDto)
                 .toList();
@@ -87,10 +87,9 @@ public class ComplaintService {
      */
     @Cacheable(value = "complaints", key = "'active_complaint_list'")
     public List<ComplaintDTO> getActiveComplaintList() {
-        List<Complaint> complaints =  complaintRepository.findAll();
-        return complaints
+        return complaintRepository
+                .findByState(ComplaintState.ACTIVE)
                 .stream()
-                .filter(complaint -> complaint.getState().name().equals("ACTIVE"))
                 .map(complaintMapper::toDto)
                 .toList();
     }
@@ -106,7 +105,8 @@ public class ComplaintService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate registeredDate = complaintIdentifierDTO.getRegisteredDate();
         String registeredDateFormatted = registeredDate!=null ? registeredDate.format(formatter) : null;
-        String phoneNumberFormatted = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
+        String phoneNumberFormatted = (identifier != null && identifier.matches("\\d{10}"))
+                ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         List<ComplaintDTO> complaints = !userRole.equals("ROLE_OWNER") ? getComplaintsByBookedById(bookedById)
                 : complaintRepository.findAll().stream().map(complaintMapper::toDto).toList();
         return complaints
@@ -123,15 +123,25 @@ public class ComplaintService {
      * - Checks if the user is an owner. If not, ensures the user has access to the complaint.
      * - If the complaint is not booked by the current user (for non-owners), returns null.
      */
-    @Cacheable(value = "complaint", key = "'fetchByComplaintId-' + #complaintId")
-    public ComplaintDTO getComplaintById(String complaintId, boolean isOwner, String userId) {
-        Complaint complaint = complaintRepository.findByComplaintId(complaintId);
-        if(!isOwner) {
-            if((!complaint.getBookedById().equals(userId) && !complaint.getTechnicianId().equals(userId))) {
-                return null;
-            }
+    @Cacheable(value = "complaint", key = "'complaint_access_check-' + #complaintId + '&' + #userId")
+    public boolean canUserAccess(String complaintId, boolean isOwner, String userId) {
+        if(isOwner) {
+            return true;
         }
-        return complaintMapper.toDto(complaint);
+        else{
+            Complaint complaint = complaintRepository.findByComplaintId(complaintId);
+            return complaint.getBookedById().equals(userId) || complaint.getTechnicianId().equals(userId);
+        }
+    }
+
+    /*
+     * Retrieves the ComplaintDTO by complaintId.
+     */
+    @Cacheable(value = "complaint", key = "'fetch-' + #complaintId")
+    public ComplaintDTO getComplaintById(String complaintId) {
+        return complaintMapper
+                .toDto(complaintRepository
+                        .findByComplaintId(complaintId));
     }
 
     /*
@@ -141,8 +151,10 @@ public class ComplaintService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "complaints", allEntries = true),
-                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #updatedComplaintDTO.complaintId")},
-            put = @CachePut(value = "complaint", key = "'update-' + #updatedComplaintDTO.complaintId"))
+                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #updatedComplaintDTO.complaintId")
+            },
+            put = @CachePut(value = "complaint", key = "'update-' + #updatedComplaintDTO.complaintId")
+    )
     public void updateComplaint(ComplaintDTO initialComplaintDTO, ComplaintDTO updatedComplaintDTO) {
         updatedComplaintDTO.setCreatedAt(initialComplaintDTO.getCreatedAt());
         updatedComplaintDTO.setBookedById(initialComplaintDTO.getBookedById());
@@ -168,7 +180,8 @@ public class ComplaintService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "complaints", allEntries = true),
-            put = @CachePut(value = "complaint", key = "'activate-' + #complaintId"))
+            put = @CachePut(value = "complaint", key = "'activate-' + #complaintId")
+    )
     public void activateComplaint(String complaintId) {
         complaintRepository.updateComplaintState(complaintId, LocalDateTime.now(), ComplaintState.ACTIVE);
     }
@@ -179,7 +192,8 @@ public class ComplaintService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "complaints", allEntries = true),
-            put = @CachePut(value = "complaint", key = "'deactivate-' + #complaintId"))
+            put = @CachePut(value = "complaint", key = "'deactivate-' + #complaintId")
+    )
     public void deactivateComplaint(String complaintId) {
         complaintRepository.updateComplaintState(complaintId, LocalDateTime.now(), ComplaintState.IN_ACTIVE);
     }
@@ -189,7 +203,7 @@ public class ComplaintService {
      */
     @Cacheable(value = "complaints", key = "'fetchByTechnicianId-' + #technicianId")
     public List<ComplaintDTO> getComplaintsByTechnicianId(String technicianId) {
-        List<Complaint> complaints = complaintRepository.findAllByTechnicianId(technicianId);
+        List<Complaint> complaints = complaintRepository.findByTechnicianId(technicianId);
         return complaints
                 .stream()
                 .map(complaintMapper::toDto)

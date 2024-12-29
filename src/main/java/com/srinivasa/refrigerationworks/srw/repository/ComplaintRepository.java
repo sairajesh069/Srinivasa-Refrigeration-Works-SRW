@@ -23,12 +23,17 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
      * Retrieves a list of complaints based on the user ID of the person who booked the complaint.
      * Returns all complaints associated with the given bookedById (userId).
      */
-    public List<Complaint> findAllByBookedById(String userId);
+    public List<Complaint> findByBookedById(String userId);
 
     /*
      * Finds and returns a Complaint entity by its complaintId.
      */
     public Complaint findByComplaintId(String complaintId);
+
+    /*
+     * Fetches a list of complaints based on their state.
+     */
+    public List<Complaint> findByState(ComplaintState state);
 
     /*
      * Activates/Deactivates a complaint by updating their state and 'updatedAt' fields.
@@ -43,5 +48,5 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
      * Retrieves a list of complaints based on the user ID of the employee who got assigned to the complaint.
      * Returns all complaints associated with the given technicianId (userId).
      */
-    public List<Complaint> findAllByTechnicianId(String userId);
+    public List<Complaint> findByTechnicianId(String userId);
 }

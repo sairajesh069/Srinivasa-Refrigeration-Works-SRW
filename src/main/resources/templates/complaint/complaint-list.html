@@ -19,22 +19,17 @@
         <!-- Form to fetch complaint details based on the identifier -->
         <form th:action="@{/SRW/complaint/search}" th:object="${complaintIdentifierDTO}" method="POST">
 
-            <!-- Helper message providing guidance for input -->
-            <p class="helper-message">
-                Enter complaint ID or phone number. Add date if using phone number to fetch details.
-            </p>
+            <!-- Identifier input field -->
+            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter complaint id or phone number">
 
-            <!-- Identifier input field with error handling -->
-            <label for="identifier">Search:</label>
-            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter complaint id or">
-            <span th:if="${#fields.hasErrors('identifier')}" th:errors="*{identifier}" class="error"></span>
-
-            <!-- Registered date input field with error handling -->
+            <!-- Registered date input field -->
             <input type="date" th:field="*{registeredDate}">
-            <span th:if="${#fields.hasErrors('registeredDate')}" th:errors="*{registeredDate}" class="error"></span> <br><br>
 
             <!-- Button to submit the form for fetching complaint details -->
-            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Complaint"> <br><br>
+            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br><br>
+
+            <!-- Helper message providing guidance for input -->
+            <p class="helper-message">Enter complaint ID or phone number. Add date if using phone number to fetch details.</p>
         </form>
 
         <!-- Display a message if no records are found -->

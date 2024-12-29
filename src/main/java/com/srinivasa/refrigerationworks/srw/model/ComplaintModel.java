@@ -4,7 +4,6 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public class ComplaintModel {
      * If the list is empty, a "noComplaintsFound" attribute with a message is added.
      * Otherwise, the list of complaints is added under the "complaints" attribute.
      */
-    public static void addComplaintListToModel(List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
+    public static void addComplaintsToModel(List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
         model.addAttribute("complaintIdentifierDTO", new ComplaintIdentifierDTO());
         model.addAttribute(
                 complaints.isEmpty() ? "noComplaintsFound" : "complaints",
@@ -74,24 +73,15 @@ public class ComplaintModel {
      * Adds the complaint details for updating to the model and session.
      * Populates the dropdowns for product types and complaint statuses.
      */
-    public static void addComplaintDTOForUpdateToModel(ComplaintDTO complaintDTO, List<String> technicianIds,
-                                                       Model model, HttpSession session) {
-        if(complaintDTO != null) {
-            model.addAttribute("complaintDTO", complaintDTO);
-            session.setAttribute("initialComplaintDTO", complaintDTO);
-            populateDropDownsForProduct(complaintDTO.getProductType(), model);
-            populateComplaintStatus(model);
-        }
-        session.setAttribute("canAccess", complaintDTO != null);
-        populateTechnicianIds(technicianIds, model);
-        session.setAttribute("technicianIds", technicianIds);
+    public static void addComplaintToModel(ComplaintDTO complaint, Model model) {
+        model.addAttribute("complaint", complaint);
+        populateDropDownsForProduct(complaint.getProductType(), model);
     }
 
-    /*
-     * Populates technician IDs into the model for use in views.
-     */
-    public static void populateTechnicianIds(List<String> technicianIds, Model model) {
+    public static void populateComplaintUpdate(List<String> technicianIds, String updateEndpointOrigin, Model model) {
         model.addAttribute("technicianIds", technicianIds);
+        populateComplaintStatus(model);
+        model.addAttribute("updateEndpointOrigin", updateEndpointOrigin);
     }
 
     /*

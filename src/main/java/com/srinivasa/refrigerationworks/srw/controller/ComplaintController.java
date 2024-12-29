@@ -7,7 +7,6 @@ import com.srinivasa.refrigerationworks.srw.service.ComplaintService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
-import com.srinivasa.refrigerationworks.srw.validation.ComplaintIdentifierValidation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -17,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /*
  * Controller class to handle complaint-related operations.
@@ -65,7 +62,7 @@ public class ComplaintController {
             }
             return "complaint/complaint-register-form";
         }
-        complaintService.registerComplaint(complaintDTO, (String) session.getAttribute("userId"));
+        complaintService.registerComplaint(complaintDTO, session.getAttribute("userId").toString());
         return "complaint/complaint-confirmation";
     }
 
@@ -87,8 +84,9 @@ public class ComplaintController {
      */
     @GetMapping("/my-complaints")
     public String getMyComplaints(Model model, HttpSession session) {
-        ComplaintModel.addComplaintListToModel(
-                complaintService.getComplaintsByBookedById((String) session.getAttribute("userId")), "No complaints have been registered yet.", model);
+        ComplaintModel.addComplaintsToModel(
+                complaintService.getComplaintsByBookedById(session.getAttribute("userId").toString()),
+                "No complaints have been registered yet.", model);
         return "complaint/complaint-list";
     }
 
@@ -98,7 +96,8 @@ public class ComplaintController {
      */
     @GetMapping("/list")
     public String getComplaintList(Model model) {
-        ComplaintModel.addComplaintListToModel(complaintService.getComplaintList(), "No complaints have been registered yet.", model);
+        ComplaintModel.addComplaintsToModel(complaintService.getComplaintList(),
+                "No complaints have been registered yet.", model);
         return "complaint/complaint-list";
     }
 
@@ -108,7 +107,8 @@ public class ComplaintController {
      */
     @GetMapping("/active-list")
     public String getActiveComplaintList(Model model) {
-        ComplaintModel.addComplaintListToModel(complaintService.getActiveComplaintList(), "No active complaints found.", model);
+        ComplaintModel.addComplaintsToModel(complaintService.getActiveComplaintList(),
+                "No active complaints found.", model);
         return "complaint/complaint-list";
     }
 
@@ -118,16 +118,13 @@ public class ComplaintController {
      * Displays complaint details if one result is found, or a list view for multiple results.
      */
     @PostMapping("/search")
-    public String getComplaint(@ModelAttribute ComplaintIdentifierDTO complaintIdentifierDTO, BindingResult bindingResult,
+    public String getComplaint(@ModelAttribute ComplaintIdentifierDTO complaintIdentifierDTO,
                                HttpSession session, Model model, HttpServletRequest request) {
-
-        ComplaintIdentifierValidation.identifierValidation(complaintIdentifierDTO, bindingResult);
-        if(bindingResult.hasErrors()) {
-            return "redirect:/SRW/complaint/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/");
-        }
-        List<ComplaintDTO> complaints = complaintService.getComplaintByIdentifier(
-                complaintIdentifierDTO, (String) session.getAttribute("userId"), UserRoleProvider.fetchUserRole(session));
-        ComplaintModel.addComplaintListToModel(complaints, "No complaints found.", model);
+        ComplaintModel.addComplaintsToModel(
+                complaintService.getComplaintByIdentifier(
+                        complaintIdentifierDTO, session.getAttribute("userId").toString(), UserRoleProvider.fetchUserRole(session)
+                ), "No complaints found.", model);
+        session.setAttribute("searchEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"));
         return "complaint/complaint-list";
     }
 
@@ -138,14 +135,16 @@ public class ComplaintController {
     @GetMapping("/update")
     public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model,
                                   HttpSession session, HttpServletRequest request) {
-
-        ComplaintModel.addComplaintDTOForUpdateToModel(
-                complaintService.getComplaintById(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
-                        (String) session.getAttribute("userId")),
-                complaintService.getActiveEmployeeIds(), model, session);
-
-        session.setAttribute("updateEndpointOrigin", SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"));
-        return (boolean)session.getAttribute("canAccess") ? "complaint/complaint-update-form" : "access-denied";
+        if(complaintService.canUserAccess(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
+                session.getAttribute("userId").toString())) {
+            ComplaintModel.addComplaintToModel(complaintService.getComplaintById(complaintId), model);
+            ComplaintModel.populateComplaintUpdate(complaintService.getActiveEmployeeIds(),
+                    SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/").equals("search")
+                        ? session.getAttribute("searchEndpointOrigin").toString()
+                        : SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"), model);
+            return "complaint/complaint-update-form";
+        }
+        return "access-denied";
     }
 
     /*
@@ -153,18 +152,15 @@ public class ComplaintController {
      * Redirects to the appropriate origin complaint page of update endpoint on success based on the user's role.
      */
     @PostMapping("/update")
-    public String updateComplaint(@ModelAttribute("complaintDTO") @Valid ComplaintDTO updatedComplaintDTO,
-                                  BindingResult bindingResult, Model model, HttpSession session) {
-
+    public String updateComplaint(@ModelAttribute("complaint") ComplaintDTO updatedComplaintDTO, BindingResult bindingResult,
+                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);
-            ComplaintModel.populateComplaintStatus(model);
-            ComplaintModel.populateTechnicianIds((List<String>) session.getAttribute("technicianIds"), model);
+            ComplaintModel.populateComplaintUpdate(complaintService.getActiveEmployeeIds(), updateEndpointOrigin, model);
             return "complaint/complaint-update-form";
         }
-        ComplaintDTO initialComplaintDTO = (ComplaintDTO) session.getAttribute("initialComplaintDTO");
-        complaintService.updateComplaint(initialComplaintDTO, updatedComplaintDTO);
-        return "redirect:/SRW/complaint/" + session.getAttribute("updateEndpointOrigin");
+        complaintService.updateComplaint(complaintService.getComplaintById(updatedComplaintDTO.getComplaintId()), updatedComplaintDTO);
+        return "redirect:/SRW/complaint/" + updateEndpointOrigin;
     }
 
     /*
@@ -195,8 +191,9 @@ public class ComplaintController {
      */
     @GetMapping("/assigned-complaints")
     public String getAssignedComplaints(Model model, HttpSession session) {
-        ComplaintModel.addComplaintListToModel(
-                complaintService.getComplaintsByTechnicianId((String) session.getAttribute("userId")), "No complaints have been assigned yet.", model);
+        ComplaintModel.addComplaintsToModel(
+                complaintService.getComplaintsByTechnicianId(session.getAttribute("userId").toString()),
+                "No complaints have been assigned yet.", model);
         return "complaint/complaint-list";
     }
 }

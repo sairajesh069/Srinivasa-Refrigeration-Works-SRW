@@ -19,7 +19,9 @@
         <h3>Update Details</h3>
 
         <!-- Update Complaint Details Form -->
-        <form th:action="@{/SRW/complaint/update}" th:object="${complaintDTO}" method="POST">
+        <form th:action="@{/SRW/complaint/update}" th:object="${complaint}" method="POST">
+
+            <input type="hidden" name="updateEndpointOrigin" th:value="${updateEndpointOrigin}">
 
             <!-- Hidden input field for complaint ID -->
             <input type="hidden" th:field="*{complaintId}">
@@ -88,9 +90,9 @@
             <!-- Input for complaint status -->
             <label for="status">Status: </label>
             <input id="status" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${session.userId.length() == 6 or session.userId == complaintDTO.technicianId}">
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${session.userId.length() == 6 or session.userId == complaint.technicianId}">
             <input id="statusReadOnly" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${!(session.userId.length() == 6 or session.userId == complaintDTO.technicianId)}" onclick="return false;"> <br><br>
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${!(session.userId.length() == 6 or session.userId == complaint.technicianId)}" onclick="return false;"> <br><br>
 
             <!-- Input for assigning technician for complaint -->
             <label for="technicianId">Technician Id: </label>
@@ -110,8 +112,8 @@
 
             <!-- Input for complaint feedback -->
             <label for="customerFeedback">Feedback: </label>
-            <input id="customerFeedback" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId == complaintDTO.bookedById}">
-            <input id="customerFeedbackReadOnly" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId != complaintDTO.bookedById}" readonly> <br><br>
+            <input id="customerFeedback" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId == complaint.bookedById}">
+            <input id="customerFeedbackReadOnly" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId != complaint.bookedById}" readonly> <br><br>
 
             <!-- Submit button for updating details -->
             <input type="submit" class="btn btn-primary btn-sm mb-3" value="Update"> <br><br>
