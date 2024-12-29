@@ -80,7 +80,7 @@ public class EmployeeCredentialController {
      * Redirects to origin employee page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult,
+    public String updateEmployee(@ModelAttribute("employee") @Valid EmployeeDTO updatedEmployeeDTO, BindingResult bindingResult,
                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);

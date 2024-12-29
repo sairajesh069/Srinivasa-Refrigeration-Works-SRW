@@ -2,8 +2,6 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 
 import java.util.List;

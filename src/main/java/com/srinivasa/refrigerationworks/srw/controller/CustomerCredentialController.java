@@ -80,7 +80,7 @@ public class CustomerCredentialController {
      * Redirects to origin customer page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult,
+    public String updateCustomer(@ModelAttribute("customer") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult,
                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);

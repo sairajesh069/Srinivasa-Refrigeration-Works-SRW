@@ -45,8 +45,8 @@ public class UserCredentialService {
      */
     @Cacheable(value = "user-credential", key = "'fetch_user-' + #usernameRecoveryDTO.phoneNumber")
     public String fetchUsername(UsernameRecoveryDTO usernameRecoveryDTO) {
-        String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(usernameRecoveryDTO.getPhoneNumber());
-        return userCredentialRepository.fetchUsernameByPhoneNumber(phoneNumber);
+        return userCredentialRepository.fetchUsernameByPhoneNumber(
+                PhoneNumberFormatter.formatPhoneNumber(usernameRecoveryDTO.getPhoneNumber()));
     }
 
     /*
@@ -56,9 +56,8 @@ public class UserCredentialService {
      */
     @Cacheable(value = "user-credential", key = "'validate-' + #passwordResetDTO.username + '&' + #passwordResetDTO.phoneNumber")
     public boolean validateUser(PasswordResetDTO passwordResetDTO) {
-        String phoneNumber = PhoneNumberFormatter.formatPhoneNumber(passwordResetDTO.getPhoneNumber());
-        String username = passwordResetDTO.getUsername();
-        return userCredentialRepository.existsByPhoneNumberAndUsername(phoneNumber, username);
+        return userCredentialRepository.existsByPhoneNumberAndUsername(
+                PhoneNumberFormatter.formatPhoneNumber(passwordResetDTO.getPhoneNumber()), passwordResetDTO.getUsername());
     }
 
     /*
@@ -66,9 +65,7 @@ public class UserCredentialService {
      * - Encodes the new password before updating.
      */
     public void updatePassword(PasswordResetDTO passwordResetDTO) {
-        String password = passwordEncoder.encode(passwordResetDTO.getPassword());
-        String username = passwordResetDTO.getUsername();
-        userCredentialRepository.updatePassword(username, password);
+        userCredentialRepository.updatePassword(passwordResetDTO.getUsername(), passwordEncoder.encode(passwordResetDTO.getPassword()));
     }
 
     /*
