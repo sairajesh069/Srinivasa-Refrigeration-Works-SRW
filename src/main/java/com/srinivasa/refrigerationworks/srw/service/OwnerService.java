@@ -50,8 +50,8 @@ public class OwnerService {
      */
     @Cacheable(value = "owners", key = "'owner_list'")
     public List<OwnerDTO> getOwnerList() {
-        List<Owner> owners = ownerRepository.findAll();
-        return owners
+        return ownerRepository
+                .findAll()
                 .stream()
                 .map(ownerMapper::toDto)
                 .toList();
@@ -63,10 +63,9 @@ public class OwnerService {
      */
     @Cacheable(value = "owners", key = "'active_owner_list'")
     public List<OwnerDTO> getActiveOwnerList() {
-        List<Owner> owners = ownerRepository.findAll();
-        return owners
+        return ownerRepository
+                .findByStatus(UserStatus.ACTIVE)
                 .stream()
-                .filter(owner -> owner.getStatus().name().equals("ACTIVE"))
                 .map(ownerMapper::toDto)
                 .toList();
     }
@@ -78,8 +77,8 @@ public class OwnerService {
      */
     @Cacheable(value = "owner" , key = "'fetch-' + #identifier")
     public OwnerDTO getOwnerByIdentifier(String identifier) {
-        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
-        Owner owner = ownerRepository.findByIdentifier(identifier);
+        Owner owner = ownerRepository.findByIdentifier(
+                identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier);
         return ownerMapper.toDto(owner);
     }
 
@@ -90,14 +89,15 @@ public class OwnerService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "owners", allEntries = true),
-                    @CacheEvict(cacheNames = "owner", key = "'fetch-' + #ownerDTO.ownerId")},
-            put = @CachePut(value = "owner", key = "'update-' + #ownerDTO.ownerId"))
+                    @CacheEvict(cacheNames = "owner", key = "'fetch-' + #ownerDTO.ownerId")
+            },
+            put = @CachePut(value = "owner", key = "'update-' + #ownerDTO.ownerId")
+    )
     public void updateOwner(OwnerDTO ownerDTO) {
         Owner owner = ownerMapper.toEntity(ownerDTO);
         owner.setOwnerId(ownerDTO.getOwnerId());
         owner.setOwnerReference(Long.parseLong(ownerDTO.getOwnerId().substring(3,6)));
-        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber());
-        owner.setPhoneNumber(updatedPhoneNumber);
+        owner.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(owner.getPhoneNumber()));
         owner.setUpdatedAt(LocalDateTime.now());
         ownerRepository.save(owner);
     }
@@ -108,7 +108,8 @@ public class OwnerService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "owners", allEntries = true),
-            put = @CachePut(value = "owner", key = "'activate-' + #ownerId"))
+            put = @CachePut(value = "owner", key = "'activate-' + #ownerId")
+    )
     public void activateOwner(String ownerId) {
         ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.ACTIVE);
     }
@@ -119,7 +120,8 @@ public class OwnerService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "owners", allEntries = true),
-            put = @CachePut(value = "owner", key = "'deactivate-' + #ownerId"))
+            put = @CachePut(value = "owner", key = "'deactivate-' + #ownerId")
+    )
     public void deactivateOwner(String ownerId) {
         ownerRepository.updateOwnerStatus(ownerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }

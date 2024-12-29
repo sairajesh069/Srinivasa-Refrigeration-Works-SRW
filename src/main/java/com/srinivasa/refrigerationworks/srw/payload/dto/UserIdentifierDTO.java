@@ -1,6 +1,5 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserIdentifierDTO {
 
     /*
-     * Identifier representing userId, phoneNumber, or email (mandatory field).
+     * Identifier representing userId, phoneNumber, or email.
      */
-    @NotBlank(message = "Invalid input: Please provide a valid user ID, phone number, or email")
     private String identifier;
 }

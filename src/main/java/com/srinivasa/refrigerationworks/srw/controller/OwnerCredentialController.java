@@ -36,6 +36,15 @@ public class OwnerCredentialController {
     }
 
     /*
+     * Displays the owner registration form
+     */
+    @GetMapping("/register")
+    public String createOwner(Model model) {
+        UserCredentialModel.addOwnerCredentialToModel(model);
+        return "owner/owner-register-form";
+    }
+
+    /*
      * Confirms the owner registration and adds owner credentials
      */
     @PostMapping("/confirmation")
@@ -49,19 +58,31 @@ public class OwnerCredentialController {
     }
 
     /*
+     * Handles GET request to display owner update form with current owner data.
+     * Sets session attribute using substring from the "Referer" header.
+     */
+    @GetMapping("/update")
+    public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpServletRequest request) {
+        OwnerModel.addOwnerToModel(ownerCredentialService.getOwnerById(ownerId), model);
+        UserCredentialModel.addUserFormConstantsToModel(model);
+        UserCredentialModel.addUpdateEndpointOriginToModel(SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"), model);
+        return "owner/owner-update-form";
+    }
+
+    /*
      * Handles POST request to update owner's details after validation.
      * Redirects to origin owner page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateOwner(@ModelAttribute("ownerDTO") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult,
-                              Model model, HttpSession session) {
-
+    public String updateOwner(@ModelAttribute("owner") @Valid OwnerDTO updatedOwnerDTO, BindingResult bindingResult,
+                              @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
+            UserCredentialModel.addUpdateEndpointOriginToModel(updateEndpointOrigin, model);
             return "owner/owner-update-form";
         }
-        ownerCredentialService.updateOwner((OwnerDTO) session.getAttribute("initialOwnerDTO"), updatedOwnerDTO);
-        return "redirect:/SRW/owner/" + session.getAttribute("updateEndpointOrigin");
+        ownerCredentialService.updateOwner(ownerCredentialService.getOwnerById(updatedOwnerDTO.getOwnerId()), updatedOwnerDTO);
+        return "redirect:/SRW/owner/" + updateEndpointOrigin;
     }
 
     /*
@@ -91,8 +112,7 @@ public class OwnerCredentialController {
      */
     @GetMapping("/my-profile")
     public String getOwnerProfile(Model model, HttpSession session) {
-        OwnerModel.addOwnerDetailsToModel(
-                ownerCredentialService.getOwnerByOwnerId((String) session.getAttribute("userId")), model, session);
+        OwnerModel.addOwnerToModel(ownerCredentialService.getOwnerById(session.getAttribute("userId").toString()), model);
         return "owner/owner-details";
     }
 }

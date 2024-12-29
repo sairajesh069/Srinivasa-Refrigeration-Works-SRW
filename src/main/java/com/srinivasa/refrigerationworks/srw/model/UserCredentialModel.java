@@ -60,4 +60,11 @@ public class UserCredentialModel {
     public static void addUserProfileHrefToModel(String userType, Model model) {
         model.addAttribute("profileHref", "/SRW/" + SubStringExtractor.extractSubString(userType, "ROLE_").toLowerCase() + "/my-profile");
     }
+
+    /*
+     * Adds the origin of the update endpoint to the model based on the user type and referer header.
+     */
+    public static void addUpdateEndpointOriginToModel(String updateEndpointOrigin, Model model) {
+        model.addAttribute("updateEndpointOrigin", updateEndpointOrigin);
+    }
 }

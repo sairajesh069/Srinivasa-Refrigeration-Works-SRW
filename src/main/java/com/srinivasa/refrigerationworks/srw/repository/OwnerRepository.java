@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
  * Repository interface for Owner entity
@@ -24,6 +25,11 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
      */
     @Query("SELECT o FROM Owner o WHERE o.ownerId = :identifier OR o.phoneNumber = :identifier OR o.email = :identifier")
     public Owner findByIdentifier(@Param("identifier") String identifier);
+
+    /*
+     * Fetches a list of owners based on their status.
+     */
+    public List<Owner> findByStatus(UserStatus status);
 
     /*
      * Activates/Deactivates an owner by updating their status and 'updatedAt' field.

@@ -18,7 +18,9 @@
         <h3>Update Details</h3>
 
         <!-- Update Owner Details Form -->
-        <form th:action="@{/SRW/owner/update}" th:object="${ownerDTO}" method="POST">
+        <form th:action="@{/SRW/owner/update}" th:object="${owner}" method="POST">
+
+            <input type="hidden" name="updateEndpointOrigin" th:value="${updateEndpointOrigin}">
 
             <!-- Hidden input field for owner ID -->
             <input type="hidden" th:field="*{ownerId}">

@@ -2,8 +2,10 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
-import jakarta.servlet.http.HttpSession;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
+
 import java.util.List;
 
 /*
@@ -17,7 +19,7 @@ public class OwnerModel {
      * The owners list is added to the model under the attribute "owners" if not empty,
      * otherwise a "noOwnersFound" message is added.
      */
-    public static void addOwnerListToModel(List<OwnerDTO> owners, Model model) {
+    public static void addOwnersToModel(List<OwnerDTO> owners, Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
         model.addAttribute(
                 owners.isEmpty() ? "noOwnersFound" : "owners",
@@ -29,18 +31,9 @@ public class OwnerModel {
      * - If owner is null, adds a message indicating no owner found.
      * - Otherwise, adds the owner details.
      */
-    public static void addOwnerDetailsToModel(OwnerDTO owner, Model model, HttpSession session) {
+    public static void addOwnerToModel(OwnerDTO owner, Model model) {
         model.addAttribute(
                 owner == null ? "noOwnerFound" : "owner",
                 owner == null ? "Owner not found for the given details." : owner);
-        session.setAttribute("ownerDetails", owner);
-    }
-
-    /*
-     * Adds OwnerDTO to the model and stores the initial state in the session for update comparison.
-     */
-    public static void addOwnerDTOForUpdateToModel(OwnerDTO ownerDTO, Model model, HttpSession session) {
-        model.addAttribute("ownerDTO", ownerDTO);
-        session.setAttribute("initialOwnerDTO", ownerDTO);
     }
 }

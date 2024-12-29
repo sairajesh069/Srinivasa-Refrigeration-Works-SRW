@@ -21,7 +21,6 @@ public class OwnerCredentialService {
     private final UserCredentialMapper userCredentialMapper;
     private final OwnerService ownerService;
 
-
     /*
      * Adds user credential for the owner. The owner's details are added,
      * and user credentials are saved with the role "ROLE_OWNER".
@@ -77,7 +76,7 @@ public class OwnerCredentialService {
     /*
      * Retrieves the OwnerDTO by ownerId.
      */
-    public OwnerDTO getOwnerByOwnerId(String ownerId) {
+    public OwnerDTO getOwnerById(String ownerId) {
         return ownerService.getOwnerByIdentifier(ownerId);
     }
 }
