@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
  * Repository interface for Customer entity
@@ -24,6 +25,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      */
     @Query("SELECT c FROM Customer c WHERE c.customerId = :identifier OR c.phoneNumber = :identifier OR c.email = :identifier")
     public Customer findByIdentifier(@Param("identifier") String identifier);
+
+    /*
+     * Fetches a list of customers based on their status.
+     */
+    public List<Customer> findByStatus(UserStatus status);
 
     /*
      * Activates/Deactivates a customer by updating their status and 'updatedAt' fields.

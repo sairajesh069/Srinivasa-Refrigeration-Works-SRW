@@ -50,8 +50,8 @@ public class CustomerService {
      */
     @Cacheable(value = "customers", key = "'customer_list'")
     public List<CustomerDTO> getCustomerList() {
-        List<Customer> customers = customerRepository.findAll();
-        return customers
+        return customerRepository
+                .findAll()
                 .stream()
                 .map(customerMapper::toDto)
                 .toList();
@@ -63,10 +63,9 @@ public class CustomerService {
      */
     @Cacheable(value = "customers", key = "'active_customer_list'")
     public List<CustomerDTO> getActiveCustomerList() {
-        List<Customer> customers = customerRepository.findAll();
-        return customers
+        return customerRepository
+                .findByStatus(UserStatus.ACTIVE)
                 .stream()
-                .filter(customer -> customer.getStatus().name().equals("ACTIVE"))
                 .map(customerMapper::toDto)
                 .toList();
     }
@@ -78,8 +77,8 @@ public class CustomerService {
      */
     @Cacheable(value = "customer", key = "'fetch-' + #identifier")
     public CustomerDTO getCustomerByIdentifier(String identifier) {
-        identifier = identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
-        Customer customer = customerRepository.findByIdentifier(identifier);
+        Customer customer = customerRepository.findByIdentifier(
+                identifier.matches("\\d{10}") ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier);
         return customerMapper.toDto(customer);
     }
 
@@ -90,14 +89,15 @@ public class CustomerService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "customers", allEntries = true),
-                    @CacheEvict(cacheNames = "customer", key = "'fetch-' + #customerDTO.customerId")},
-            put = @CachePut(value = "customer", key = "'update-' + #customerDTO.customerId"))
+                    @CacheEvict(cacheNames = "customer", key = "'fetch-' + #customerDTO.customerId")
+            },
+            put = @CachePut(value = "customer", key = "'update-' + #customerDTO.customerId")
+    )
     public void updateCustomer(CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
         customer.setCustomerId(customerDTO.getCustomerId());
         customer.setCustomerReference(Long.parseLong(customerDTO.getCustomerId().substring(3,10)));
-        String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber());
-        customer.setPhoneNumber(updatedPhoneNumber);
+        customer.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(customer.getPhoneNumber()));
         customer.setUpdatedAt(LocalDateTime.now());
         customerRepository.save(customer);
     }
@@ -108,7 +108,8 @@ public class CustomerService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "customers", allEntries = true),
-            put = @CachePut(value = "customer", key = "'activate-' + #customerId"))
+            put = @CachePut(value = "customer", key = "'activate-' + #customerId")
+    )
     public void activateCustomer(String customerId) {
         customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.ACTIVE);
     }
@@ -119,7 +120,8 @@ public class CustomerService {
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "customers", allEntries = true),
-            put = @CachePut(value = "customer", key = "'deactivate-' + #customerId"))
+            put = @CachePut(value = "customer", key = "'deactivate-' + #customerId")
+    )
     public void deactivateCustomer(String customerId) {
         customerRepository.updateCustomerStatus(customerId, LocalDateTime.now(), UserStatus.IN_ACTIVE);
     }

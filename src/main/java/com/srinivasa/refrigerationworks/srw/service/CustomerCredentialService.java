@@ -21,7 +21,6 @@ public class CustomerCredentialService {
     private final UserCredentialMapper userCredentialMapper;
     private final CustomerService customerService;
 
-
     /*
      * Adds user credential for the customer. The customer's details are added,
      * and user credentials are saved with the role "ROLE_CUSTOMER".
@@ -77,7 +76,7 @@ public class CustomerCredentialService {
     /*
      * Retrieves the CustomerDTO by customerId.
      */
-    public CustomerDTO getCustomerByCustomerId(String customerId) {
+    public CustomerDTO getCustomerById(String customerId) {
         return customerService.getCustomerByIdentifier(customerId);
     }
 }

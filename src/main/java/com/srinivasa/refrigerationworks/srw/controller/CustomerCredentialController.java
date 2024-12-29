@@ -5,6 +5,7 @@ import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerCredentialService;
+import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,12 +37,19 @@ public class CustomerCredentialController {
     }
 
     /*
+     * Displays the customer registration form
+     */
+    @GetMapping("/register")
+    public String createCustomer(Model model) {
+        UserCredentialModel.addCustomerCredentialToModel(model);
+        return "customer/customer-register-form";
+    }
+
+    /*
      * Confirms the customer registration and adds customer credentials
      */
     @PostMapping("/confirmation")
-    public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO,
-                                  BindingResult bindingResult, Model model) {
-
+    public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             return "customer/customer-register-form";
@@ -51,18 +59,36 @@ public class CustomerCredentialController {
     }
 
     /*
+     * Handles GET request to display customer update form with current customer data.
+     * Sets session attribute using substring from the "Referer" header.
+     */
+    @GetMapping("/update")
+    public String updateCustomer(@RequestParam("customerId") String customerId, Model model,
+                                 HttpSession session, HttpServletRequest request) {
+        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        if(UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
+            CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById(customerId), model);
+            UserCredentialModel.addUserFormConstantsToModel(model);
+            UserCredentialModel.addUpdateEndpointOriginToModel(refererEndpoint, model);
+            return "customer/customer-update-form";
+        }
+        return "access-denied";
+    }
+
+    /*
      * Handles POST request to update customer's details after validation.
      * Redirects to origin customer page of update endpoint on success.
      */
     @PostMapping("/update")
-    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO,
-                                 BindingResult bindingResult, Model model, HttpSession session) {
+    public String updateCustomer(@ModelAttribute("customerDTO") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult,
+                                 @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if(bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
+            UserCredentialModel.addUpdateEndpointOriginToModel(updateEndpointOrigin, model);
             return "customer/customer-update-form";
         }
-        customerCredentialService.updateCustomer((CustomerDTO) session.getAttribute("initialCustomerDTO"), updatedCustomerDTO);
-        return "redirect:/SRW/customer/" + session.getAttribute("updateEndpointOrigin");
+        customerCredentialService.updateCustomer(customerCredentialService.getCustomerById(updatedCustomerDTO.getCustomerId()), updatedCustomerDTO);
+        return "redirect:/SRW/customer/" + updateEndpointOrigin;
     }
 
     /*
@@ -92,8 +118,7 @@ public class CustomerCredentialController {
      */
     @GetMapping("/my-profile")
     public String getCustomerProfile(Model model, HttpSession session) {
-        CustomerModel.addCustomerDetailsToModel(
-                customerCredentialService.getCustomerByCustomerId((String) session.getAttribute("userId")), model, session);
+        CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById((String) session.getAttribute("userId")), model);
         return "customer/customer-details";
     }
 }

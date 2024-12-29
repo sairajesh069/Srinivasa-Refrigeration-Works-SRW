@@ -2,7 +2,6 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class CustomerModel {
      * The customers list is added to the model under the attribute "customers" if not empty,
      * otherwise a "noCustomersFound" message is added.
      */
-    public static void addCustomerListToModel(List<CustomerDTO> customers, Model model) {
+    public static void addCustomersToModel(List<CustomerDTO> customers, Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
         model.addAttribute(
                 customers.isEmpty() ? "noCustomersFound" : "customers",
@@ -30,18 +29,9 @@ public class CustomerModel {
      * - If customer is null, adds a message indicating no customer found.
      * - Otherwise, adds the customer details.
      */
-    public static void addCustomerDetailsToModel(CustomerDTO customer, Model model, HttpSession session) {
+    public static void addCustomerToModel(CustomerDTO customer, Model model) {
         model.addAttribute(
                 customer == null ? "noCustomerFound" : "customer",
                 customer == null ? "Customer not found for the given details." : customer);
-        session.setAttribute("customerDetails", customer);
-    }
-
-    /*
-     * Adds CustomerDTO to the model and stores the initial state in the session for update comparison.
-     */
-    public static void addCustomerDTOForUpdateToModel(CustomerDTO customerDTO, Model model, HttpSession session) {
-        model.addAttribute("customerDTO", customerDTO);
-        session.setAttribute("initialCustomerDTO", customerDTO);
     }
 }
