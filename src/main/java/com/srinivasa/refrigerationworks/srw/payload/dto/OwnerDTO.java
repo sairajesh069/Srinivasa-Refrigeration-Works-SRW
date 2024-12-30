@@ -35,27 +35,25 @@ public class OwnerDTO implements Serializable {
     private static final long serialVersionUID = 31L;
 
     /*
-     * Owner's unique Id
+     * Owner's unique Id.
      */
     private String ownerId;
 
     /*
-     * Owner's first name (mandatory field)
+     * Owner's first name (mandatory).
      */
     @NotNull(message = "First name is mandatory")
     private String firstName;
 
     /*
-     * Owner's last name (mandatory field)
+     * Owner's last name (mandatory).
      */
     @NotNull(message = "Last name is mandatory")
     private String lastName;
 
     /*
-     * Owner's date of birth
-     * - NotNull: Ensures that the date of birth is provided.
-     * - Past: Ensures that the date of birth is in the past.
-     * - DateTimeFormat: Validates the date format (yyyy-MM-dd).
+     * Owner's date of birth (mandatory, in the past).
+     * Validates the format (yyyy-MM-dd).
      */
     @NotNull(message = "Date of Birth is mandatory")
     @Past(message = "Date of birth must be in the past.")
@@ -63,39 +61,33 @@ public class OwnerDTO implements Serializable {
     private LocalDate dateOfBirth;
 
     /*
-     * Owner's gender (mandatory field)
+     * Owner's gender (mandatory).
      */
     @NotNull(message = "Gender is mandatory")
     private String gender;
 
     /*
-     * Owner's phone number.
-     * - Mandatory field.
-     * - Must match the specified regex for valid phone numbers.
-     * - Ensures uniqueness across all user-related entities.
+     * Owner's phone number (mandatory, valid format, unique).
      */
     @NotNull(message = "Phone number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
     private String phoneNumber;
 
     /*
-     * Owner's email address.
-     * - Mandatory field.
-     * - Must be a valid email format.
-     * - Ensures uniqueness across all user-related entities.
+     * Owner's email (mandatory, valid format, unique).
      */
     @NotNull(message = "Email is mandatory")
     @Email(message = "Please enter a valid email address")
     private String email;
 
     /*
-     * Owner's address (mandatory field)
+     * Owner's address (mandatory).
      */
     @NotNull(message = "Address is mandatory")
     private String address;
 
     /*
-     * Status of the owner
+     * Status of the owner.
      */
     private UserStatus status;
 }

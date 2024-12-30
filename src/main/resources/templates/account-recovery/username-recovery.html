@@ -21,10 +21,12 @@
         <!-- Form to fetch username -->
         <form th:action="@{/SRW/username-recovery}" th:object="${usernameRecoveryDTO}" method="POST">
 
+            <!-- Phone Number Input Field -->
             <label for="phoneNumber">Phone number: </label>
             <input id="phoneNumber" type="text" th:field="*{phoneNumber}" placeholder="Enter your phone number." /> <!-- Bind to phoneNumber field -->
             <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="error"></span> <br><br>
 
+            <!-- Submit Button to Fetch Username -->
             <input type="submit" class="btn btn-primary btn-sm mb-3" value="Fetch Username"> <br><br>
         </form>
 

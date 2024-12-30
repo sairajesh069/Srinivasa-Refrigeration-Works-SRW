@@ -9,8 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 /*
- * DTO for complaint identification.
- * Can represent complaintId or phoneNumber and registered date for querying a complaint.
+ * DTO for complaint identification (complaintId, phoneNumber, registered date).
  */
 @Data
 @Builder
@@ -19,12 +18,12 @@ import java.time.LocalDate;
 public class ComplaintIdentifierDTO {
 
     /*
-     * Identifier representing complaintId or phoneNumber.
+     * Complaint ID or phone number.
      */
     private String identifier;
 
     /*
-     * Date when the complaint is registered.
+     * Complaint registration date.
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate registeredDate;

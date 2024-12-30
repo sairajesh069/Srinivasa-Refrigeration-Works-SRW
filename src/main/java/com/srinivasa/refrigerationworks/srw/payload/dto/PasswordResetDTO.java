@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * Data Transfer Object (DTO) for Password Reset.
- * Used to transfer data required for resetting a user's password.
+ * DTO for password reset, containing user info and new password details.
  */
 @Data
 @Builder
@@ -16,26 +15,22 @@ import lombok.NoArgsConstructor;
 public class PasswordResetDTO {
 
     /*
-     * The phone number of the user.
-     * Used to identify the user for password reset.
+     * User's phone number for identification.
      */
     private String phoneNumber;
 
     /*
-     * The username of the user.
-     * Used to validate the user during password reset.
+     * Username for validation.
      */
     private String username;
 
     /*
-     * The new password for the user.
-     * Must meet defined security criteria.
+     * New password for the user.
      */
     private String password;
 
     /*
-     * Confirmation of the new password.
-     * Must match the password field.
+     * Password confirmation (must match new password).
      */
     private String confirmPassword;
 }

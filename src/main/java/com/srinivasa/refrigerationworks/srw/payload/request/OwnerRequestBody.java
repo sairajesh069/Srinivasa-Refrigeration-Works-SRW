@@ -4,13 +4,13 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import lombok.Data;
 
 /*
- * Request body class for receiving OwnerDTO data
+ * Request body for OwnerDTO data
  */
 @Data
 public class OwnerRequestBody {
 
     /*
-     * OwnerDTO object containing owner details
+     * OwnerDTO object with owner details
      */
     private OwnerDTO ownerDTO;
 }

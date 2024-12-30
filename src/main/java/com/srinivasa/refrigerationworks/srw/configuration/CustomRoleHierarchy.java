@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public class CustomRoleHierarchy implements RoleHierarchy {
 
+    /*
+     * Overrides getReachableGrantedAuthorities to return reachable authorities based on role hierarchy.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getReachableGrantedAuthorities(
             Collection<? extends GrantedAuthority> authorities) {
@@ -40,7 +43,7 @@ public class CustomRoleHierarchy implements RoleHierarchy {
                      * If the user has the ROLE_EMPLOYEE authority,
                      * they also have the rights of ROLE_CUSTOMER.
                      */
-                    reachableAuthorities.add(() -> "ROLE_CUSTOMER");
+                        reachableAuthorities.add(() -> "ROLE_CUSTOMER");
             }
         }
 

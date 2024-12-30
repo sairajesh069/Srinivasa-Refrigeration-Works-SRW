@@ -1,14 +1,13 @@
 package com.srinivasa.refrigerationworks.srw.validation;
 
-import java.lang.annotation.*;
-
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+import java.lang.annotation.*;
+
 /*
  * Custom annotation for validating the uniqueness of a field's value.
- * - Ensures that the value of the annotated field is unique within a specified entity or across multiple user-related entities.
- * - The annotation can be repeated multiple times on the same element using the @Repeatable annotation.
+ * - Ensures the annotated field's value is unique within a specified entity or across user-related entities.
  */
 @Constraint(validatedBy = UniqueValueConstraintValidator.class)
 @Target({ElementType.TYPE})
@@ -19,17 +18,17 @@ public @interface UniqueValue {
     /*
      * Default error message when validation fails.
      */
-    public String message() default "Value already exists.";
+    String message() default "Value already exists.";
 
     /*
      * Validation groups to categorize constraints.
      */
-    public Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
     /*
      * Payload for clients of the Bean Validation API.
      */
-    public Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 
     /*
      * The name of the field to check for uniqueness.

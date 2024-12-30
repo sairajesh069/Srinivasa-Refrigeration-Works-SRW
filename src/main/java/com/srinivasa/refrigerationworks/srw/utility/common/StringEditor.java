@@ -9,10 +9,9 @@ import org.springframework.web.bind.WebDataBinder;
 public class StringEditor {
 
     /*
-     * Registers a custom editor to trim leading and trailing spaces from String fields
+     * Registers a custom editor to trim spaces from String fields
      */
     public static void stringTrimmer(WebDataBinder webDataBinder) {
-        StringTrimmerEditor stringEditor = new StringTrimmerEditor(true);
-        webDataBinder.registerCustomEditor(String.class, stringEditor);
+        webDataBinder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

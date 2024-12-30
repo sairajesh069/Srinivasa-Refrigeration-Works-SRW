@@ -24,13 +24,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeService {
 
+    /*
+     * EmployeeRepository for performing CRUD operations on Employee entity.
+     */
     private final EmployeeRepository employeeRepository;
+
+    /*
+     * EmployeeMapper for mapping EmployeeDTO to Employee entity and vice versa.
+     */
     private final EmployeeMapper employeeMapper;
 
     /*
-     * Adds a new employee by converting the EmployeeDTO to an Employee entity,
-     * formatting the phone number, saving it to the repository,
-     * generating an employee ID, and returning it.
+     * Adds a new employee, formats the phone number, saves the employee,
+     * generates employee ID, and returns it.
      */
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)
@@ -45,8 +51,7 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves a list of all employees from the repository and maps them to EmployeeDTO objects.
-     * Returns a list of EmployeeDTO to be used in other services or controllers.
+     * Retrieves a list of all employees and returns them as EmployeeDTO objects.
      */
     @Cacheable(value = "employees", key = "'employee_list'")
     public List<EmployeeDTO> getEmployeeList() {
@@ -58,8 +63,7 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves a list of all active employees from the repository and maps them to EmployeeDTO objects.
-     * Returns a list of active EmployeeDTO to be used in other services or controllers.
+     * Retrieves a list of active employees and returns them as EmployeeDTO objects.
      */
     @Cacheable(value = "employees", key = "'active_employee_list'")
     public List<EmployeeDTO> getActiveEmployeeList() {
@@ -71,9 +75,8 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves the employee details based on the provided identifier (phone number, email, national id number or employee ID).
-     * If the identifier is a 10-digit phone number, it prefixes it with "+91".
-     * Converts the employee entity to a DTO before returning.
+     * Retrieves employee details by identifier (phone number, email, national ID, or employee ID).
+     * Formats phone number if it's a 10-digit number and returns EmployeeDTO.
      */
     @Cacheable(value = "employee", key = "'fetch-' + #identifier")
     public EmployeeDTO getEmployeeByIdentifier(String identifier) {
@@ -83,8 +86,7 @@ public class EmployeeService {
     }
 
     /*
-     * Updates employee details by mapping DTO to entity, formatting phone number,
-     * and setting updated timestamp before saving to the repository.
+     * Updates employee details, formats phone number, and saves the changes.
      */
     @Caching(
             evict = {
@@ -96,27 +98,25 @@ public class EmployeeService {
     public void updateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.toEntity(employeeDTO);
         employee.setEmployeeId(employeeDTO.getEmployeeId());
-        employee.setEmployeeReference(Long.parseLong(employeeDTO.getEmployeeId().substring(3,7)));
+        employee.setEmployeeReference(Long.parseLong(employeeDTO.getEmployeeId().substring(3, 7)));
         employee.setPhoneNumber(PhoneNumberFormatter.formatPhoneNumber(employee.getPhoneNumber()));
         employee.setUpdatedAt(LocalDateTime.now());
         employeeRepository.save(employee);
     }
 
     /*
-     * Activates an employee by updating their status to active.
-     * - Sets the status to ACTIVE and updates the timestamp for last updated and date of exit.
+     * Activates an employee by updating status to active.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "employees", allEntries = true),
             put = @CachePut(value = "employee", key = "'activate-' + #employeeId")
     )
     public void activateEmployee(String employeeId) {
-        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(),null, UserStatus.ACTIVE);
+        employeeRepository.updateEmployeeStatus(employeeId, LocalDateTime.now(), null, UserStatus.ACTIVE);
     }
 
     /*
-     * Deactivates an employee by updating their status to inactive.
-     * - Sets the status to IN_ACTIVE and updates the timestamp for last updated and date of exit.
+     * Deactivates an employee by updating status to inactive.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "employees", allEntries = true),
@@ -127,7 +127,7 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves the list of active employee IDs by mapping active employees to their IDs.
+     * Retrieves the list of active employee IDs.
      */
     @Cacheable(value = "employeeIds", key = "'active_employee_ids'")
     public List<String> getActiveEmployeeIds() {

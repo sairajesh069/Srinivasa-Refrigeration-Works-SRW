@@ -15,52 +15,43 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /*
- * DTO class for user credentials with validation annotations.
- * Ensures validation of username, password, and confirmation fields with custom messages and uniqueness checks.
+ * DTO for user credentials with validation annotations for username and password.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-/*
- * Validates that two fields match.
- * - Applies to 'password' and 'confirmPassword' fields.
- * - Displays a custom error message if they do not match.
- */
-@FieldMatch(firstField = "password", secondField = "confirmPassword", message = "The passwords do not match. Please try again.")
-@UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, userIdField = "userId", message = "This username is already taken")
+@FieldMatch(firstField = "password", secondField = "confirmPassword", message = "Passwords do not match.")
+@UniqueValue(fieldName = "username", entityClass = UserCredential.class, inEveryUserEntity = false, userIdField = "userId", message = "Username already taken.")
 public class UserCredentialDTO implements Serializable {
 
     /*
-     * Unique ID for serialization compatibility.
+     * Serialization ID.
      */
     @Serial
     private static final long serialVersionUID = 11L;
 
     /*
-     * Unique identifier for the user.
+     * User's unique ID.
      */
     private String userId;
 
     /*
-     * Username.
-     * - Mandatory field.
-     * - Must be at least 6 characters long.
-     * - Ensures uniqueness within the UserCredential entity.
+     * Username (min 6 chars, unique).
      */
     @NotNull(message = "Username is required")
-    @Size(min = 6, message = "Username must be at least 6 characters long")
+    @Size(min = 6, message = "Username must be at least 6 characters.")
     private String username;
 
     /*
-     * Password (mandatory field, must be at least 8 characters and match the pattern)
+     * Password (min 8 chars, regex validation).
      */
     @NotNull(message = "Password is required")
-    @Pattern(regexp = "^[a-zA-Z0-9@.#$&_]{8,}$|^\\$2[ayb]\\$.{56}$", message = "Password must be at least 8 characters long and can include digits, letters, and special characters (. @ # $ & _) only")
+    @Pattern(regexp = "^[a-zA-Z0-9@.#$&_]{8,}$|^\\$2[ayb]\\$.{56}$", message = "Password must be at least 8 characters, with allowed symbols.")
     private String password;
 
     /*
-     * Confirm Password (mandatory field)
+     * Confirm password (must match password).
      */
     private String confirmPassword;
 }

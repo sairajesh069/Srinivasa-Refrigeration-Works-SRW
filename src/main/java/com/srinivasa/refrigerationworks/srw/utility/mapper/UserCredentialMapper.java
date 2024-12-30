@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 /*
  * Mapper interface for converting between UserCredential entity and UserCredentialDTO
- * Uses MapStruct for automatic mapping
  */
 @Mapper(componentModel = "spring")
 public interface UserCredentialMapper {

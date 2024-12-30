@@ -17,13 +17,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OwnerCredentialService {
 
+    /*
+     * UserCredentialService for handling user credentials related operations.
+     */
     private final UserCredentialService userCredentialService;
+
+    /*
+     * UserCredentialMapper for mapping OwnerCredentialDTO to UserCredential entity and vice versa.
+     */
     private final UserCredentialMapper userCredentialMapper;
+
+    /*
+     * OwnerService for handling owner-related operations.
+     */
     private final OwnerService ownerService;
 
     /*
-     * Adds user credential for the owner. The owner's details are added,
-     * and user credentials are saved with the role "ROLE_OWNER".
+     * Adds user credential for the owner and saves them with the role "ROLE_OWNER".
      */
     public void addOwnerCredential(OwnerCredentialDTO ownerCredentialDTO) {
         String ownerId = ownerService.addOwner(ownerCredentialDTO.getOwnerDTO());
@@ -34,18 +44,16 @@ public class OwnerCredentialService {
     }
 
     /*
-     * Updates owner details if changes are detected and synchronizes phone number.
-     * - Checks for changes between initial and updated DTOs.
-     * - Updates owner and phone number only if modified.
+     * Updates owner details if changes are detected and synchronizes phone number if modified.
      */
     @Transactional
     public void updateOwner(OwnerDTO initialOwnerDTO, OwnerDTO updatedOwnerDTO) {
-        updatedOwnerDTO.setStatus(updatedOwnerDTO.getStatus()==null ? initialOwnerDTO.getStatus() : updatedOwnerDTO.getStatus());
-        if(!initialOwnerDTO.equals(updatedOwnerDTO)) {
+        updatedOwnerDTO.setStatus(updatedOwnerDTO.getStatus() == null ? initialOwnerDTO.getStatus() : updatedOwnerDTO.getStatus());
+        if (!initialOwnerDTO.equals(updatedOwnerDTO)) {
             ownerService.updateOwner(updatedOwnerDTO);
             String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialOwnerDTO.getPhoneNumber());
             String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedOwnerDTO.getPhoneNumber());
-            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
+            if (!updatedPhoneNumber.equals(initialPhoneNumber)) {
                 userCredentialService.updateUserPhoneNumber(updatedOwnerDTO.getOwnerId(), updatedPhoneNumber);
             }
         }
@@ -53,8 +61,6 @@ public class OwnerCredentialService {
 
     /*
      * Activates an owner and their associated user credentials.
-     * - Updates the owner's status to active and timestamps the activation.
-     * - Activates the corresponding user credentials.
      */
     @Transactional
     public void activateOwner(String ownerId) {
@@ -64,8 +70,6 @@ public class OwnerCredentialService {
 
     /*
      * Deactivates an owner and their associated user credentials.
-     * - Updates the owner's status to inactive and timestamps the deactivation.
-     * - Deactivates the corresponding user credentials.
      */
     @Transactional
     public void deactivateOwner(String ownerId) {

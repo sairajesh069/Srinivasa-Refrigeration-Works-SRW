@@ -12,17 +12,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.security.Principal;
 
 /*
- * Controller class for handling home page requests
+ * Controller class for handling home page requests.
  */
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
 
+    /*
+     * Service for managing user credentials.
+     */
     private final UserCredentialService userCredentialService;
 
     /*
-     * Method to handle GET requests for the root ("/") endpoint
-     * Redirects to "/SRW/home"
+     * Handles GET requests for the root ("/") endpoint.
+     * Redirects to the "/SRW/home" endpoint.
      */
     @GetMapping("/")
     public String redirectToHome() {
@@ -30,22 +33,22 @@ public class HomeController {
     }
 
     /*
-     * Handles the GET request for the home page.
+     * Handles GET requests for the home page.
      * - Adds the user profile link to the model based on the user's role.
      * - Sets the user ID in the session if the principal is not null.
      */
     @GetMapping("/SRW/home")
     public String home(Model model, HttpSession session, Principal principal) {
         UserCredentialModel.addUserProfileHrefToModel(UserRoleProvider.fetchUserRole(session), model);
-        if(principal != null) {
+        if (principal != null) {
             session.setAttribute("userId", userCredentialService.getUserIdByUsername(principal.getName()));
         }
         return "home";
     }
 
     /*
-     * Method to handle GET requests for the SRW/management-portal endpoint
-     * Returns the "management-portal" view
+     * Handles GET requests for the SRW/management-portal endpoint.
+     * Returns the "management-portal" view.
      */
     @GetMapping("SRW/management-portal")
     public String managementPortal() {

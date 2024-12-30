@@ -11,8 +11,7 @@ import org.springframework.ui.Model;
 public class UserCredentialModel {
 
     /*
-     * Initializes the OwnerDTO and UserCredentialDTO.
-     * Adds OwnerCredentialDTO and form constants to the model for owner registration.
+     * Adds OwnerCredentialDTO and form constants for owner registration.
      */
     public static void addOwnerCredentialToModel(Model model) {
         OwnerCredentialDTO ownerCredentialDTO = new OwnerCredentialDTO();
@@ -23,8 +22,7 @@ public class UserCredentialModel {
     }
 
     /*
-     * Initializes the EmployeeDTO and UserCredentialDTO.
-     * Adds EmployeeCredentialDTO and form constants to the model for employee registration.
+     * Adds EmployeeCredentialDTO and form constants for employee registration.
      */
     public static void addEmployeeCredentialToModel(Model model) {
         EmployeeCredentialDTO employeeCredentialDTO = new EmployeeCredentialDTO();
@@ -35,8 +33,7 @@ public class UserCredentialModel {
     }
 
     /*
-     * Initializes the CustomerDTO and UserCredentialDTO.
-     * Adds CustomerCredentialDTO and form constants to the model for customer registration.
+     * Adds CustomerCredentialDTO and form constants for customer registration.
      */
     public static void addCustomerCredentialToModel(Model model) {
         CustomerCredentialDTO customerCredentialDTO = new CustomerCredentialDTO();
@@ -47,22 +44,21 @@ public class UserCredentialModel {
     }
 
     /*
-     * Adds form constants (like genders) to the model for user registration.
+     * Adds form constants (genders) for user registration.
      */
     public static void addUserFormConstantsToModel(Model model) {
         model.addAttribute("genders", UserFormConstants.GENDERS);
     }
 
     /*
-     * Adds a user profile link to the model based on the user type.
-     * - Extracts user type and constructs profile URL.
+     * Adds user profile URL based on user type.
      */
     public static void addUserProfileHrefToModel(String userType, Model model) {
         model.addAttribute("profileHref", "/SRW/" + SubStringExtractor.extractSubString(userType, "ROLE_").toLowerCase() + "/my-profile");
     }
 
     /*
-     * Adds the origin of the update endpoint to the model based on the user type and referer header.
+     * Adds update endpoint origin to the model.
      */
     public static void addUpdateEndpointOriginToModel(String updateEndpointOrigin, Model model) {
         model.addAttribute("updateEndpointOrigin", updateEndpointOrigin);

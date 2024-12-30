@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
 
 /*
  * Validator implementation for the @UniqueValue annotation.
- * Validates that a specified field's value is unique either within a single entity
- * or across multiple user-related entities (Owner, Employee, Customer).
+ * Validates that a specified field's value is unique within a single entity or across multiple user-related entities.
  */
 @Component
 @RequiredArgsConstructor

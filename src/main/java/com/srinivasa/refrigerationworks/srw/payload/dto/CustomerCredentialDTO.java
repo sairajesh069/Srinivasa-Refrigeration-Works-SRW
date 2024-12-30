@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * DTO combining Customer and User Credential details
+ * DTO combining Customer and User Credential details.
  */
 @Data
 @Builder
@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class CustomerCredentialDTO {
 
     /*
-     * Contains validated customer details
+     * Validated customer details.
      */
     @Valid
     private CustomerDTO customerDTO;
 
     /*
-     * Contains validated user credential details
+     * Validated user credential details.
      */
     @Valid
     private UserCredentialDTO userCredentialDTO;

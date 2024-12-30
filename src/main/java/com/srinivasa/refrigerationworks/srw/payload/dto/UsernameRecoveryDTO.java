@@ -8,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * Data Transfer Object (DTO) for Username Recovery.
- * Used to transfer phone number data for recovering the username.
+ * DTO for Username Recovery, transferring phone number for username retrieval.
  */
 @Data
 @Builder

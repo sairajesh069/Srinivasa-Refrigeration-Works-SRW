@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 
 /*
- * Custom security configuration for login and access control
+ * Custom security configuration for login and access control.
  */
 @Configuration
 public class LoginSecurityConfig {
@@ -52,7 +52,7 @@ public class LoginSecurityConfig {
     }
 
     /*
-     * Bean configuration for PasswordEncoder using BCrypt
+     * Bean configuration for PasswordEncoder using BCrypt.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -103,8 +103,8 @@ public class LoginSecurityConfig {
                          * - "/SRW/employee/list", "/SRW/customer/list", "/SRW/complaint/list": Access to various list pages.
                          * - "/SRW/employee/active-list", "/SRW/customer/active-list", "/SRW/complaint/active-list": Access to various active-list pages.
                          * - "/SRW/employee/search", "/SRW/customer/search": Access to various search pages.
-                         * - "/SRW/employee/activate", "/SRW/customer/activate", "/SRW/complaint/activate": Access to various activate pages.
-                         * - "/SRW/employee/deactivate", "/SRW/customer/deactivate", "/SRW/complaint/deactivate": Access to various deactivate pages.
+                         * - "/SRW/employee/activate", "/SRW/customer/activate", "/SRW/complaint/activate": Access to various active pages.
+                         * - "/SRW/employee/deactivate", "/SRW/customer/deactivate", "/SRW/complaint/deactivate": Access to various in_active pages.
                          */
                         .requestMatchers("/SRW/owner/**", "/SRW/management-portal").hasRole("OWNER")
                         .requestMatchers("/SRW/employee/register", "/SRW/employee/confirmation").hasRole("OWNER")

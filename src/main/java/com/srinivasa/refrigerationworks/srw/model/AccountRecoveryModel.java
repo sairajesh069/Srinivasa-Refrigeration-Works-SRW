@@ -5,22 +5,19 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.UsernameRecoveryDTO;
 import org.springframework.ui.Model;
 
 /*
- * Contains methods for adding account-recovery related data to the model.
+ * Handles adding account-recovery data to the model.
  */
 public class AccountRecoveryModel {
 
     /*
-     * Adds a new instance of UsernameRecoveryDTO to the model.
-     * This is used to bind form data during username recovery.
+     * Adds UsernameRecoveryDTO to the model.
      */
     public static void addUsernameRecoveryDTOToModel(Model model) {
         model.addAttribute("usernameRecoveryDTO", new UsernameRecoveryDTO());
     }
 
     /*
-     * Populates the model with the username or an error message.
-     * - If the username is found, it is added to the model.
-     * - If not, an error message is added instead.
+     * Adds username or error message to the model.
      */
     public static void usernameRecoveryModel(String username, Model model) {
         boolean isUsernameEmpty = username == null || username.isEmpty();
@@ -30,8 +27,7 @@ public class AccountRecoveryModel {
     }
 
     /*
-     * Adds a new PasswordResetDTO instance to the model for form binding.
-     * - Also adds the default user validation state to the model.
+     * Adds PasswordResetDTO and user validation state to the model.
      */
     public static void addPasswordResetDTOToModel(Model model) {
         model.addAttribute("passwordResetDTO", new PasswordResetDTO());
@@ -39,17 +35,14 @@ public class AccountRecoveryModel {
     }
 
     /*
-     * Adds a flag to the model indicating the user is not validated.
+     * Adds a flag indicating user is not validated.
      */
     public static void addUserNotValidatedToModel(Model model) {
         model.addAttribute("isUserValidated", false);
     }
 
     /*
-     * Adds validation feedback to the model.
-     * - Displays a success message if validation succeeds.
-     * - Displays an error message if validation fails.
-     * - Updates the model with the validation status.
+     * Adds validation feedback and updates validation status.
      */
     public static void addIsUserValidatedToModel(boolean isUserValidated, Model model) {
         model.addAttribute(
@@ -62,8 +55,7 @@ public class AccountRecoveryModel {
     }
 
     /*
-     * Adds a success message to the model after the password is updated.
-     * - Resets the user validation state.
+     * Adds success message after password update and resets validation state.
      */
     public static void addPasswordUpdatedToModel(Model model) {
         model.addAttribute("validationSuccess", "");

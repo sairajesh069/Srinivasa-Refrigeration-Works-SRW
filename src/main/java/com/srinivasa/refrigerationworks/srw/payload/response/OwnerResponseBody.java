@@ -5,13 +5,13 @@ import com.srinivasa.refrigerationworks.srw.utility.common.enums.ResponseBodySta
 import lombok.Data;
 
 /*
- * Response body class for returning OwnerDTO data along with a message and status
+ * Response body for OwnerDTO data with message and status
  */
 @Data
 public class OwnerResponseBody {
 
     /*
-     * Message providing additional information about the response
+     * Message with additional response information
      */
     private String message;
 
@@ -21,7 +21,7 @@ public class OwnerResponseBody {
     private ResponseBodyStatus status;
 
     /*
-     * OwnerDTO object containing owner details
+     * OwnerDTO object with owner details
      */
     private OwnerDTO ownerDTO;
 }

@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * DTO for user identification.
- * Can represent userId, phoneNumber, or email for querying a user.
+ * DTO for user identification, supports userId, phoneNumber, or email.
  */
 @Data
 @Builder

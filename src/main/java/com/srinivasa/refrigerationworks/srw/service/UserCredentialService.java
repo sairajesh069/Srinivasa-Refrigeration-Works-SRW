@@ -20,13 +20,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserCredentialService {
 
+    /*
+     * UserCredentialRepository for handling user credential-related data operations.
+     */
     private final UserCredentialRepository userCredentialRepository;
+
+    /*
+     * PasswordEncoder for encoding user passwords.
+     */
     private final PasswordEncoder passwordEncoder;
 
     /*
-     * Saves user credentials with the specified user type and role.
-     * The password is encoded before saving, and a UserRole is created
-     * and associated with the user.
+     * Saves user credentials, encodes the password, and associates user roles.
      */
     @Transactional
     public void saveCredential(UserCredential userCredential, UserType userType, String role) {
@@ -40,8 +45,7 @@ public class UserCredentialService {
 
     /*
      * Fetches the username associated with the provided phone number.
-     * - Ensures the phone number includes the country code (+91).
-     * - Delegates the query execution to the repository.
+     * Formats the phone number to include the country code (+91).
      */
     @Cacheable(value = "user-credential", key = "'fetch_user-' + #usernameRecoveryDTO.phoneNumber")
     public String fetchUsername(UsernameRecoveryDTO usernameRecoveryDTO) {
@@ -50,9 +54,8 @@ public class UserCredentialService {
     }
 
     /*
-     * Validates the user by checking if a combination of phone number and username exists in the repository.
-     * - Ensures the phone number is normalized to include the country code.
-     * - Returns true if a matching user is found.
+     * Validates user by checking if the combination of phone number and username exists.
+     * Formats the phone number to include the country code (+91).
      */
     @Cacheable(value = "user-credential", key = "'validate-' + #passwordResetDTO.username + '&' + #passwordResetDTO.phoneNumber")
     public boolean validateUser(PasswordResetDTO passwordResetDTO) {
@@ -61,8 +64,7 @@ public class UserCredentialService {
     }
 
     /*
-     * Updates the user's password in the repository.
-     * - Encodes the new password before updating.
+     * Updates the user's password by encoding the new password before updating.
      */
     public void updatePassword(PasswordResetDTO passwordResetDTO) {
         userCredentialRepository.updatePassword(passwordResetDTO.getUsername(), passwordEncoder.encode(passwordResetDTO.getPassword()));
@@ -70,7 +72,6 @@ public class UserCredentialService {
 
     /*
      * Retrieves the user ID associated with the given username.
-     * - Queries the database using the userCredentialRepository to find the user ID.
      */
     @Cacheable(value = "user-credential", key = "'user-' + #username")
     public String getUserIdByUsername(String username) {
@@ -85,7 +86,7 @@ public class UserCredentialService {
     }
 
     /*
-     * Activates/Deactivates a user's credentials by updating the 'enabled' status to true or false.
+     * Activates or deactivates a user's credentials by updating the 'enabled' status.
      */
     public void updateUserStatus(String userId, byte enabled) {
         userCredentialRepository.updateUserStatus(userId, enabled);

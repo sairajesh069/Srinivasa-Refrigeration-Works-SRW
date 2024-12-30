@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ComplaintController {
 
+    /*
+     * Service for handling complaint-related data and operations.
+     */
     private final ComplaintService complaintService;
 
     /*
@@ -48,16 +51,14 @@ public class ComplaintController {
      * Handles form submission for registering a complaint.
      * Validates the complaint data, processes the complaint registration,
      * and redirects to the confirmation page if successful.
-     * If validation fails, it re-displays the registration form with error messages.
      */
     @PostMapping("/confirmation")
     public String registerComplaint(@ModelAttribute @Valid ComplaintDTO complaintDTO, BindingResult bindingResult,
                                     Model model, HttpSession session) {
-        if(bindingResult.hasErrors()) {
-            if(complaintDTO.getProductType() != null) {
+        if (bindingResult.hasErrors()) {
+            if (complaintDTO.getProductType() != null) {
                 ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
-            }
-            else {
+            } else {
                 ComplaintModel.addProductTypesToModel(model);
             }
             return "complaint/complaint-register-form";
@@ -72,7 +73,7 @@ public class ComplaintController {
     @PostMapping("/update-dropdown")
     public String bookRepair(ComplaintDTO complaintDTO, Model model) {
         ComplaintModel.populateDropDownsForProduct(complaintDTO.getProductType(), model);
-        if(complaintDTO.getComplaintId() != null) {
+        if (complaintDTO.getComplaintId() != null) {
             ComplaintModel.populateComplaintStatus(model);
             return "complaint/complaint-update-form";
         }
@@ -80,7 +81,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to display a list of complaints registered by the logged-in user.
+     * Displays a list of complaints registered by the logged-in user.
      */
     @GetMapping("/my-complaints")
     public String getMyComplaints(Model model, HttpSession session) {
@@ -91,8 +92,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to display the list of all complaints.
-     * Retrieves all complaints and adds them to the model for rendering.
+     * Displays the list of all complaints.
      */
     @GetMapping("/list")
     public String getComplaintList(Model model) {
@@ -102,8 +102,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to display the list of all active complaints.
-     * Retrieves all active complaints and adds them to the model for rendering.
+     * Displays the list of all active complaints.
      */
     @GetMapping("/active-list")
     public String getActiveComplaintList(Model model) {
@@ -113,9 +112,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles POST requests to search for complaints based on the identifier.
-     * Validates the identifier and fetches complaint details or a list of complaints.
-     * Displays complaint details if one result is found, or a list view for multiple results.
+     * Searches for complaints based on the identifier and displays results.
      */
     @PostMapping("/search")
     public String getComplaint(@ModelAttribute ComplaintIdentifierDTO complaintIdentifierDTO,
@@ -129,32 +126,31 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to display the complaint update form with the complaint's existing details.
-     * Sets session attribute using substring from the "Referer" header.
+     * Displays the complaint update form with the complaint's existing details.
      */
     @GetMapping("/update")
     public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model,
                                   HttpSession session, HttpServletRequest request) {
-        if(complaintService.canUserAccess(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
+        if (complaintService.canUserAccess(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
                 session.getAttribute("userId").toString())) {
             ComplaintModel.addComplaintToModel(complaintService.getComplaintById(complaintId), model);
             ComplaintModel.populateComplaintUpdate(complaintService.getActiveEmployeeIds(),
                     SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/").equals("search")
-                        ? session.getAttribute("searchEndpointOrigin").toString()
-                        : SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"), model);
+                            ? session.getAttribute("searchEndpointOrigin").toString()
+                            : SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"), model);
             return "complaint/complaint-update-form";
         }
         return "access-denied";
     }
 
     /*
-     * Handles the POST request to update a complaint after validating the input.
-     * Redirects to the appropriate origin complaint page of update endpoint on success based on the user's role.
+     * Updates a complaint after validating the input.
+     * Redirects to the appropriate origin complaint page.
      */
     @PostMapping("/update")
     public String updateComplaint(@ModelAttribute("complaint") ComplaintDTO updatedComplaintDTO, BindingResult bindingResult,
                                   @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);
             ComplaintModel.populateComplaintUpdate(complaintService.getActiveEmployeeIds(), updateEndpointOrigin, model);
             return "complaint/complaint-update-form";
@@ -164,9 +160,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to activate a complaint.
-     * - Activates the complaint based on the provided complaintId.
-     * - Redirects to the originating complaint list page upon success.
+     * Activates a complaint based on the provided complaintId.
      */
     @GetMapping("/activate")
     public String activateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
@@ -175,9 +169,7 @@ public class ComplaintController {
     }
 
     /*
-     * Handles the GET request to deactivate a complaint.
-     * - Deactivates the complaint based on the provided complaintId.
-     * - Redirects to the originating complaint list page upon success.
+     * Deactivates a complaint based on the provided complaintId.
      */
     @GetMapping("/deactivate")
     public String deactivateComplaint(@RequestParam("complaintId") String complaintId, HttpServletRequest request) {
@@ -186,8 +178,7 @@ public class ComplaintController {
     }
 
     /*
-     * Retrieves complaints assigned to the logged-in technician and adds them to the model.
-     * Returns the view for displaying the list of complaints.
+     * Displays complaints assigned to the logged-in technician.
      */
     @GetMapping("/assigned-complaints")
     public String getAssignedComplaints(Model model, HttpSession session) {

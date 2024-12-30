@@ -12,10 +12,8 @@ import java.util.List;
 public class OwnerModel {
 
     /*
-     * Adds UserCredentialDTO to the model.
-     * Adds a list of owners to the model, or a message if no owners are found.
-     * The owners list is added to the model under the attribute "owners" if not empty,
-     * otherwise a "noOwnersFound" message is added.
+     * Adds UserCredentialDTO and a list of owners to the model.
+     * If no owners are found, adds a "noOwnersFound" message.
      */
     public static void addOwnersToModel(List<OwnerDTO> owners, Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
@@ -26,8 +24,8 @@ public class OwnerModel {
 
     /*
      * Adds owner details to the model.
-     * - If owner is null, adds a message indicating no owner found.
-     * - Otherwise, adds the owner details.
+     * If owner is null, adds a "noOwnerFound" message.
+     * Otherwise, adds the owner details.
      */
     public static void addOwnerToModel(OwnerDTO owner, Model model) {
         model.addAttribute(

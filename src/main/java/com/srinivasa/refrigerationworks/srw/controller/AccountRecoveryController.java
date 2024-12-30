@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /*
  * Controller for handling account recovery operations.
- * Provides endpoints for username recovery and Password reset.
+ * Provides endpoints for username recovery and password reset.
  */
 @Controller
 @RequestMapping("/SRW")
@@ -41,7 +41,7 @@ public class AccountRecoveryController {
 
     /*
      * Displays the username recovery page.
-     * - Adds necessary DTOs to the model.
+     * Adds necessary DTOs to the model.
      */
     @GetMapping("/username-recovery")
     public String getUsername(Model model) {
@@ -51,8 +51,8 @@ public class AccountRecoveryController {
 
     /*
      * Handles username recovery requests.
-     * - Validates input data and checks for errors.
-     * - Fetches the username if inputs are valid and updates the model.
+     * Validates input data and checks for errors.
+     * Fetches the username if inputs are valid and updates the model.
      */
     @PostMapping("/username-recovery")
     public String fetchUsername(@Valid UsernameRecoveryDTO usernameRecoveryDTO, BindingResult bindingResult, Model model) {
@@ -65,8 +65,7 @@ public class AccountRecoveryController {
 
     /*
      * Handles GET requests for the password reset page.
-     * - Adds a PasswordResetDTO instance to the model.
-     * - Returns the password reset view.
+     * Adds a PasswordResetDTO instance to the model and returns the view.
      */
     @GetMapping("/password-reset")
     public String resetPassword(Model model) {
@@ -75,7 +74,7 @@ public class AccountRecoveryController {
     }
 
     /*
-     * Handles the POST request for password reset validation and update.
+     * Handles POST requests for password reset validation and update.
      * Validates user details and updates the password if validation succeeds.
      */
     @PostMapping("/password-reset")
@@ -101,8 +100,7 @@ public class AccountRecoveryController {
          */
         if (!userCredentialService.validateUser(passwordResetDTO)) {
             AccountRecoveryModel.addIsUserValidatedToModel(false, model);
-        }
-        else {
+        } else {
             /*
              * If user validation succeeds, proceed to password validation.
              */

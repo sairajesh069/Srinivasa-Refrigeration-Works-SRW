@@ -12,10 +12,8 @@ import java.util.List;
 public class EmployeeModel {
 
     /*
-     * Adds UserIdentifierDTO to the model.
-     * Adds a list of employees to the model, or a message if no employees are found.
-     * The employees list is added to the model under the attribute "employees" if not empty,
-     * otherwise a "noEmployeesFound" message is added.
+     * Adds UserIdentifierDTO and a list of employees to the model.
+     * If no employees are found, adds a "noEmployeesFound" message.
      */
     public static void addEmployeesToModel(List<EmployeeDTO> employees, Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
@@ -26,8 +24,8 @@ public class EmployeeModel {
 
     /*
      * Adds employee details to the model.
-     * - If employee is null, adds a message indicating no employee found.
-     * - Otherwise, adds the employee details.
+     * If employee is null, adds a "noEmployeeFound" message.
+     * Otherwise, adds the employee details.
      */
     public static void addEmployeeToModel(EmployeeDTO employee, Model model) {
         model.addAttribute(

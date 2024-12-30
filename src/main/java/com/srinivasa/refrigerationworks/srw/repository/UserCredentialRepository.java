@@ -9,29 +9,25 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /*
- * Repository interface for UserCredential entity
- * Provides CRUD operations using JpaRepository
+ * Repository for UserCredential entity
  */
 @Repository
 public interface UserCredentialRepository extends JpaRepository<UserCredential, String> {
 
     /*
-     * Query to fetch the username associated with the given phone number.
-     * - Returns the username as a string.
+     * Fetches username by phone number
      */
     @Query("SELECT username FROM UserCredential WHERE phoneNumber = :phoneNumber")
     public String fetchUsernameByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
     /*
-     * Checks if a UserCredential exists with the given phone number and username.
-     * - Returns true if a matching record exists.
+     * Checks if user exists by phone number and username
      */
     @Query("SELECT COUNT(u) > 0 FROM UserCredential u WHERE u.phoneNumber = :phoneNumber AND u.username = :username")
     public boolean existsByPhoneNumberAndUsername(@Param("phoneNumber") String phoneNumber, @Param("username") String username);
 
     /*
-     * Updates the password for a UserCredential identified by the username.
-     * - The operation is transactional and modifying.
+     * Updates user password by username
      */
     @Modifying
     @Transactional
@@ -39,14 +35,13 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
     public void updatePassword(@Param("username") String username, @Param("password") String password);
 
     /*
-     * Custom query to find the user ID associated with a given username.
-     * - Queries the UserCredential table to retrieve the user ID for the provided username.
+     * Finds user ID by username
      */
     @Query("SELECT userId FROM UserCredential WHERE username = :username")
     public String findUserIdByUsername(@Param("username") String username);
 
     /*
-     * Updates the phone number of a user based on their userId.
+     * Updates user phone number by userId
      */
     @Modifying
     @Transactional
@@ -54,8 +49,7 @@ public interface UserCredentialRepository extends JpaRepository<UserCredential, 
     public void updateUserPhoneNumber(@Param("userId") String userId, @Param("phoneNumber") String phoneNumber);
 
     /*
-     * Activates/Deactivates a user by setting their 'enabled' status to true or false (0 or 1).
-     * - Updates the UserCredential entity for the specified userId.
+     * Updates user status (enabled/disabled) by userId
      */
     @Modifying
     @Transactional

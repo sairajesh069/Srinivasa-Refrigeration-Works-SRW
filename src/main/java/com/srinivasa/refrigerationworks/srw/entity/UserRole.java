@@ -8,7 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /*
- * Entity class representing user roles in the database
+ * Entity class representing user roles in the database.
  */
 @Entity
 @Table(name = "user_roles")
@@ -23,20 +23,20 @@ public class UserRole implements Serializable {
     private static final long serialVersionUID = 20L;
 
     /*
-     * Composite primary key using UserRoleId
+     * Composite primary key using UserRoleId.
      */
     @EmbeddedId
     private UserRoleId userId;
 
     /*
-     * Username associated with the role
+     * Username associated with the role.
      */
     @Column(name = "username")
     private String username;
 
     /*
-     * Many-to-one relationship with UserCredential entity
-     * Maps the userCredential ID from the embedded primary key
+     * Many-to-one relationship with UserCredential entity.
+     * Maps the userCredential ID from the embedded primary key.
      */
     @ManyToOne
     @MapsId("userCredential")
@@ -44,7 +44,7 @@ public class UserRole implements Serializable {
     private UserCredential userCredential;
 
     /*
-     * Constructor to initialize UserRole with username and role
+     * Constructor to initialize UserRole with username and role.
      */
     public UserRole(String username, String role) {
         this.userId = new UserRoleId();

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * DTO combining Owner and User Credential details
+ * DTO combining Owner and User Credential details.
  */
 @Data
 @Builder
@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 public class OwnerCredentialDTO {
 
     /*
-     * Contains validated owner details
+     * Validated owner details.
      */
     @Valid
     private OwnerDTO ownerDTO;
 
     /*
-     * Contains validated user credential details
+     * Validated user credential details.
      */
     @Valid
     private UserCredentialDTO userCredentialDTO;

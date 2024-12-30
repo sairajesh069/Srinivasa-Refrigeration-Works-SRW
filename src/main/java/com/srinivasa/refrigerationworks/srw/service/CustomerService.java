@@ -24,13 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService {
 
+    /*
+     * Repository for performing CRUD operations on the Customer entity.
+     */
     private final CustomerRepository customerRepository;
+
+    /*
+     * Mapper to convert between CustomerDTO and Customer entity.
+     */
     private final CustomerMapper customerMapper;
 
     /*
-     * Adds a new customer by converting the CustomerDTO to a Customer entity,
-     * formatting the phone number, saving it to the repository,
-     * generating a customer ID, and returning it.
+     * Adds a new customer, saves it, generates customer ID, and returns it.
      */
     @Transactional
     @CacheEvict(cacheNames = "customers", allEntries = true)
@@ -45,8 +50,7 @@ public class CustomerService {
     }
 
     /*
-     * Retrieves a list of all customers from the repository and maps them to CustomerDTO objects.
-     * Returns a list of CustomerDTO to be used in other services or controllers.
+     * Retrieves all customers and returns a list of CustomerDTO objects.
      */
     @Cacheable(value = "customers", key = "'customer_list'")
     public List<CustomerDTO> getCustomerList() {
@@ -58,8 +62,7 @@ public class CustomerService {
     }
 
     /*
-     * Retrieves a list of all active customers from the repository and maps them to CustomerDTO objects.
-     * Returns a list of active CustomerDTO to be used in other services or controllers.
+     * Retrieves all active customers and returns a list of active CustomerDTO objects.
      */
     @Cacheable(value = "customers", key = "'active_customer_list'")
     public List<CustomerDTO> getActiveCustomerList() {
@@ -71,9 +74,7 @@ public class CustomerService {
     }
 
     /*
-     * Retrieves the customer details based on the provided identifier (phone number, email, or customer ID).
-     * If the identifier is a 10-digit phone number, it prefixes it with "+91".
-     * Converts the customer entity to a DTO before returning.
+     * Retrieves customer details by identifier (phone number, email, or customer ID).
      */
     @Cacheable(value = "customer", key = "'fetch-' + #identifier")
     public CustomerDTO getCustomerByIdentifier(String identifier) {
@@ -83,8 +84,7 @@ public class CustomerService {
     }
 
     /*
-     * Updates customer details by mapping DTO to entity, formatting phone number,
-     * and setting updated timestamp before saving to the repository.
+     * Updates customer details and saves changes.
      */
     @Caching(
             evict = {
@@ -103,8 +103,7 @@ public class CustomerService {
     }
 
     /*
-     * Activates a customer by updating their status to active.
-     * - Sets the status to ACTIVE and updates the timestamp.
+     * Activates a customer and updates status to active.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "customers", allEntries = true),
@@ -115,8 +114,7 @@ public class CustomerService {
     }
 
     /*
-     * Deactivates a customer by updating their status to inactive.
-     * - Sets the status to IN_ACTIVE and updates the timestamp.
+     * Deactivates a customer and updates status to inactive.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "customers", allEntries = true),

@@ -13,31 +13,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /*
- * Repository interface for Complaint entity
- * Provides CRUD operations using JpaRepository
+ * Repository for Complaint entity
  */
 @Repository
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     /*
-     * Retrieves a list of complaints based on the user ID of the person who booked the complaint.
-     * Returns all complaints associated with the given bookedById (userId).
+     * Retrieves complaints by bookedById
      */
     public List<Complaint> findByBookedById(String userId);
 
     /*
-     * Finds and returns a Complaint entity by its complaintId.
+     * Finds complaint by complaintId
      */
     public Complaint findByComplaintId(String complaintId);
 
     /*
-     * Fetches a list of complaints based on their state.
+     * Retrieves complaints by state
      */
     public List<Complaint> findByState(ComplaintState state);
 
     /*
-     * Activates/Deactivates a complaint by updating their state and 'updatedAt' fields.
-     * - Updates the Complaint entity for the specified complaintId.
+     * Updates complaint state and 'updatedAt'
      */
     @Modifying
     @Transactional
@@ -45,8 +42,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     public void updateComplaintState(@Param("complaintId") String complaintId, @Param("updatedAt") LocalDateTime updatedAt, @Param("state") ComplaintState state);
 
     /*
-     * Retrieves a list of complaints based on the user ID of the employee who got assigned to the complaint.
-     * Returns all complaints associated with the given technicianId (userId).
+     * Retrieves complaints by technicianId
      */
     public List<Complaint> findByTechnicianId(String userId);
 }

@@ -19,17 +19,20 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 /*
- * Controller for handling customer credential operations
+ * Controller for handling customer credential operations.
  */
 @Controller
 @RequestMapping("/SRW/customer")
 @RequiredArgsConstructor
 public class CustomerCredentialController {
 
+    /*
+     * Service for managing customer credentials.
+     */
     private final CustomerCredentialService customerCredentialService;
 
     /*
-     * Initializes the binder to trim strings
+     * Initializes the binder to trim strings.
      */
     @InitBinder
     public void initialize(WebDataBinder webDataBinder) {
@@ -37,7 +40,7 @@ public class CustomerCredentialController {
     }
 
     /*
-     * Displays the customer registration form
+     * Displays the customer registration form.
      */
     @GetMapping("/register")
     public String createCustomer(Model model) {
@@ -46,7 +49,8 @@ public class CustomerCredentialController {
     }
 
     /*
-     * Confirms the customer registration and adds customer credentials
+     * Confirms the customer registration and adds customer credentials.
+     * If validation fails, re-displays the form with error messages.
      */
     @PostMapping("/confirmation")
     public String confirmCustomer(@ModelAttribute @Valid CustomerCredentialDTO customerCredentialDTO, BindingResult bindingResult, Model model) {
@@ -61,12 +65,13 @@ public class CustomerCredentialController {
     /*
      * Handles GET request to display customer update form with current customer data.
      * Sets session attribute using substring from the "Referer" header.
+     * Ensures proper user role or origin before granting access.
      */
     @GetMapping("/update")
     public String updateCustomer(@RequestParam("customerId") String customerId, Model model,
                                  HttpSession session, HttpServletRequest request) {
         String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
-        if(UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
+        if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
             CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById(customerId), model);
             UserCredentialModel.addUserFormConstantsToModel(model);
             UserCredentialModel.addUpdateEndpointOriginToModel(refererEndpoint, model);
@@ -82,7 +87,7 @@ public class CustomerCredentialController {
     @PostMapping("/update")
     public String updateCustomer(@ModelAttribute("customer") @Valid CustomerDTO updatedCustomerDTO, BindingResult bindingResult,
                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             UserCredentialModel.addUserFormConstantsToModel(model);
             UserCredentialModel.addUpdateEndpointOriginToModel(updateEndpointOrigin, model);
             return "customer/customer-update-form";
@@ -93,8 +98,8 @@ public class CustomerCredentialController {
 
     /*
      * Handles the GET request to activate a customer.
-     * - Activates the customer based on the provided customerId.
-     * - Redirects to the originating customer page upon success.
+     * Activates the customer based on the provided customerId.
+     * Redirects to the originating customer page upon success.
      */
     @GetMapping("/activate")
     public String activateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
@@ -104,21 +109,12 @@ public class CustomerCredentialController {
 
     /*
      * Handles the GET request to deactivate a customer.
-     * - Deactivates the customer based on the provided customerId.
-     * - Redirects to the originating customer page upon success.
+     * Deactivates the customer based on the provided customerId.
+     * Redirects to the originating customer page upon success.
      */
     @GetMapping("/deactivate")
     public String deactivateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.deactivateCustomer(customerId);
         return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
-    }
-
-    /*
-     * Handles the GET request to fetch the logged-in customer's profile.
-     */
-    @GetMapping("/my-profile")
-    public String getCustomerProfile(Model model, HttpSession session) {
-        CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById((String) session.getAttribute("userId")), model);
-        return "customer/customer-details";
     }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * Entity class for storing user credentials in the database
+ * Entity class for storing user credentials in the database.
  */
 @Entity
 @Table(name = "user_credentials")
@@ -27,44 +27,44 @@ public class UserCredential implements Serializable {
     private static final long serialVersionUID = 10L;
 
     /*
-     * Unique user identifier
+     * Unique user identifier.
      */
     @Id
     @Column(name = "user_id", unique = true)
     private String userId;
 
     /*
-     * Unique phone number for the user
+     * Unique phone number for the user.
      */
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     /*
-     * Unique username for the user
+     * Unique username for the user.
      */
     @Column(name = "username", unique = true)
     private String username;
 
     /*
-     * Encrypted password for the user
+     * Encrypted password for the user.
      */
     @Column(name = "password")
     private String password;
 
     /*
-     * Confirm password (not persisted in the database)
+     * Confirm password (not persisted in the database).
      */
     @Transient
     private String confirmPassword;
 
     /*
-     * Indicates whether the user account is enabled (active)
+     * Indicates whether the user account is enabled (active).
      */
     @Column(name = "enabled")
     private short enabled;
 
     /*
-     * User's type (role) from the UserType enum
+     * User's type (role) from the UserType enum.
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
@@ -79,8 +79,8 @@ public class UserCredential implements Serializable {
     private List<UserRole> userRoles;
 
     /*
-     * Method triggered before the UserCredential entity is persisted
-     * Sets the enabled field to 1 and confirms the password
+     * Method triggered before the UserCredential entity is persisted.
+     * Sets the enabled field to 1 and confirms the password.
      */
     @PrePersist
     public void prePersist() {
@@ -90,7 +90,7 @@ public class UserCredential implements Serializable {
     }
 
     /*
-     * Method to add a user role to the user
+     * Method to add a user role to the user.
      */
     public void addUserRole(UserRole userRole) {
         if (userRoles == null) {

@@ -17,13 +17,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmployeeCredentialService {
 
+    /*
+     * UserCredentialService for managing user credentials.
+     */
     private final UserCredentialService userCredentialService;
+
+    /*
+     * UserCredentialMapper to map UserCredentialDTO to UserCredential entity.
+     */
     private final UserCredentialMapper userCredentialMapper;
+
+    /*
+     * EmployeeService for handling employee-related operations.
+     */
     private final EmployeeService employeeService;
 
     /*
-     * Adds user credential for the employee. The employee's details are added,
-     * and user credentials are saved with the role "ROLE_EMPLOYEE".
+     * Adds user credential for the employee and saves it with the role "ROLE_EMPLOYEE".
      */
     public void addEmployeeCredential(EmployeeCredentialDTO employeeCredentialDTO) {
         String employeeId = employeeService.addEmployee(employeeCredentialDTO.getEmployeeDTO());
@@ -34,28 +44,24 @@ public class EmployeeCredentialService {
     }
 
     /*
-     * Updates employee details if changes are detected and synchronizes phone number.
-     * - Checks for changes between initial and updated DTOs.
-     * - Updates employee and phone number only if modified.
+     * Updates employee details and synchronizes the phone number if changed.
      */
     @Transactional
     public void updateEmployee(EmployeeDTO initialEmployeeDTO, EmployeeDTO updatedEmployeeDTO) {
-        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus()==null ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
+        updatedEmployeeDTO.setStatus(updatedEmployeeDTO.getStatus() == null ? initialEmployeeDTO.getStatus() : updatedEmployeeDTO.getStatus());
         updatedEmployeeDTO.setDateOfHire(initialEmployeeDTO.getDateOfHire());
-        if(!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
+        if (!initialEmployeeDTO.equals(updatedEmployeeDTO)) {
             employeeService.updateEmployee(updatedEmployeeDTO);
             String initialPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(initialEmployeeDTO.getPhoneNumber());
             String updatedPhoneNumber = PhoneNumberFormatter.formatPhoneNumber(updatedEmployeeDTO.getPhoneNumber());
-            if(!updatedPhoneNumber.equals(initialPhoneNumber)) {
+            if (!updatedPhoneNumber.equals(initialPhoneNumber)) {
                 userCredentialService.updateUserPhoneNumber(updatedEmployeeDTO.getEmployeeId(), updatedPhoneNumber);
             }
         }
     }
 
     /*
-     * Activates an employee and their associated user credentials.
-     * - Updates the employee's status to active and timestamps the activation.
-     * - Activates the corresponding user credentials.
+     * Activates an employee and their user credentials.
      */
     @Transactional
     public void activateEmployee(String employeeId) {
@@ -64,9 +70,7 @@ public class EmployeeCredentialService {
     }
 
     /*
-     * Deactivates an employee and their associated user credentials.
-     * - Updates the employee's status to inactive and timestamps the deactivation.
-     * - Deactivates the corresponding user credentials.
+     * Deactivates an employee and their user credentials.
      */
     @Transactional
     public void deactivateEmployee(String employeeId) {
@@ -75,7 +79,7 @@ public class EmployeeCredentialService {
     }
 
     /*
-     * Retrieves the EmployeeDTO by employeeId.
+     * Retrieves EmployeeDTO by employeeId.
      */
     public EmployeeDTO getEmployeeById(String employeeId) {
         return employeeService.getEmployeeByIdentifier(employeeId);

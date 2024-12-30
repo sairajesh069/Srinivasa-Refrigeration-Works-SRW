@@ -4,13 +4,13 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import lombok.Data;
 
 /*
- * Request body class for receiving ComplaintDTO data
+ * Request body for ComplaintDTO data
  */
 @Data
 public class ComplaintRequestBody {
 
     /*
-     * ComplaintDTO object containing complaint details
+     * ComplaintDTO object with complaint details
      */
     private ComplaintDTO complaintDTO;
 }

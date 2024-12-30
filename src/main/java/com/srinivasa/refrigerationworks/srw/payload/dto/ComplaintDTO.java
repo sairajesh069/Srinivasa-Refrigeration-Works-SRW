@@ -14,8 +14,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /*
- * Data Transfer Object (DTO) for transferring complaint-related data with validation annotations.
- * Used to transfer the details of a complaint such as customer information, product details, and status.
+ * DTO for transferring complaint data with validation.
  */
 @Data
 @Builder
@@ -24,13 +23,13 @@ import java.time.LocalDateTime;
 public class ComplaintDTO implements Serializable {
 
     /*
-     * Unique ID for serialization compatibility.
+     * Serialization ID.
      */
     @Serial
     private static final long serialVersionUID = 61L;
 
     /*
-     * Unique identifier for the complaint.
+     * Unique complaint ID.
      */
     private String complaintId;
 
@@ -40,72 +39,65 @@ public class ComplaintDTO implements Serializable {
     private String bookedById;
 
     /*
-     * Name of the customer who raised the complaint.
-     * This field is mandatory.
+     * Customer's name (mandatory).
      */
     @NotNull(message = "Name is mandatory")
     private String customerName;
 
     /*
-     * Contact number of the customer.
-     * This field is mandatory and must match a valid phone number pattern.
+     * Customer's contact number (mandatory, valid format).
      */
     @NotNull(message = "Contact number is mandatory")
     @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
     private String contactNumber;
 
     /*
-     * Email address of the customer.
+     * Customer's email.
      */
     private String email;
 
     /*
-     * Address of the customer.
-     * This field is mandatory.
+     * Customer's address (mandatory).
      */
     @NotNull(message = "Address is mandatory")
     private String address;
 
     /*
-     * Type of the product related to the complaint.
-     * This field is mandatory.
+     * Product type (mandatory).
      */
     @NotNull(message = "Please select a valid product type")
     private String productType;
 
     /*
-     * Brand of the product related to the complaint.
-     * This field is mandatory.
+     * Product brand (mandatory).
      */
     @NotNull(message = "Please select a valid brand")
     private String brand;
 
     /*
-     * Model of the product related to the complaint.
-     * This field is mandatory.
+     * Product model (mandatory).
      */
     @NotNull(message = "Please select a valid model")
     private String productModel;
 
     /*
-     * Detailed description of the complaint.
-     * This field is mandatory.
+     * Complaint description (mandatory).
      */
     @NotNull(message="Description is mandatory")
     private String description;
 
     /*
-     * Date and time when the complaint is created.
+     * Complaint creation time.
      */
     private LocalDateTime createdAt;
 
     /*
-     * Status of the complaint (e.g., OPEN, IN_PROGRESS, RESOLVED).
+     * Complaint status.
      */
     private ComplaintStatus status;
 
     /*
-     * Date and time when the complaint was last updated.
+     * Last update time.
      */
     private LocalDateTime updatedAt;
 
@@ -115,18 +107,17 @@ public class ComplaintDTO implements Serializable {
     private String technicianId;
 
     /*
-     * Date and time when the complaint was closed.
-     * This field is populated when the complaint is resolved.
+     * Complaint closure time.
      */
     private LocalDateTime closedAt;
 
     /*
-     * Customer feedback after the resolution of the complaint.
+     * Customer feedback.
      */
     private String customerFeedback;
 
     /*
-     * State of the complaint
+     * Complaint state.
      */
     private ComplaintState state;
 }

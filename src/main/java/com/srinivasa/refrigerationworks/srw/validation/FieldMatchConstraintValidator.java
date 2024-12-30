@@ -1,13 +1,12 @@
 package com.srinivasa.refrigerationworks.srw.validation;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Component;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
-
 /*
- * Custom validator to check if two fields match in an object.
+ * Custom validator to ensure two fields match in an object.
  */
 @Component
 public class FieldMatchConstraintValidator implements ConstraintValidator<FieldMatch, Object> {
@@ -23,7 +22,7 @@ public class FieldMatchConstraintValidator implements ConstraintValidator<FieldM
     private String secondField;
 
     /*
-     * message: The error message to show when fields do not match.
+     * message: The error message when fields do not match.
      */
     private String message;
 
@@ -38,34 +37,31 @@ public class FieldMatchConstraintValidator implements ConstraintValidator<FieldM
     public boolean isValid(Object value, ConstraintValidatorContext context) {
 
         /*
-         * If value is null, validation is not needed
+         * Return true if value is null (no validation required)
          */
-        if (value==null) {
+        if (value == null) {
             return true;
         }
 
-        /* Create BeanWrapper for reflection
-         * Get values from the first and second fields
+        /*
+         * Use reflection to get the field values
          */
         BeanWrapperImpl beanWrapper = new BeanWrapperImpl(value);
         String firstValue = (String) beanWrapper.getPropertyValue(firstField);
         String secondValue = (String) beanWrapper.getPropertyValue(secondField);
 
         /* Return true if values match */
-        if(firstValue != null && firstValue.equals(secondValue)) {
+        if (firstValue != null && firstValue.equals(secondValue)) {
             return true;
         }
 
-        /* Disable default error message
-         * Build custom error message and attach to second field
-         * Return false
+        /*
+         * If values don't match, set a custom error message
          */
-        else{
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(message)
-                    .addPropertyNode(secondField)
-                    .addConstraintViolation();
-            return false;
-        }
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(message)
+                .addPropertyNode(secondField)
+                .addConstraintViolation();
+        return false;
     }
 }

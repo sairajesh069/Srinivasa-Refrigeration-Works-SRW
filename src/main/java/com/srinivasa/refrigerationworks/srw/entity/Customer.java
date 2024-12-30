@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /*
- * Entity class representing the Customer in the database
+ * Entity class representing the Customer in the database.
  */
 @Entity
 @Table(name = "customers")
@@ -27,7 +27,7 @@ public class Customer implements Serializable {
     private static final long serialVersionUID = 50L;
 
     /*
-     * Primary key for the customer entity, auto-generated
+     * Primary key for the customer entity, auto-generated.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,69 +35,69 @@ public class Customer implements Serializable {
     private Long customerReference;
 
     /*
-     * Customer's unique ID
+     * Customer's unique ID.
      */
     @Column(name = "customer_id")
     private String customerId;
 
     /*
-     * Customer's first name
+     * Customer's first name.
      */
     @Column(name = "first_name")
     private String firstName;
 
     /*
-     * Customer's last name
+     * Customer's last name.
      */
     @Column(name = "last_name")
     private String lastName;
 
     /*
-     * Customer's date of birth
+     * Customer's date of birth.
      */
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     /*
-     * Customer's gender
+     * Customer's gender.
      */
     @Column(name = "gender")
     private String gender;
 
     /*
-     * Customer's unique phone number
+     * Customer's unique phone number.
      */
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     /*
-     * Customer's unique email
+     * Customer's unique email.
      */
     @Column(name = "email", unique = true)
     private String email;
 
     /*
-     * Customer's address
+     * Customer's address.
      */
     @Column(name = "address")
     private String address;
 
     /*
-     * Timestamp of when the customer record was created (not updatable)
+     * Timestamp of when the customer record was created (not updatable).
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "created_at", updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     /*
-     * Timestamp of when the customer record was last updated
+     * Timestamp of when the customer record was last updated.
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     /*
-     * Status of the customer
+     * Status of the customer.
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

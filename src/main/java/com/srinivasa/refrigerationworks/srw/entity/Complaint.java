@@ -12,8 +12,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /*
- * Entity class representing a complaint in the system.
- * It contains details about the complaint such as the customer, product, status, and feedback.
+ * Entity representing a complaint with customer and product details.
  */
 @Entity
 @Table(name="complaints")
@@ -22,13 +21,13 @@ import java.time.LocalDateTime;
 public class Complaint implements Serializable {
 
     /*
-     * Unique ID for serialization compatibility.
+     * Serial version UID for compatibility.
      */
     @Serial
     private static final long serialVersionUID = 60L;
 
     /*
-     * Unique identifier for the complaint (generated automatically).
+     * Auto-generated unique complaint reference ID.
      */
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -48,72 +47,69 @@ public class Complaint implements Serializable {
     private String bookedById;
 
     /*
-     * Name of the customer who raised the complaint.
+     * Customer name who raised the complaint.
      */
     @Column(name="customer_name")
     private String customerName;
 
     /*
-     * Contact number of the customer.
+     * Customer contact number.
      */
     @Column(name="contact_number")
     private String contactNumber;
 
     /*
-     * Email of the customer.
+     * Customer email.
      */
     @Column(name="email")
     private String email;
 
     /*
-     * Address of the customer.
+     * Customer address.
      */
     @Column(name="address")
     private String address;
 
     /*
-     * Type of the product related to the complaint.
+     * Product type related to the complaint.
      */
     @Column(name = "product_type")
     private String productType;
 
     /*
-     * Brand of the product related to the complaint.
+     * Product brand related to the complaint.
      */
     @Column(name = "brand")
     private String brand;
 
     /*
-     * Model of the product related to the complaint.
+     * Product model related to the complaint.
      */
     @Column(name = "product_model")
     private String productModel;
 
     /*
-     * Detailed description of the complaint.
+     * Description of the complaint.
      */
     @Column(name="description")
     private String description;
 
     /*
-     * Date and time when the complaint was created.
-     * It is set automatically to the current timestamp and is not updated.
+     * Complaint creation timestamp.
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name="created_at", updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     /*
-     * Status of the complaint (e.g., OPEN, IN_PROGRESS, RESOLVED).
-     * Default is OPEN when a complaint is created.
+     * Complaint status (e.g., OPEN, IN_PROGRESS, RESOLVED).
      */
     @Enumerated(EnumType.STRING)
     @Column(name="status")
     private ComplaintStatus status;
 
     /*
-     * Date and time when the complaint was last updated.
-     * This field is updated manually as the complaint progresses.
+     * Timestamp for last complaint update.
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name="updated_at")
@@ -126,21 +122,20 @@ public class Complaint implements Serializable {
     private String technicianId;
 
     /*
-     * Date and time when the complaint was closed.
-     * This is only set when the complaint is marked as resolved.
+     * Complaint closure timestamp.
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @Column(name="closed_at")
     private LocalDateTime closedAt;
 
     /*
-     * Customer feedback about the resolution or handling of the complaint.
+     * Customer feedback after resolution.
      */
     @Column(name = "customer_feedback")
     private String customerFeedback;
 
     /*
-     * State of the complaint
+     * Current state of the complaint.
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "state")

@@ -3,6 +3,9 @@ package com.srinivasa.refrigerationworks.srw.controller;
 import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class OwnerController {
 
+    /*
+     * Service for handling operations related to owner entities.
+     */
     private final OwnerService ownerService;
 
     /*
@@ -46,8 +52,22 @@ public class OwnerController {
      * - Validates the input and displays the owner details if no errors occur.
      */
     @PostMapping("/search")
-    public String getOwner(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model) {
-        OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+    public String getOwner(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model, HttpServletRequest request) {
+        if(userIdentifierDTO.getIdentifier() != null) {
+            OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+            return "owner/owner-details";
+        }
+        else {
+            return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+        }
+    }
+
+    /*
+     * Handles the GET request to fetch the logged-in owner's profile.
+     */
+    @GetMapping("/my-profile")
+    public String getOwnerProfile(Model model, HttpSession session) {
+        OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier(session.getAttribute("userId").toString()), model);
         return "owner/owner-details";
     }
 }

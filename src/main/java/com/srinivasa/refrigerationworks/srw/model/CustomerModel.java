@@ -12,10 +12,8 @@ import java.util.List;
 public class CustomerModel {
 
     /*
-     * Adds UserIdentifierDTO to the model.
-     * Adds a list of customers to the model, or a message if no customers are found.
-     * The customers list is added to the model under the attribute "customers" if not empty,
-     * otherwise a "noCustomersFound" message is added.
+     * Adds UserIdentifierDTO and a list of customers to the model.
+     * If no customers are found, adds a "noCustomersFound" message.
      */
     public static void addCustomersToModel(List<CustomerDTO> customers, Model model) {
         model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
@@ -26,8 +24,8 @@ public class CustomerModel {
 
     /*
      * Adds customer details to the model.
-     * - If customer is null, adds a message indicating no customer found.
-     * - Otherwise, adds the customer details.
+     * If customer is null, adds a "noCustomerFound" message.
+     * Otherwise, adds the customer details.
      */
     public static void addCustomerToModel(CustomerDTO customer, Model model) {
         model.addAttribute(

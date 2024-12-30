@@ -1,15 +1,15 @@
 package com.srinivasa.refrigerationworks.srw.validation;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
-
 /*
- * Custom annotation for validating that two fields match.
+ * Custom annotation to validate that two fields match.
  */
 @Constraint(validatedBy = FieldMatchConstraintValidator.class)
 @Target({ElementType.TYPE})
@@ -17,7 +17,7 @@ import jakarta.validation.Payload;
 public @interface FieldMatch {
 
     /*
-     * message: The default error message when fields don't match.
+     * message: Default error message when fields don't match.
      */
     public String message() default "Fields did not match.";
 

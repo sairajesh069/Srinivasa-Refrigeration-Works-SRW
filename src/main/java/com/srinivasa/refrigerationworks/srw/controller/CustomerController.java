@@ -3,6 +3,9 @@ package com.srinivasa.refrigerationworks.srw.controller;
 import com.srinivasa.refrigerationworks.srw.model.CustomerModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerService;
+import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class CustomerController {
 
+    /*
+     * Service for handling customer-related operations.
+     */
     private final CustomerService customerService;
 
     /*
@@ -43,11 +49,25 @@ public class CustomerController {
 
     /*
      * Handles the POST request to search for a customer by their identifier.
-     * - Validates the input and displays the customer details if no errors occur.
+     * Validates the input and displays the customer details if no errors occur.
      */
     @PostMapping("/search")
-    public String getCustomer(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model) {
-        CustomerModel.addCustomerToModel(customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+    public String getCustomer(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model, HttpServletRequest request) {
+        if (userIdentifierDTO.getIdentifier() != null) {
+            CustomerModel.addCustomerToModel(customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), model);
+            return "customer/customer-details";
+        }
+        else {
+            return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        }
+    }
+
+    /*
+     * Handles the GET request to fetch the logged-in customer's profile.
+     */
+    @GetMapping("/my-profile")
+    public String getCustomerProfile(Model model, HttpSession session) {
+        CustomerModel.addCustomerToModel(customerService.getCustomerByIdentifier((String) session.getAttribute("userId")), model);
         return "customer/customer-details";
     }
 }

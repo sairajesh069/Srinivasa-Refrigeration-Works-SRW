@@ -22,25 +22,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /*
- * Service layer for handling complaint-related operations.
- * Manages the business logic for registering complaints.
+ * Service for complaint-related operations.
  */
 @Service
 @RequiredArgsConstructor
 public class ComplaintService {
 
+    /*
+     * Repository for complaint data.
+     */
     private final ComplaintRepository complaintRepository;
+
+    /*
+     * Mapper for converting complaint entities to DTOs.
+     */
     private final ComplaintMapper complaintMapper;
+
+    /*
+     * Service for employee-related operations.
+     */
     private final EmployeeService employeeService;
 
     /*
-     * Registers a new complaint in the system.
-     * - Maps the ComplaintDTO to a Complaint entity.
-     * - Sets additional details such as contact number format and bookedById.
-     * - Saves the complaint to the database and generates a unique complaint ID.
-     *
-     * @param complaintDTO The DTO containing complaint details.
-     * @param username The username of the user registering the complaint.
+     * Registers a new complaint and sets initial values.
      */
     @Transactional
     @CacheEvict(cacheNames = "complaints", allEntries = true)
@@ -57,7 +61,7 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves a list of complaints associated with the registered user's ID.
+     * Retrieves complaints for a specific user based on bookedById.
      */
     @Cacheable(value = "complaints", key = "'my_complaint_list-' + #bookedById")
     public List<ComplaintDTO> getComplaintsByBookedById(String bookedById) {
@@ -69,8 +73,7 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves all complaints from the repository.
-     * Returns the list of complaints to be used in other services or controllers.
+     * Retrieves all complaints.
      */
     @Cacheable(value = "complaints", key = "'complaint_list'")
     public List<ComplaintDTO> getComplaintList() {
@@ -82,8 +85,7 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves all active complaints from the repository.
-     * Returns the list of active complaints to be used in other services or controllers.
+     * Retrieves active complaints.
      */
     @Cacheable(value = "complaints", key = "'active_complaint_list'")
     public List<ComplaintDTO> getActiveComplaintList() {
@@ -95,16 +97,14 @@ public class ComplaintService {
     }
 
     /*
-     * Fetches complaints based on the identifier and user role.
-     * If the user is not an OWNER, retrieves complaints for the logged-in user.
-     * Filters complaints by complaint ID or contact number and registration date.
+     * Retrieves complaints by identifier, filtered by user role and date.
      */
     @Cacheable(value = "complaint", key = "'fetchBy-' + #complaintIdentifierDTO.identifier")
     public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String bookedById, String userRole) {
         String identifier = complaintIdentifierDTO.getIdentifier();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate registeredDate = complaintIdentifierDTO.getRegisteredDate();
-        String registeredDateFormatted = registeredDate!=null ? registeredDate.format(formatter) : null;
+        String registeredDateFormatted = registeredDate != null ? registeredDate.format(formatter) : null;
         String phoneNumberFormatted = (identifier != null && identifier.matches("\\d{10}"))
                 ? PhoneNumberFormatter.formatPhoneNumber(identifier) : identifier;
         List<ComplaintDTO> complaints = !userRole.equals("ROLE_OWNER") ? getComplaintsByBookedById(bookedById)
@@ -119,23 +119,20 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves the ComplaintDTO by complaintId.
-     * - Checks if the user is an owner. If not, ensures the user has access to the complaint.
-     * - If the complaint is not booked by the current user (for non-owners), returns null.
+     * Checks if a user can access a complaint based on user role and complaint details.
      */
     @Cacheable(value = "complaint", key = "'complaint_access_check-' + #complaintId + '&' + #userId")
     public boolean canUserAccess(String complaintId, boolean isOwner, String userId) {
-        if(isOwner) {
+        if (isOwner) {
             return true;
-        }
-        else{
+        } else {
             Complaint complaint = complaintRepository.findByComplaintId(complaintId);
             return complaint.getBookedById().equals(userId) || complaint.getTechnicianId().equals(userId);
         }
     }
 
     /*
-     * Retrieves the ComplaintDTO by complaintId.
+     * Retrieves complaint details by complaintId.
      */
     @Cacheable(value = "complaint", key = "'fetch-' + #complaintId")
     public ComplaintDTO getComplaintById(String complaintId) {
@@ -145,8 +142,7 @@ public class ComplaintService {
     }
 
     /*
-     * Updates the complaint details by comparing initial and updated ComplaintDTOs.
-     * Sets the relevant values and saves the updated complaint to the repository.
+     * Updates complaint details and evicts relevant cache entries.
      */
     @Caching(
             evict = {
@@ -161,13 +157,13 @@ public class ComplaintService {
         updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
         updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
         updatedComplaintDTO.setState(initialComplaintDTO.getState());
-        if(!initialComplaintDTO.equals(updatedComplaintDTO)) {
+        if (!initialComplaintDTO.equals(updatedComplaintDTO)) {
             Complaint complaint = complaintMapper.toEntity(updatedComplaintDTO);
             complaint.setComplaintId(updatedComplaintDTO.getComplaintId());
-            complaint.setComplaintReference(Long.parseLong(complaint.getComplaintId().substring(4,12)));
+            complaint.setComplaintReference(Long.parseLong(complaint.getComplaintId().substring(4, 12)));
             complaint.setBookedById(updatedComplaintDTO.getBookedById());
             complaint.setUpdatedAt(LocalDateTime.now());
-            if(updatedComplaintDTO.getStatus().equals(ComplaintStatus.RESOLVED) && updatedComplaintDTO.getClosedAt() == null) {
+            if (updatedComplaintDTO.getStatus().equals(ComplaintStatus.RESOLVED) && updatedComplaintDTO.getClosedAt() == null) {
                 complaint.setClosedAt(LocalDateTime.now());
             }
             complaintRepository.save(complaint);
@@ -175,8 +171,7 @@ public class ComplaintService {
     }
 
     /*
-     * Activates a complaint by updating their state to active.
-     * - Sets the state to ACTIVE and updates the timestamp.
+     * Activates a complaint and updates its state to active.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "complaints", allEntries = true),
@@ -187,8 +182,7 @@ public class ComplaintService {
     }
 
     /*
-     * Deactivates a complaint by updating their state to inactive.
-     * - Sets the state to IN_ACTIVE and updates the timestamp.
+     * Deactivates a complaint and updates its state to inactive.
      */
     @Caching(
             evict = @CacheEvict(cacheNames = "complaints", allEntries = true),
@@ -199,7 +193,7 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves a list of complaints assigned to an employee.
+     * Retrieves complaints assigned to a specific employee (technician).
      */
     @Cacheable(value = "complaints", key = "'fetchByTechnicianId-' + #technicianId")
     public List<ComplaintDTO> getComplaintsByTechnicianId(String technicianId) {
@@ -211,7 +205,7 @@ public class ComplaintService {
     }
 
     /*
-     * Fetches the list of active employee IDs from the employee service.
+     * Retrieves active employee IDs from the employee service.
      */
     public List<String> getActiveEmployeeIds() {
         return employeeService.getActiveEmployeeIds();

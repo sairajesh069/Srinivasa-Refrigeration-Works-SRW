@@ -5,13 +5,13 @@ import com.srinivasa.refrigerationworks.srw.utility.common.enums.ResponseBodySta
 import lombok.Data;
 
 /*
- * Response body class for returning ComplaintDTO data along with a message and status
+ * Response body for ComplaintDTO data with message and status
  */
 @Data
 public class ComplaintResponseBody {
 
     /*
-     * Message providing additional information about the response
+     * Message with additional response information
      */
     private String message;
 
@@ -21,7 +21,7 @@ public class ComplaintResponseBody {
     private ResponseBodyStatus status;
 
     /*
-     * ComplaintDTO object containing complaint details
+     * ComplaintDTO object with complaint details
      */
     private ComplaintDTO complaintDTO;
 }

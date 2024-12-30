@@ -13,27 +13,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /*
- * Repository interface for Employee entity
- * Provides CRUD operations using JpaRepository
+ * Repository for Employee entity
  */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     /*
-     * Query to find an Employee entity based on the identifier.
-     * The identifier can match the employee's ID, phone number, national id number or email.
+     * Finds employee by ID, phone, email, or national ID
      */
     @Query("SELECT e FROM Employee e WHERE e.employeeId = :identifier OR e.phoneNumber = :identifier OR e.email = :identifier or e.nationalIdNumber = :identifier")
     public Employee findByIdentifier(@Param("identifier") String identifier);
 
     /*
-     * Fetches a list of employees based on their status.
+     * Retrieves employees by status
      */
     public List<Employee> findByStatus(UserStatus status);
 
     /*
-     * Activates/Deactivates an employee by updating their status, 'updatedAt' and 'dateOfExit' fields.
-     * - Updates the Employee entity for the specified employeeId.
+     * Updates employee status, 'updatedAt', and 'dateOfExit'
      */
     @Modifying
     @Transactional

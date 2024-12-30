@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OwnerCredentialController {
 
+    /*
+     * Service for handling operations related to owner credentials.
+     */
     private final OwnerCredentialService ownerCredentialService;
 
     /*
@@ -105,14 +108,5 @@ public class OwnerCredentialController {
     public String deactivateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.deactivateOwner(ownerId);
         return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
-    }
-
-    /*
-     * Handles the GET request to fetch the logged-in owner's profile.
-     */
-    @GetMapping("/my-profile")
-    public String getOwnerProfile(Model model, HttpSession session) {
-        OwnerModel.addOwnerToModel(ownerCredentialService.getOwnerById(session.getAttribute("userId").toString()), model);
-        return "owner/owner-details";
     }
 }

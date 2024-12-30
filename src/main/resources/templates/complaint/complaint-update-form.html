@@ -9,18 +9,20 @@
         <!-- Bootstrap CSS for styling -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-        <!-- Custom CSS -->
+        <!-- Custom CSS for styling the complaint register page -->
         <link rel="stylesheet" th:href="@{/css/complaint-register.css}">
 
+        <!-- Page title -->
         <title>Srinivasa Refrigeration Works - Update Details</title>
     </head>
     <body>
-        <!-- Heading for updating details -->
+        <!-- Heading for updating details section -->
         <h3>Update Details</h3>
 
         <!-- Update Complaint Details Form -->
         <form th:action="@{/SRW/complaint/update}" th:object="${complaint}" method="POST">
 
+            <!-- Hidden input to store the origin of the update endpoint -->
             <input type="hidden" name="updateEndpointOrigin" th:value="${updateEndpointOrigin}">
 
             <!-- Hidden input field for complaint ID -->
@@ -50,35 +52,36 @@
             <!-- Error message for address field -->
             <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error"></span> <br><br>
 
-            <!-- Dropdown for selecting service type -->
+            <!-- Dropdown for selecting product type -->
             <label for="productType">Product Type: </label>
             <select id="productType" name="productType" th:field="*{productType}"
-                    onchange="this.form.action='/SRW/complaint/update-dropdown';this.form.submit();"> <!-- The 'onchange' event is triggered when a service type is selected. It updates the form's action to '/SRW/update-dropdown' and submits the selected product type, which refreshes the dropdown options based on the chosen product type. -->
+                    onchange="this.form.action='/SRW/complaint/update-dropdown';this.form.submit();">
+                <!-- Default select option -->
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available service types and display them in options -->
+                <!-- Iterate through available product types and display them -->
                 <option th:each="productType : ${productTypes}" th:value="${productType}" th:text="${productType}"></option>
             </select>
-            <!-- Error message for service type field -->
+            <!-- Error message for product type field -->
             <span th:if="${#fields.hasErrors('productType')}" th:errors="*{productType}" class="error"></span><br><br>
 
             <!-- Dropdown for selecting brand -->
             <label for="brand">Brand: </label>
             <select id="brand" name="brand" th:field="*{brand}">
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available brands and display them in options -->
+                <!-- Iterate through available brands and display them -->
                 <option th:each="brand : ${brands}" th:value="${brand}" th:text="${brand}"></option>
             </select>
             <!-- Error message for brand field -->
             <span th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}" class="error"></span> <br><br>
 
-            <!-- Dropdown for selecting model -->
+            <!-- Dropdown for selecting product model -->
             <label for="productModel">Model: </label>
             <select id="productModel" name="productModel" th:field="*{productModel}">
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available models and display them in options -->
+                <!-- Iterate through available models and display them -->
                 <option th:each="productModel : ${productModels}" th:value="${productModel}" th:text="${productModel}"></option>
             </select>
-            <!-- Error message for model field -->
+            <!-- Error message for product model field -->
             <span th:if="${#fields.hasErrors('productModel')}" th:errors="*{productModel}" class="error"></span> <br><br>
 
             <!-- Input for describing the issue -->
@@ -87,42 +90,45 @@
             <!-- Error message for description field -->
             <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error"></span> <br><br>
 
-            <!-- Input for complaint status -->
+            <!-- Input for selecting complaint status -->
             <label for="status">Status: </label>
             <input id="status" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${session.userId.length() == 6 or session.userId == complaint.technicianId}">
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
+                   th:if="${session.userId.length() == 6 or session.userId == complaint.technicianId}">
             <input id="statusReadOnly" type="radio" th:field="*{status}"
-                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:if="${!(session.userId.length() == 6 or session.userId == complaint.technicianId)}" onclick="return false;"> <br><br>
+                   th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
+                   th:if="${!(session.userId.length() == 6 or session.userId == complaint.technicianId)}"
+                   onclick="return false;"> <br><br>
 
-            <!-- Input for assigning technician for complaint -->
+            <!-- Input for assigning technician -->
             <label for="technicianId">Technician Id: </label>
             <select id="technicianId" th:field="*{technicianId}" th:if="${session.userId.length() == 6}">
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available technicianId's and display them in options -->
+                <!-- Iterate through available technician IDs and display them -->
                 <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
             </select>
             <select id="technicianIdDisabled" th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available technicianId's and display them in options -->
+                <!-- Iterate through available technician IDs and display them -->
                 <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
             </select> <br><br>
 
-            <!-- Hidden input to store the value if the select is read-only -->
+            <!-- Hidden input to store technician ID if the select is read-only -->
             <input type="hidden" th:field="*{technicianId}" th:value="${technicianId}" th:if="${session.userId.length() != 6}">
 
-            <!-- Input for complaint feedback -->
+            <!-- Input for customer feedback -->
             <label for="customerFeedback">Feedback: </label>
             <input id="customerFeedback" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId == complaint.bookedById}">
             <input id="customerFeedbackReadOnly" type="text" th:field="*{customerFeedback}" placeholder="Provide your feedback" th:if="${session.userId != complaint.bookedById}" readonly> <br><br>
 
-            <!-- Submit button for updating details -->
+            <!-- Submit button for updating complaint details -->
             <input type="submit" class="btn btn-primary btn-sm mb-3" value="Update"> <br><br>
         </form>
 
         <!-- Link to go back to home page -->
         <a class="btn btn-primary btn-sm mb-3" th:href="@{/SRW/home}">Back to Home page</a>
 
-        <!-- Check if user has the role 'OWNER' to display management portal -->
+        <!-- Check if user has 'OWNER' role to display management portal link -->
         <div sec:authorize="hasRole('OWNER')">
             <!-- Button to navigate to management portal -->
             <a th:href="@{/SRW/management-portal}" class="btn btn-secondary btn-sm mb-3" title="management portal">Back to Management Portal</a>

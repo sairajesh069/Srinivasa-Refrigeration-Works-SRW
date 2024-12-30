@@ -6,15 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /*
- * Container annotation for holding multiple UniqueValue annotations.
- * - Allows multiple UniqueValue annotations to be applied to the same element (e.g., class).
+ * Holds multiple UniqueValue annotations.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueValues {
 
     /*
-     * Array of UniqueValue annotations.
+     * UniqueValue annotations array.
      */
     UniqueValue[] value();
 }

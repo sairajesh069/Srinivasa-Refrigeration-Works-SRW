@@ -23,6 +23,7 @@
         <!-- Update Customer Details Form -->
         <form th:action="@{/SRW/customer/update}" th:object="${customer}" method="POST">
 
+            <!-- Hidden input field for the origin of the update endpoint -->
             <input type="hidden" name="updateEndpointOrigin" th:value="${updateEndpointOrigin}">
 
             <!-- Hidden input field for customer ID -->
