@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class ComplaintIdentifierDTO {
     /*
      * Complaint ID or phone number.
      */
+    @Pattern(regexp = "^[0-9]{10}$|^\\+91[0-9]{10}$|^SRWC[0-9]{8}$")
     private String identifier;
 
     /*

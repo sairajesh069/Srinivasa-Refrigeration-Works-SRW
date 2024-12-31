@@ -6,13 +6,18 @@ import com.srinivasa.refrigerationworks.srw.service.CustomerService;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
 
 /*
  * Controller that handles requests related to the Customer entity.
@@ -33,7 +38,9 @@ public class CustomerController {
      */
     @GetMapping("/list")
     public String getCustomerList(Model model) {
-        CustomerModel.addCustomersToModel(customerService.getCustomerList(), model);
+        CustomerModel.addCustomersToModel(model.getAttribute("userIdentifierDTO") == null
+                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                customerService.getCustomerList(), model);
         return "customer/customer-list";
     }
 
@@ -43,7 +50,9 @@ public class CustomerController {
      */
     @GetMapping("/active-list")
     public String getActiveCustomerList(Model model) {
-        CustomerModel.addCustomersToModel(customerService.getActiveCustomerList(), model);
+        CustomerModel.addCustomersToModel(model.getAttribute("userIdentifierDTO") == null
+                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                customerService.getActiveCustomerList(), model);
         return "customer/customer-list";
     }
 
@@ -52,14 +61,19 @@ public class CustomerController {
      * Validates the input and displays the customer details if no errors occur.
      */
     @PostMapping("/search")
-    public String getCustomer(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model, HttpServletRequest request) {
-        if (userIdentifierDTO.getIdentifier() != null) {
-            CustomerModel.addCustomerToModel(customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier()), model);
-            return "customer/customer-details";
+    public String getCustomer(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
+                              Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/").equals("search")
+                ? session.getAttribute("searchEndpointOrigin").toString()
+                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        if (!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
+            CustomerModel.addCustomersToModel(userIdentifierDTO, Collections.singletonList(
+                    customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier())), model);
+            session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
+            return "customer/customer-list";
         }
-        else {
-            return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
-        }
+        redirectAttributes.addFlashAttribute("userIdentifierDTO", userIdentifierDTO);
+        return "redirect:/SRW/customer/" + searchEndpointOrigin;
     }
 
     /*

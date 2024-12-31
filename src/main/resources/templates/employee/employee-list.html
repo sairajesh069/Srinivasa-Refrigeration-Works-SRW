@@ -15,22 +15,22 @@
         <!-- Main heading for the page -->
         <h3>Employee List</h3>
 
+        <!-- Form to fetch employee details based on the identifier -->
+        <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
+            <!-- Identifier input field -->
+            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
+
+            <!-- Button to submit the form for fetching employee details -->
+            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br>
+
+            <p class="helper-message">Please enter Employee ID, Phone Number, or Email to search.</p>
+        </form>
+
         <!-- Display a message if no employees are found -->
-        <p th:if="${noEmployeesFound}" th:text="${noEmployeesFound}"></p>
+        <p th:if="${noEmployeesFound}" th:text="${noEmployeesFound}" class="error"></p>
 
         <!-- Display the employee table if employees exist -->
         <div th:if="${employees}">
-
-            <!-- Form to fetch employee details based on the identifier -->
-            <form th:action="@{/SRW/employee/search}" th:object="${userIdentifierDTO}" method="POST">
-                <!-- Identifier input field -->
-                <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter employee id or phone number or email">
-
-                <!-- Button to submit the form for fetching employee details -->
-                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br><br>
-
-                <p class="helper-message">Enter Employee ID, Phone Number, or Email.</p>
-            </form>
 
             <!-- Table displaying the employee details -->
             <table class="table table-bordered table-striped">

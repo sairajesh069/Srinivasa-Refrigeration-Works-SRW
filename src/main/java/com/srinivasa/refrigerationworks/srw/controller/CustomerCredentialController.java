@@ -68,8 +68,7 @@ public class CustomerCredentialController {
      * Ensures proper user role or origin before granting access.
      */
     @GetMapping("/update")
-    public String updateCustomer(@RequestParam("customerId") String customerId, Model model,
-                                 HttpSession session, HttpServletRequest request) {
+    public String updateCustomer(@RequestParam("customerId") String customerId, Model model, HttpSession session, HttpServletRequest request) {
         String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
             CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById(customerId), model);

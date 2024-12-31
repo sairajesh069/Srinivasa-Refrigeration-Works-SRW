@@ -68,8 +68,7 @@ public class EmployeeCredentialController {
      * Ensures proper user role or origin before granting access.
      */
     @GetMapping("/update")
-    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model,
-                                 HttpSession session, HttpServletRequest request) {
+    public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session, HttpServletRequest request) {
         String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
             EmployeeModel.addEmployeeToModel(employeeCredentialService.getEmployeeById(employeeId), model);

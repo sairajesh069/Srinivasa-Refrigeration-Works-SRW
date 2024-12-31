@@ -6,6 +6,8 @@ spring:
 
   server:
     port: 8080  # Correct key for server port
+    session:
+      timeout: 15m  # Set session timeout to 15 minutes
 
   profiles:
     active: dev  # Sets active profile to 'dev'.
@@ -19,9 +21,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update  # Auto-update schema
-    show-sql: true  # Enables logging of SQL queries.
+    show-sql: true  # Enables logging of SQL queries
     properties:
-      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect  # For MySQL 8
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect  # MySQL dialect for Hibernate
+    open-in-view: false  # Disable open-in-view to prevent lazy loading during view rendering
 
   cache:
     type: redis  # Redis as the cache provider
@@ -29,4 +32,6 @@ spring:
   redis:
     host: localhost  # Redis host
     port: 6379  # Redis port
-    time-to-live: 90000  # TTL in milliseconds
+    time-to-live: 180000  # TTL in milliseconds
+    repositories:
+      enabled: false  # Disable Redis repository scanning

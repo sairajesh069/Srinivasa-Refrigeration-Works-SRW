@@ -99,7 +99,7 @@ public class ComplaintService {
     /*
      * Retrieves complaints by identifier, filtered by user role and date.
      */
-    @Cacheable(value = "complaint", key = "'fetchBy-' + #complaintIdentifierDTO.identifier")
+    @Cacheable(value = "complaint", key = "'fetch_by-' + #complaintIdentifierDTO.identifier + '&' + #complaintIdentifierDTO.registeredDate")
     public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String bookedById, String userRole) {
         String identifier = complaintIdentifierDTO.getIdentifier();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -121,7 +121,7 @@ public class ComplaintService {
     /*
      * Checks if a user can access a complaint based on user role and complaint details.
      */
-    @Cacheable(value = "complaint", key = "'complaint_access_check-' + #complaintId + '&' + #userId")
+    @Cacheable(value = "complaint", key = "'complaint_access_check-' + #userId + '&' + #complaintId")
     public boolean canUserAccess(String complaintId, boolean isOwner, String userId) {
         if (isOwner) {
             return true;
@@ -134,11 +134,9 @@ public class ComplaintService {
     /*
      * Retrieves complaint details by complaintId.
      */
-    @Cacheable(value = "complaint", key = "'fetch-' + #complaintId")
+    @Cacheable(value = "complaint", key = "'fetch_by-' + #complaintId")
     public ComplaintDTO getComplaintById(String complaintId) {
-        return complaintMapper
-                .toDto(complaintRepository
-                        .findByComplaintId(complaintId));
+        return complaintMapper.toDto(complaintRepository.findByComplaintId(complaintId));
     }
 
     /*
@@ -157,6 +155,7 @@ public class ComplaintService {
         updatedComplaintDTO.setUpdatedAt(initialComplaintDTO.getUpdatedAt());
         updatedComplaintDTO.setClosedAt(initialComplaintDTO.getClosedAt());
         updatedComplaintDTO.setState(initialComplaintDTO.getState());
+        updatedComplaintDTO.setContactNumber(PhoneNumberFormatter.formatPhoneNumber(updatedComplaintDTO.getContactNumber()));
         if (!initialComplaintDTO.equals(updatedComplaintDTO)) {
             Complaint complaint = complaintMapper.toEntity(updatedComplaintDTO);
             complaint.setComplaintId(updatedComplaintDTO.getComplaintId());
@@ -195,7 +194,7 @@ public class ComplaintService {
     /*
      * Retrieves complaints assigned to a specific employee (technician).
      */
-    @Cacheable(value = "complaints", key = "'fetchByTechnicianId-' + #technicianId")
+    @Cacheable(value = "complaints", key = "'assigned_to-' + #technicianId")
     public List<ComplaintDTO> getComplaintsByTechnicianId(String technicianId) {
         List<Complaint> complaints = complaintRepository.findByTechnicianId(technicianId);
         return complaints

@@ -31,13 +31,13 @@ public class Employee implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_reference")
+    @Column(name = "employee_reference", unique = true)
     private Long employeeReference;
 
     /*
      * Unique Employee ID.
      */
-    @Column(name = "employee_id")
+    @Column(name = "employee_id", unique = true)
     private String employeeId;
 
     /*

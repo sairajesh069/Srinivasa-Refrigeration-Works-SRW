@@ -48,7 +48,7 @@ public class ComplaintDTO implements Serializable {
      * Customer's contact number (mandatory, valid format).
      */
     @NotNull(message = "Contact number is mandatory")
-    @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
+    @Pattern(regexp = "^[0-9]{10}$|^\\+91[0-9]{10}$", message = "Please enter a valid phone number")
     private String contactNumber;
 
     /*

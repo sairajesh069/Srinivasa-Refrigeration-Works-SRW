@@ -12,14 +12,14 @@ import java.util.List;
 public class EmployeeModel {
 
     /*
-     * Adds UserIdentifierDTO and a list of employees to the model.
+     * Adds UserIdentifierDTO and list of employees to the model.
      * If no employees are found, adds a "noEmployeesFound" message.
      */
-    public static void addEmployeesToModel(List<EmployeeDTO> employees, Model model) {
-        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+    public static void addEmployeesToModel(UserIdentifierDTO userIdentifierDTO, List<EmployeeDTO> employees, Model model) {
+        model.addAttribute("userIdentifierDTO", userIdentifierDTO);
         model.addAttribute(
-                employees.isEmpty() ? "noEmployeesFound" : "employees",
-                employees.isEmpty() ? "No Employee Entries in Database" : employees);
+                (employees.isEmpty() || employees.get(0) == null) ? "noEmployeesFound" : "employees",
+                (employees.isEmpty() || employees.get(0) == null) ? "No Employee Entries in Database" : employees);
     }
 
     /*

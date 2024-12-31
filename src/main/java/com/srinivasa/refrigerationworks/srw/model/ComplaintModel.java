@@ -34,23 +34,24 @@ public class ComplaintModel {
      */
     public static void populateDropDownsForProduct(String productType, Model model) {
         addProductTypesToModel(model);
-
-        switch(productType) {
-            case "Refrigerator" -> {
-                model.addAttribute("brands", ComplaintFormConstants.REFRIGERATOR_BRANDS);
-                model.addAttribute("productModels", ComplaintFormConstants.REFRIGERATOR_MODELS);
-            }
-            case "Air Conditioner" -> {
-                model.addAttribute("brands", ComplaintFormConstants.AIR_CONDITIONER_BRANDS);
-                model.addAttribute("productModels", ComplaintFormConstants.AIR_CONDITIONER_MODELS);
-            }
-            case "Other" -> {
-                model.addAttribute("brands", List.of("Other"));
-                model.addAttribute("productModels", List.of("Other"));
-            }
-            default -> {
-                model.addAttribute("brands", List.of());
-                model.addAttribute("productModels", List.of());
+        if (productType != null) {
+            switch (productType) {
+                case "Refrigerator" -> {
+                    model.addAttribute("brands", ComplaintFormConstants.REFRIGERATOR_BRANDS);
+                    model.addAttribute("productModels", ComplaintFormConstants.REFRIGERATOR_MODELS);
+                }
+                case "Air Conditioner" -> {
+                    model.addAttribute("brands", ComplaintFormConstants.AIR_CONDITIONER_BRANDS);
+                    model.addAttribute("productModels", ComplaintFormConstants.AIR_CONDITIONER_MODELS);
+                }
+                case "Other" -> {
+                    model.addAttribute("brands", List.of("Other"));
+                    model.addAttribute("productModels", List.of("Other"));
+                }
+                default -> {
+                    model.addAttribute("brands", List.of(""));
+                    model.addAttribute("productModels", List.of(""));
+                }
             }
         }
     }
@@ -59,8 +60,8 @@ public class ComplaintModel {
      * Adds ComplaintIdentifierDTO and a list of complaints to the model.
      * If empty, adds a "noComplaintsFound" attribute with a message.
      */
-    public static void addComplaintsToModel(List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
-        model.addAttribute("complaintIdentifierDTO", new ComplaintIdentifierDTO());
+    public static void addComplaintsToModel(ComplaintIdentifierDTO complaintIdentifierDTO, List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
+        model.addAttribute("complaintIdentifierDTO", complaintIdentifierDTO);
         model.addAttribute(
                 complaints.isEmpty() ? "noComplaintsFound" : "complaints",
                 complaints.isEmpty() ? noComplaintsMessage : complaints);

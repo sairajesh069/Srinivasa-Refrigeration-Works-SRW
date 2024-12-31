@@ -31,13 +31,13 @@ public class Owner implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "owner_reference")
+    @Column(name = "owner_reference", unique = true)
     private Long ownerReference;
 
     /*
      * Owner's unique ID.
      */
-    @Column(name = "owner_id")
+    @Column(name = "owner_id", unique = true)
     private String ownerId;
 
     /*

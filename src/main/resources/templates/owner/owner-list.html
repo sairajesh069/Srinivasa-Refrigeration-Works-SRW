@@ -15,22 +15,22 @@
         <!-- Heading indicating the owner list page -->
         <h3>Owners List</h3>
 
+        <!-- Form to fetch owner details based on the identifier -->
+        <form th:action="@{/SRW/owner/search}" th:object="${userIdentifierDTO}" method="POST">
+            <!-- Identifier input field -->
+            <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter owner id or phone number or email">
+
+            <!-- Button to submit the form for fetching owner details -->
+            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br>
+
+            <p class="helper-message">Please enter Owner ID, Phone Number, or Email to search.</p>
+        </form>
+
         <!-- Display a message if no owners are found -->
-        <p th:if="${noOwnersFound}" th:text="${noOwnersFound}"></p>
+        <p th:if="${noOwnersFound}" th:text="${noOwnersFound}" class="error"></p>
 
         <!-- Display the owner table if owners exist -->
         <div th:if="${owners}">
-
-            <!-- Form to fetch owner details based on the identifier -->
-            <form th:action="@{/SRW/owner/search}" th:object="${userIdentifierDTO}" method="POST">
-                <!-- Identifier input field -->
-                <input id="identifier" type="text" th:field="*{identifier}" placeholder="Enter owner id or phone number or email">
-
-                <!-- Button to submit the form for fetching owner details -->
-                <input type="submit" class="btn btn-primary btn-sm mb-3" value="Search"> <br><br>
-
-                <p class="helper-message">Enter Owner ID, Phone Number, or Email.</p>
-            </form>
 
             <!-- Table to display the list of owners -->
             <table class="table table-bordered table-striped">

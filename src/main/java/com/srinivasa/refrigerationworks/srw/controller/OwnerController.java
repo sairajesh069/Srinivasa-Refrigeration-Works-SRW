@@ -6,13 +6,18 @@ import com.srinivasa.refrigerationworks.srw.service.OwnerService;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
 
 /*
  * Controller that handles requests related to the Owner entity.
@@ -33,7 +38,9 @@ public class OwnerController {
      */
     @GetMapping("/list")
     public String getOwnerList(Model model) {
-        OwnerModel.addOwnersToModel(ownerService.getOwnerList(), model);
+        OwnerModel.addOwnersToModel(model.getAttribute("userIdentifierDTO") == null
+                        ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                ownerService.getOwnerList(), model);
         return "owner/owner-list";
     }
 
@@ -43,7 +50,9 @@ public class OwnerController {
      */
     @GetMapping("/active-list")
     public String getActiveOwnerList(Model model) {
-        OwnerModel.addOwnersToModel(ownerService.getActiveOwnerList(), model);
+        OwnerModel.addOwnersToModel(model.getAttribute("userIdentifierDTO") == null
+                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                ownerService.getActiveOwnerList(), model);
         return "owner/owner-list";
     }
 
@@ -52,14 +61,19 @@ public class OwnerController {
      * - Validates the input and displays the owner details if no errors occur.
      */
     @PostMapping("/search")
-    public String getOwner(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model, HttpServletRequest request) {
-        if(userIdentifierDTO.getIdentifier() != null) {
-            OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier()), model);
-            return "owner/owner-details";
+    public String getOwner(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
+                           Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/").equals("search")
+                ? session.getAttribute("searchEndpointOrigin").toString()
+                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+        if(!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
+            OwnerModel.addOwnersToModel(userIdentifierDTO, Collections.singletonList(
+                    ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier())), model);
+            session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
+            return "owner/owner-list";
         }
-        else {
-            return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
-        }
+        redirectAttributes.addFlashAttribute("userIdentifierDTO", userIdentifierDTO);
+        return "redirect:/SRW/owner/" + searchEndpointOrigin;
     }
 
     /*

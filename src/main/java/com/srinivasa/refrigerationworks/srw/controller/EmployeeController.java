@@ -6,13 +6,18 @@ import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
 
 /*
  * Controller that handles requests related to the Employee entity.
@@ -33,7 +38,9 @@ public class EmployeeController {
      */
     @GetMapping("/list")
     public String getEmployeeList(Model model) {
-        EmployeeModel.addEmployeesToModel(employeeService.getEmployeeList(), model);
+        EmployeeModel.addEmployeesToModel(model.getAttribute("userIdentifierDTO") == null
+                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                employeeService.getEmployeeList(), model);
         return "employee/employee-list";
     }
 
@@ -43,7 +50,9 @@ public class EmployeeController {
      */
     @GetMapping("/active-list")
     public String getActiveEmployeeList(Model model) {
-        EmployeeModel.addEmployeesToModel(employeeService.getActiveEmployeeList(), model);
+        EmployeeModel.addEmployeesToModel(model.getAttribute("userIdentifierDTO") == null
+                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+                employeeService.getActiveEmployeeList(), model);
         return "employee/employee-list";
     }
 
@@ -52,14 +61,19 @@ public class EmployeeController {
      * Validates the input and displays the employee details if no errors occur.
      */
     @PostMapping("/search")
-    public String getEmployee(@ModelAttribute UserIdentifierDTO userIdentifierDTO, Model model, HttpServletRequest request) {
-        if(userIdentifierDTO.getIdentifier() != null) {
-            EmployeeModel.addEmployeeToModel(employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier()), model);
-            return "employee/employee-details";
+    public String getEmployee(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
+                              Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/").equals("search")
+                ? session.getAttribute("searchEndpointOrigin").toString()
+                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        if(!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
+            EmployeeModel.addEmployeesToModel(userIdentifierDTO, Collections.singletonList(
+                    employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier())), model);
+            session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
+            return "employee/employee-list";
         }
-        else {
-            return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
-        }
+        redirectAttributes.addFlashAttribute("userIdentifierDTO", userIdentifierDTO);
+        return "redirect:/SRW/employee/" + searchEndpointOrigin;
     }
 
     /*

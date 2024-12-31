@@ -70,7 +70,7 @@ public class CustomerDTO implements Serializable {
      * Customer's phone number (mandatory, valid format, unique).
      */
     @NotNull(message = "Phone number is mandatory")
-    @Pattern(regexp = "^[0-9+]{10,13}$", message = "Please enter a valid phone number")
+    @Pattern(regexp = "^[0-9]{10}$|^\\+91[0-9]{10}$", message = "Please enter a valid phone number")
     private String phoneNumber;
 
     /*

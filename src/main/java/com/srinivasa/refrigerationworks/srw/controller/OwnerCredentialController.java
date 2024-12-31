@@ -8,7 +8,6 @@ import com.srinivasa.refrigerationworks.srw.service.OwnerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -48,7 +47,8 @@ public class OwnerCredentialController {
     }
 
     /*
-     * Confirms the owner registration and adds owner credentials
+     * Confirms the owner registration and adds owner credentials.
+     * If validation fails, re-displays the form with error messages.
      */
     @PostMapping("/confirmation")
     public String confirmOwner(@ModelAttribute @Valid OwnerCredentialDTO ownerCredentialDTO, BindingResult bindingResult, Model model) {
@@ -68,7 +68,8 @@ public class OwnerCredentialController {
     public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpServletRequest request) {
         OwnerModel.addOwnerToModel(ownerCredentialService.getOwnerById(ownerId), model);
         UserCredentialModel.addUserFormConstantsToModel(model);
-        UserCredentialModel.addUpdateEndpointOriginToModel(SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"), model);
+        UserCredentialModel.addUpdateEndpointOriginToModel(
+                SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"), model);
         return "owner/owner-update-form";
     }
 

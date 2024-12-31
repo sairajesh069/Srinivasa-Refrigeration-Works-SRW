@@ -12,14 +12,14 @@ import java.util.List;
 public class OwnerModel {
 
     /*
-     * Adds UserCredentialDTO and a list of owners to the model.
+     * Adds UserIdentifierDTO and list of owners to the model.
      * If no owners are found, adds a "noOwnersFound" message.
      */
-    public static void addOwnersToModel(List<OwnerDTO> owners, Model model) {
-        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+    public static void addOwnersToModel(UserIdentifierDTO userIdentifierDTO, List<OwnerDTO> owners, Model model) {
+        model.addAttribute("userIdentifierDTO", userIdentifierDTO);
         model.addAttribute(
-                owners.isEmpty() ? "noOwnersFound" : "owners",
-                owners.isEmpty() ? "No Owner Entries in Database" : owners);
+                (owners.isEmpty() || owners.get(0) == null) ? "noOwnersFound" : "owners",
+                (owners.isEmpty() || owners.get(0) == null) ? "No Owner Entries in Database" : owners);
     }
 
     /*

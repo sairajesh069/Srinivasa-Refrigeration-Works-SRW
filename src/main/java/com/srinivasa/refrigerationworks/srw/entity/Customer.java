@@ -31,13 +31,13 @@ public class Customer implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_reference")
+    @Column(name = "customer_reference", unique = true)
     private Long customerReference;
 
     /*
      * Customer's unique ID.
      */
-    @Column(name = "customer_id")
+    @Column(name = "customer_id", unique = true)
     private String customerId;
 
     /*

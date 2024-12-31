@@ -12,14 +12,14 @@ import java.util.List;
 public class CustomerModel {
 
     /*
-     * Adds UserIdentifierDTO and a list of customers to the model.
+     * Adds UserIdentifierDTO and list of customers to the model.
      * If no customers are found, adds a "noCustomersFound" message.
      */
-    public static void addCustomersToModel(List<CustomerDTO> customers, Model model) {
-        model.addAttribute("userIdentifierDTO", new UserIdentifierDTO());
+    public static void addCustomersToModel(UserIdentifierDTO userIdentifierDTO, List<CustomerDTO> customers, Model model) {
+        model.addAttribute("userIdentifierDTO", userIdentifierDTO);
         model.addAttribute(
-                customers.isEmpty() ? "noCustomersFound" : "customers",
-                customers.isEmpty() ? "No Customer Entries in Database" : customers);
+                (customers.isEmpty() || customers.get(0) == null) ? "noCustomersFound" : "customers",
+                (customers.isEmpty() || customers.get(0) == null) ? "No Customer Entries in Database" : customers);
     }
 
     /*
