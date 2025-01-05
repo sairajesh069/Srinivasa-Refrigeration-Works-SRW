@@ -2,11 +2,13 @@ package com.srinivasa.refrigerationworks.srw.model;
 
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeInfoDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * Contains methods for adding complaint-related data to the model.
@@ -57,11 +59,12 @@ public class ComplaintModel {
     }
 
     /*
-     * Adds ComplaintIdentifierDTO and a list of complaints to the model.
+     * Adds ComplaintIdentifierDTO, techniciansInfo and a list of complaints to the model.
      * If empty, adds a "noComplaintsFound" attribute with a message.
      */
-    public static void addComplaintsToModel(ComplaintIdentifierDTO complaintIdentifierDTO, List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
+    public static void addComplaintsToModel(Map<String, EmployeeInfoDTO> techniciansInfo, ComplaintIdentifierDTO complaintIdentifierDTO, List<ComplaintDTO> complaints, String noComplaintsMessage, Model model) {
         model.addAttribute("complaintIdentifierDTO", complaintIdentifierDTO);
+        model.addAttribute("techniciansInfo", techniciansInfo);
         model.addAttribute(
                 complaints.isEmpty() ? "noComplaintsFound" : "complaints",
                 complaints.isEmpty() ? noComplaintsMessage : complaints);
@@ -77,10 +80,10 @@ public class ComplaintModel {
     }
 
     /*
-     * Populates the model with technician IDs, complaint statuses, and update endpoint.
+     * Populates the model with technicians, complaint statuses, and update endpoint.
      */
-    public static void populateComplaintUpdate(List<String> technicianIds, String updateEndpointOrigin, Model model) {
-        model.addAttribute("technicianIds", technicianIds);
+    public static void populateComplaintUpdate(List<String> technicians, String updateEndpointOrigin, Model model) {
+        model.addAttribute("technicians", technicians);
         populateComplaintStatus(model);
         model.addAttribute("updateEndpointOrigin", updateEndpointOrigin);
     }
