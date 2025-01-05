@@ -59,8 +59,12 @@
                     <td th:text="${customer.lastName}"></td> <!-- Last Name -->
                     <td th:text="${customer.dateOfBirth}"></td> <!-- Date of Birth -->
                     <td th:text="${customer.gender}"></td> <!-- Gender -->
-                    <td th:text="${customer.phoneNumber}"></td> <!-- Phone Number -->
-                    <td th:text="${customer.email}"></td> <!-- Email -->
+                    <td> <!-- Phone Number -->
+                        <a th:href="'tel:' + ${customer.phoneNumber}" th:text="${customer.phoneNumber}"></a>
+                    </td>
+                    <td> <!-- Email -->
+                        <a th:href="'mailto: ' + ${customer.email}" th:text="${customer.email}"></a>
+                    </td>
                     <td th:text="${customer.address}"></td> <!-- Address -->
                     <td th:text="${customer.status}"></td> <!-- Status -->
                     <td>

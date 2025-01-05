@@ -62,8 +62,12 @@
                     <td th:text="${employee.lastName}"></td> <!-- Last Name -->
                     <td th:text="${employee.dateOfBirth}"></td> <!-- Date of Birth -->
                     <td th:text="${employee.gender}"></td> <!-- Gender -->
-                    <td th:text="${employee.phoneNumber}"></td> <!-- Phone Number -->
-                    <td th:text="${employee.email}"></td> <!-- Email -->
+                    <td> <!-- Phone Number -->
+                        <a th:href="'tel:' + ${employee.phoneNumber}" th:text="${employee.phoneNumber}"></a>
+                    </td>
+                    <td> <!-- Email -->
+                        <a th:href="'mailto: ' + ${employee.email}" th:text="${employee.email}"></a>
+                    </td>
                     <td th:text="${employee.address}"></td> <!-- Address -->
                     <td th:text="${employee.nationalIdNumber}"></td> <!-- National Id Number -->
                     <td th:text="${employee.designation}"></td> <!-- Designation -->

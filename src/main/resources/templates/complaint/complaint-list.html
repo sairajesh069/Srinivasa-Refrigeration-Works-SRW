@@ -73,9 +73,14 @@
                     <!-- Display complaint data in respective columns -->
                     <td th:text="${complaint.complaintId}"></td>
                     <td th:text="${complaint.customerName}"></td>
-                    <td th:text="${complaint.contactNumber}"></td>
+                    <td>
+                        <a th:href="'tel:' + ${complaint.contactNumber}" th:text="${complaint.contactNumber}"></a>
+                    </td>
                     <!-- Display email or 'Not Provided' if email is missing -->
-                    <td th:text="${complaint.email != null ? complaint.email : 'Not Provided'}"></td>
+                    <td>
+                        <a th:if="${complaint.email != null}" th:href="'mailto: ' + ${complaint.email}" th:text="${complaint.email}"></a>
+                        <span th:if="${complaint.email == null}">Not Provided</span>
+                    </td>
                     <td th:text="${complaint.address}"></td>
                     <td th:text="${complaint.productType}"></td>
                     <td th:text="${complaint.brand}"></td>
@@ -90,7 +95,11 @@
                     <!-- Display technician name or 'Awaiting Technician' if no technician is assigned -->
                     <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).fullName : 'Awaiting Technician'}"></td>
                     <!-- Display technician phone number or 'Awaiting Technician' if no technician is assigned -->
-                    <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).phoneNumber : 'N/A'}"></td>
+                    <td>
+                        <a th:if="${complaint.technicianId != null}" th:href="'tel:' + ${techniciansInfo.get(complaint.technicianId).phoneNumber}"
+                           th:text="${techniciansInfo.get(complaint.technicianId).phoneNumber}"></a>
+                        <span th:if="${complaint.technicianId == null}">N/A</span>
+                    </td>
                     <!-- Display technician designation or 'Awaiting Technician' if no technician is assigned -->
                     <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).designation : 'N/A'}"></td>
                     <!-- Display closed date or 'Not Closed Yet' if the complaint is not closed -->

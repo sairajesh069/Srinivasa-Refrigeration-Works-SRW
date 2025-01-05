@@ -57,8 +57,12 @@
                     <td th:text="${owner.lastName}"></td> <!-- Last Name -->
                     <td th:text="${owner.dateOfBirth}"></td> <!-- Date of Birth -->
                     <td th:text="${owner.gender}"></td> <!-- Gender -->
-                    <td th:text="${owner.phoneNumber}"></td> <!-- Phone Number -->
-                    <td th:text="${owner.email}"></td> <!-- Email Address -->
+                    <td> <!-- Phone Number -->
+                       <a th:href="'tel:' + ${owner.phoneNumber}" th:text="${owner.phoneNumber}"></a>
+                    </td>
+                    <td> <!-- Email Address -->
+                        <a th:href="'mailto: ' + ${owner.email}" th:text="${owner.email}"></a>
+                    </td>
                     <td th:text="${owner.address}"></td> <!-- Address -->
                     <td th:text="${owner.status}"></td> <!-- Status -->
                     <td>
