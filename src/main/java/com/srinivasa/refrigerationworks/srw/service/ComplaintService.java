@@ -3,10 +3,12 @@ package com.srinivasa.refrigerationworks.srw.service;
 import com.srinivasa.refrigerationworks.srw.entity.Complaint;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeInfoDTO;
 import com.srinivasa.refrigerationworks.srw.repository.ComplaintRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintState;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import com.srinivasa.refrigerationworks.srw.utility.mapper.ComplaintMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
  * Service for complaint-related operations.
@@ -231,9 +235,26 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves active employee IDs from the employee service.
+     * Retrieves a list of active technicians formatted as "EmployeeID - FullName".
      */
-    public List<String> getActiveEmployeeIds() {
-        return employeeService.getActiveEmployeeIds();
+    public List<String> getActiveTechnicians() {
+        return employeeService
+                .getEmployeeInfoByStatus(UserStatus.ACTIVE)
+                .stream()
+                .map(employee -> employee.getEmployeeId() + " - " + employee.getFullName())
+                .toList();
+    }
+
+    /*
+     * Retrieves a map of active technicians, with EmployeeID as the key and EmployeeInfoDTO as the value.
+     */
+    public Map<String, EmployeeInfoDTO> getActiveTechniciansInfo() {
+        return employeeService
+                .getEmployeeInfoByStatus(UserStatus.ACTIVE)
+                .stream()
+                .collect(Collectors.toMap(
+                        EmployeeInfoDTO::getEmployeeId,
+                        employeeInfoDTO -> employeeInfoDTO
+                ));
     }
 }
