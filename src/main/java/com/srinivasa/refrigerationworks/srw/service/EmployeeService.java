@@ -2,6 +2,7 @@ package com.srinivasa.refrigerationworks.srw.service;
 
 import com.srinivasa.refrigerationworks.srw.entity.Employee;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeInfoDTO;
 import com.srinivasa.refrigerationworks.srw.repository.EmployeeRepository;
 import com.srinivasa.refrigerationworks.srw.utility.common.PhoneNumberFormatter;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
@@ -108,7 +109,7 @@ public class EmployeeService {
      * Activates an employee by updating status to active.
      */
     @Caching(
-            evict = @CacheEvict(cacheNames = "employees", allEntries = true),
+            evict = @CacheEvict(cacheNames = {"employees", "techniciansInfo"}, allEntries = true),
             put = @CachePut(value = "employee", key = "'activate-' + #employeeId")
     )
     public void activateEmployee(String employeeId) {
@@ -119,7 +120,7 @@ public class EmployeeService {
      * Deactivates an employee by updating status to inactive.
      */
     @Caching(
-            evict = @CacheEvict(cacheNames = "employees", allEntries = true),
+            evict = @CacheEvict(cacheNames = {"employees", "techniciansInfo"}, allEntries = true),
             put = @CachePut(value = "employee", key = "'deactivate-' + #employeeId")
     )
     public void deactivateEmployee(String employeeId) {
@@ -127,14 +128,18 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves the list of active employee IDs.
+     * Retrieves a list of EmployeeInfoDTOs for employees with the specified status.
      */
-    @Cacheable(value = "employeeIds", key = "'active_employee_ids'")
-    public List<String> getActiveEmployeeIds() {
+    @Cacheable(value = "techniciansInfo", key = "#status + '_technicians_info'")
+    public List<EmployeeInfoDTO> getEmployeeInfoByStatus(UserStatus status) {
         return employeeRepository
-                .findByStatus(UserStatus.ACTIVE)
+                .findByStatus(status)
                 .stream()
-                .map(Employee::getEmployeeId)
+                .map(employee -> new EmployeeInfoDTO(
+                        employee.getEmployeeId(),
+                        employee.getFirstName() + " " + employee.getLastName(),
+                        employee.getPhoneNumber(),
+                        employee.getDesignation()))
                 .toList();
     }
 }
