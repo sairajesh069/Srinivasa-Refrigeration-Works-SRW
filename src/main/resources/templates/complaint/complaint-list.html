@@ -57,7 +57,10 @@
                     <th>Creation Date</th>
                     <th>Status</th>
                     <th>Last Updated</th>
-                    <th>Assigned To</th>
+                    <th sec:authorize="hasRole('OWNER')">Technician Id</th>
+                    <th>Technician Name</th>
+                    <th>Technician Contact</th>
+                    <th>Technician Designation</th>
                     <th>Closure Date</th>
                     <th>Feedback</th>
                     <th>State</th>
@@ -82,8 +85,14 @@
                     <td th:text="${complaint.status}"></td>
                     <!-- Display updated date or 'Not Updated Yet' if the complaint isn't updated -->
                     <td th:text="${complaint.updatedAt != null ? complaint.updatedAt : 'Not Updated Yet'}"></td>
-                    <!-- Display technician info or 'Awaiting Technician' if no technician is assigned -->
-                    <td th:text="${complaint.technicianId != null ? complaint.technicianId : 'Awaiting Technician'}"></td>
+                    <!-- Check if the user has 'OWNER' role to display technician id or 'Awaiting Technician' if no technician is assigned -->
+                    <td sec:authorize="hasRole('OWNER')" th:text="${complaint.technicianId != null ? complaint.technicianId : 'Awaiting Technician'}"></td>
+                    <!-- Display technician name or 'Awaiting Technician' if no technician is assigned -->
+                    <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).fullName : 'Awaiting Technician'}"></td>
+                    <!-- Display technician phone number or 'Awaiting Technician' if no technician is assigned -->
+                    <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).phoneNumber : 'N/A'}"></td>
+                    <!-- Display technician designation or 'Awaiting Technician' if no technician is assigned -->
+                    <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).designation : 'N/A'}"></td>
                     <!-- Display closed date or 'Not Closed Yet' if the complaint is not closed -->
                     <td th:text="${complaint.closedAt != null ? complaint.closedAt : 'Not Closed Yet'}"></td>
                     <!-- Display customer feedback or 'No Feedback' if feedback is not provided -->
