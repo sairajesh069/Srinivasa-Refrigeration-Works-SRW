@@ -14,12 +14,15 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
  * Service for complaint-related operations.
@@ -42,6 +45,11 @@ public class ComplaintService {
      * Service for employee-related operations.
      */
     private final EmployeeService employeeService;
+
+    /*
+     * Declares a StringRedisTemplate instance for interacting with Redis.
+     */
+    private final StringRedisTemplate stringRedisTemplate;
 
     /*
      * Registers a new complaint and sets initial values.
@@ -99,7 +107,7 @@ public class ComplaintService {
     /*
      * Retrieves complaints by identifier, filtered by user role and date.
      */
-    @Cacheable(value = "complaint", key = "'fetch_by-' + #complaintIdentifierDTO.identifier + '&' + #complaintIdentifierDTO.registeredDate")
+    @Cacheable(value = "complaint", key = "#userRole + ': fetch_by-' + #complaintIdentifierDTO.identifier + '&' + #complaintIdentifierDTO.registeredDate")
     public List<ComplaintDTO> getComplaintByIdentifier(ComplaintIdentifierDTO complaintIdentifierDTO, String bookedById, String userRole) {
         String identifier = complaintIdentifierDTO.getIdentifier();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -134,7 +142,7 @@ public class ComplaintService {
     /*
      * Retrieves complaint details by complaintId.
      */
-    @Cacheable(value = "complaint", key = "'fetch_by-' + #complaintId")
+    @Cacheable(value = "complaint", key = "'fetch-' + #complaintId")
     public ComplaintDTO getComplaintById(String complaintId) {
         return complaintMapper.toDto(complaintRepository.findByComplaintId(complaintId));
     }
@@ -145,7 +153,7 @@ public class ComplaintService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "complaints", allEntries = true),
-                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #updatedComplaintDTO.complaintId")
+                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #complaintId")
             },
             put = @CachePut(value = "complaint", key = "'update-' + #updatedComplaintDTO.complaintId")
     )
@@ -166,6 +174,25 @@ public class ComplaintService {
                 complaint.setClosedAt(LocalDateTime.now());
             }
             complaintRepository.save(complaint);
+            evictComplaintCacheByComplaintId(updatedComplaintDTO.getComplaintId(), updatedComplaintDTO.getContactNumber(), updatedComplaintDTO.getCreatedAt());
+        }
+    }
+
+    /*
+     * Evicts cache entries related to a complaint using complaint ID, contact number, and creation time.
+     */
+    public void evictComplaintCacheByComplaintId(String complaintId, String contactNumber, LocalDateTime createdAt) {
+        Set<String> complaintIdKeys  = stringRedisTemplate.keys("*fetch_by-" + complaintId + "&*");
+        Set<String> contactNumberAndCreatedAtKeys  = stringRedisTemplate.keys("*fetch_by-" + contactNumber + "&" + createdAt);
+        Set<String> evictKeys = new HashSet<>();
+        if(!complaintIdKeys.isEmpty()) {
+            evictKeys.addAll(complaintIdKeys);
+        }
+        if(!contactNumberAndCreatedAtKeys.isEmpty()) {
+            evictKeys.addAll(contactNumberAndCreatedAtKeys);
+        }
+        if(!evictKeys.isEmpty()) {
+            stringRedisTemplate.delete(evictKeys);
         }
     }
 

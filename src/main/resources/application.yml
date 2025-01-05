@@ -7,7 +7,7 @@ spring:
   server:
     port: 8080  # Server port
     session:
-      timeout: 15m  # Set session timeout to 15 minutes
+      timeout: 45m  # Set session timeout to 45 minutes
 
   jpa:
     hibernate:
