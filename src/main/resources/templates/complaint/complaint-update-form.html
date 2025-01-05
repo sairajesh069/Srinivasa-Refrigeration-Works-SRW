@@ -99,16 +99,16 @@
                    onclick="return false;"> <br><br>
 
             <!-- Input for assigning technician -->
-            <label for="technicianId">Technician Id: </label>
+            <label for="technicianId">Assign To: </label>
             <select id="technicianId" th:field="*{technicianId}" th:if="${session.userId.length() == 6}">
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available technician IDs and display them -->
-                <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
+                <!-- Iterate through available technicians and display them -->
+                <option th:each="technician : ${technicians}" th:value="${technician.substring(0, 7)}" th:text="${technician}"></option>
             </select>
-            <select id="technicianIdDisabled" th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
+            <select id="technicianInfoDisabled" th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
                 <option value="" selected>--select--</option>
-                <!-- Iterate through available technician IDs and display them -->
-                <option th:each="technicianId : ${technicianIds}" th:value="${technicianId}" th:text="${technicianId}"></option>
+                <!-- Iterate through available technicians and display them -->
+                <option th:each="technician : ${technicians}" th:value="${technician.substring(0, 7)}" th:text="${technician.substring(10)}"></option>
             </select> <br><br>
 
             <!-- Hidden input to store technician ID if the select is read-only -->
