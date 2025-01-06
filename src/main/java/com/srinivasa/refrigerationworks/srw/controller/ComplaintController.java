@@ -18,6 +18,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.Map;
+
 /*
  * Controller class to handle complaint-related operations.
  */
@@ -148,13 +151,19 @@ public class ComplaintController {
     @GetMapping("/update")
     public String updateComplaint(@RequestParam("complaintId") String complaintId, Model model,
                                   HttpSession session, HttpServletRequest request) {
+        String referer = request.getHeader("Referer");
+        String refererEndpoint = referer != null ? SubStringExtractor.extractSubString(referer, "complaint/") : "my-complaints";
         if (complaintService.canUserAccess(complaintId, UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER"),
                 session.getAttribute("userId").toString())) {
-            ComplaintModel.addComplaintToModel(complaintService.getComplaintById(complaintId), model);
+            ComplaintDTO complaint = complaintService.getComplaintById(complaintId);
+            if(complaint == null) {
+                ComplaintModel.addComplaintsToModel(Map.of(), new ComplaintIdentifierDTO(complaintId, null),
+                        List.of(), "No complaints found.", model);
+                return "complaint/complaint-list";
+            }
+            ComplaintModel.addComplaintToModel(complaint, model);
             ComplaintModel.populateComplaintUpdate(complaintService.getActiveTechnicians(),
-                    SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/").equals("search")
-                            ? session.getAttribute("searchEndpointOrigin").toString()
-                            : SubStringExtractor.extractSubString(request.getHeader("Referer"), "complaint/"), model);
+                    refererEndpoint.equals("search") ? session.getAttribute("searchEndpointOrigin").toString() : refererEndpoint, model);
             return "complaint/complaint-update-form";
         }
         return "access-denied";
@@ -166,7 +175,7 @@ public class ComplaintController {
      */
     @PostMapping("/update")
     public String updateComplaint(@ModelAttribute("complaint") @Valid ComplaintDTO updatedComplaintDTO, BindingResult bindingResult,
-                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model, HttpSession session) {
+                                  @RequestParam("updateEndpointOrigin") String updateEndpointOrigin, Model model) {
         if (bindingResult.hasErrors()) {
             if (updatedComplaintDTO.getProductType() != null) {
                 ComplaintModel.populateDropDownsForProduct(updatedComplaintDTO.getProductType(), model);

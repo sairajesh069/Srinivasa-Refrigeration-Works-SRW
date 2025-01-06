@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
  * Controller for handling employee credential operations.
@@ -69,9 +72,15 @@ public class EmployeeCredentialController {
      */
     @GetMapping("/update")
     public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session, HttpServletRequest request) {
-        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        String referer = request.getHeader("Referer");
+        String refererEndpoint = referer != null ? SubStringExtractor.extractSubString(referer, "employee/") : "list";
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
-            EmployeeModel.addEmployeeToModel(employeeCredentialService.getEmployeeById(employeeId), model);
+            EmployeeDTO employee = employeeCredentialService.getEmployeeById(employeeId);
+            if(employee == null) {
+                EmployeeModel.addEmployeesToModel(new UserIdentifierDTO(employeeId), List.of(), model);
+                return "employee/employee-list";
+            }
+            EmployeeModel.addEmployeeToModel(employee, model);
             UserCredentialModel.addUserFormConstantsToModel(model);
             UserCredentialModel.addUpdateEndpointOriginToModel(refererEndpoint, model);
             return "employee/employee-update-form";

@@ -138,8 +138,8 @@ public class ComplaintService {
         if (isOwner) {
             return true;
         } else {
-            Complaint complaint = complaintRepository.findByComplaintId(complaintId);
-            return complaint.getBookedById().equals(userId) || complaint.getTechnicianId().equals(userId);
+            ComplaintDTO complaint = getComplaintById(complaintId);
+            return complaint == null || complaint.getBookedById().equals(userId) || complaint.getTechnicianId().equals(userId);
         }
     }
 

@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
 import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
@@ -15,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
  * Controller for handling owner credential operations
@@ -66,10 +69,16 @@ public class OwnerCredentialController {
      */
     @GetMapping("/update")
     public String updateOwner(@RequestParam("ownerId") String ownerId, Model model, HttpServletRequest request) {
-        OwnerModel.addOwnerToModel(ownerCredentialService.getOwnerById(ownerId), model);
+        OwnerDTO owner = ownerCredentialService.getOwnerById(ownerId);
+        if(owner == null) {
+            OwnerModel.addOwnersToModel(new UserIdentifierDTO(ownerId), List.of(), model);
+            return "owner/owner-list";
+        }
+        String referer = request.getHeader("Referer");
+        OwnerModel.addOwnerToModel(owner, model);
         UserCredentialModel.addUserFormConstantsToModel(model);
-        UserCredentialModel.addUpdateEndpointOriginToModel(
-                SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/"), model);
+        UserCredentialModel.addUpdateEndpointOriginToModel(referer != null
+                    ? SubStringExtractor.extractSubString(referer, "owner/") : "list", model);
         return "owner/owner-update-form";
     }
 

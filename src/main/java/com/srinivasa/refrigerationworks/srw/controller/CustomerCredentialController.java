@@ -4,6 +4,7 @@ import com.srinivasa.refrigerationworks.srw.model.CustomerModel;
 import com.srinivasa.refrigerationworks.srw.model.UserCredentialModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
+import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
@@ -17,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /*
  * Controller for handling customer credential operations.
@@ -69,9 +72,15 @@ public class CustomerCredentialController {
      */
     @GetMapping("/update")
     public String updateCustomer(@RequestParam("customerId") String customerId, Model model, HttpSession session, HttpServletRequest request) {
-        String refererEndpoint = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        String referer = request.getHeader("Referer");
+        String refererEndpoint = referer != null ? SubStringExtractor.extractSubString(referer, "customer/") : "list";
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
-            CustomerModel.addCustomerToModel(customerCredentialService.getCustomerById(customerId), model);
+            CustomerDTO customer = customerCredentialService.getCustomerById(customerId);
+            if(customer == null) {
+                CustomerModel.addCustomersToModel(new UserIdentifierDTO(customerId), List.of(), model);
+                return "customer/customer-list";
+            }
+            CustomerModel.addCustomerToModel(customer, model);
             UserCredentialModel.addUserFormConstantsToModel(model);
             UserCredentialModel.addUpdateEndpointOriginToModel(refererEndpoint, model);
             return "customer/customer-update-form";
