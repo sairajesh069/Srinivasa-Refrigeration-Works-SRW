@@ -3,7 +3,7 @@ package com.srinivasa.refrigerationworks.srw.controller;
 import com.srinivasa.refrigerationworks.srw.model.EmployeeModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeService;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -38,8 +38,8 @@ public class EmployeeController {
      */
     @GetMapping("/list")
     public String getEmployeeList(Model model) {
-        EmployeeModel.addEmployeesToModel(model.getAttribute("userIdentifierDTO") == null
-                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        EmployeeModel.addEmployeesToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 employeeService.getEmployeeList(), model);
         return "employee/employee-list";
     }
@@ -50,8 +50,8 @@ public class EmployeeController {
      */
     @GetMapping("/active-list")
     public String getActiveEmployeeList(Model model) {
-        EmployeeModel.addEmployeesToModel(model.getAttribute("userIdentifierDTO") == null
-                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        EmployeeModel.addEmployeesToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 employeeService.getActiveEmployeeList(), model);
         return "employee/employee-list";
     }
@@ -63,12 +63,13 @@ public class EmployeeController {
     @PostMapping("/search")
     public String getEmployee(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
                               Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/").equals("search")
-                ? session.getAttribute("searchEndpointOrigin").toString()
-                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
-        if(!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
+        String refererEndpoint = EndpointExtractor.employeeEndpoint(request);
+        String searchEndpointOrigin = refererEndpoint.equals("search")
+                ? (String) session.getAttribute("searchEndpointOrigin") : refererEndpoint;
+        String identifier = userIdentifierDTO.getIdentifier();
+        if(!bindingResult.hasErrors() && !identifier.isEmpty()) {
             EmployeeModel.addEmployeesToModel(userIdentifierDTO, Collections.singletonList(
-                    employeeService.getEmployeeByIdentifier(userIdentifierDTO.getIdentifier())), model);
+                    employeeService.getEmployeeByIdentifier(identifier)), model);
             session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
             return "employee/employee-list";
         }
@@ -81,7 +82,7 @@ public class EmployeeController {
      */
     @GetMapping("/my-profile")
     public String getEmployeeProfile(Model model, HttpSession session) {
-        EmployeeModel.addEmployeeToModel(employeeService.getEmployeeByIdentifier(session.getAttribute("userId").toString()), model);
+        EmployeeModel.addEmployeeToModel(employeeService.getEmployeeByIdentifier((String) session.getAttribute("userId")), model);
         return "employee/employee-details";
     }
 }

@@ -3,7 +3,7 @@ package com.srinivasa.refrigerationworks.srw.controller;
 import com.srinivasa.refrigerationworks.srw.model.OwnerModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerService;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -38,8 +38,8 @@ public class OwnerController {
      */
     @GetMapping("/list")
     public String getOwnerList(Model model) {
-        OwnerModel.addOwnersToModel(model.getAttribute("userIdentifierDTO") == null
-                        ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        OwnerModel.addOwnersToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 ownerService.getOwnerList(), model);
         return "owner/owner-list";
     }
@@ -50,8 +50,8 @@ public class OwnerController {
      */
     @GetMapping("/active-list")
     public String getActiveOwnerList(Model model) {
-        OwnerModel.addOwnersToModel(model.getAttribute("userIdentifierDTO") == null
-                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        OwnerModel.addOwnersToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 ownerService.getActiveOwnerList(), model);
         return "owner/owner-list";
     }
@@ -63,12 +63,11 @@ public class OwnerController {
     @PostMapping("/search")
     public String getOwner(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
                            Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/").equals("search")
-                ? session.getAttribute("searchEndpointOrigin").toString()
-                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
-        if(!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
-            OwnerModel.addOwnersToModel(userIdentifierDTO, Collections.singletonList(
-                    ownerService.getOwnerByIdentifier(userIdentifierDTO.getIdentifier())), model);
+        String refererEndpoint = EndpointExtractor.ownerEndpoint(request);
+        String searchEndpointOrigin = refererEndpoint.equals("search") ? (String) session.getAttribute("searchEndpointOrigin") : refererEndpoint;
+        String identifier = userIdentifierDTO.getIdentifier();
+        if(!bindingResult.hasErrors() && !identifier.isEmpty()) {
+            OwnerModel.addOwnersToModel(userIdentifierDTO, Collections.singletonList(ownerService.getOwnerByIdentifier(identifier)), model);
             session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
             return "owner/owner-list";
         }
@@ -81,7 +80,7 @@ public class OwnerController {
      */
     @GetMapping("/my-profile")
     public String getOwnerProfile(Model model, HttpSession session) {
-        OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier(session.getAttribute("userId").toString()), model);
+        OwnerModel.addOwnerToModel(ownerService.getOwnerByIdentifier((String) session.getAttribute("userId")), model);
         return "owner/owner-details";
     }
 }

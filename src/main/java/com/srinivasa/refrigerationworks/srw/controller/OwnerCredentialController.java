@@ -6,8 +6,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerCredentialDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.OwnerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.OwnerCredentialService;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -77,8 +77,7 @@ public class OwnerCredentialController {
         String referer = request.getHeader("Referer");
         OwnerModel.addOwnerToModel(owner, model);
         UserCredentialModel.addUserFormConstantsToModel(model);
-        UserCredentialModel.addUpdateEndpointOriginToModel(referer != null
-                    ? SubStringExtractor.extractSubString(referer, "owner/") : "list", model);
+        UserCredentialModel.addUpdateEndpointOriginToModel(referer != null ? EndpointExtractor.ownerEndpoint(request) : "list", model);
         return "owner/owner-update-form";
     }
 
@@ -106,7 +105,7 @@ public class OwnerCredentialController {
     @GetMapping("/activate")
     public String activateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.activateOwner(ownerId);
-        return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+        return "redirect:/SRW/owner/" + EndpointExtractor.ownerEndpoint(request);
     }
 
     /*
@@ -117,6 +116,6 @@ public class OwnerCredentialController {
     @GetMapping("/deactivate")
     public String deactivateOwner(@RequestParam("ownerId") String ownerId, HttpServletRequest request) {
         ownerCredentialService.deactivateOwner(ownerId);
-        return "redirect:/SRW/owner/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "owner/");
+        return "redirect:/SRW/owner/" + EndpointExtractor.ownerEndpoint(request);
     }
 }

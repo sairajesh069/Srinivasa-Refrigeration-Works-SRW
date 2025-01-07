@@ -7,8 +7,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.EmployeeCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -73,7 +73,7 @@ public class EmployeeCredentialController {
     @GetMapping("/update")
     public String updateEmployee(@RequestParam("employeeId") String employeeId, Model model, HttpSession session, HttpServletRequest request) {
         String referer = request.getHeader("Referer");
-        String refererEndpoint = referer != null ? SubStringExtractor.extractSubString(referer, "employee/") : "list";
+        String refererEndpoint = referer != null ? EndpointExtractor.employeeEndpoint(request) : "list";
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
             EmployeeDTO employee = employeeCredentialService.getEmployeeById(employeeId);
             if(employee == null) {
@@ -112,7 +112,7 @@ public class EmployeeCredentialController {
     @GetMapping("/activate")
     public String activateEmployee(@RequestParam("employeeId") String employeeId, HttpServletRequest request) {
         employeeCredentialService.activateEmployee(employeeId);
-        return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        return "redirect:/SRW/employee/" + EndpointExtractor.employeeEndpoint(request);
     }
 
     /*
@@ -123,6 +123,6 @@ public class EmployeeCredentialController {
     @GetMapping("/deactivate")
     public String deactivateEmployee(@RequestParam("employeeId") String employeeId, HttpServletRequest request) {
         employeeCredentialService.deactivateEmployee(employeeId);
-        return "redirect:/SRW/employee/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "employee/");
+        return "redirect:/SRW/employee/" + EndpointExtractor.employeeEndpoint(request);
     }
 }

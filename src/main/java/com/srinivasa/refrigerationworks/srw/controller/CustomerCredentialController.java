@@ -7,8 +7,8 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.CustomerDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerCredentialService;
 import com.srinivasa.refrigerationworks.srw.utility.UserRoleProvider;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import com.srinivasa.refrigerationworks.srw.utility.common.StringEditor;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -73,7 +73,7 @@ public class CustomerCredentialController {
     @GetMapping("/update")
     public String updateCustomer(@RequestParam("customerId") String customerId, Model model, HttpSession session, HttpServletRequest request) {
         String referer = request.getHeader("Referer");
-        String refererEndpoint = referer != null ? SubStringExtractor.extractSubString(referer, "customer/") : "list";
+        String refererEndpoint = referer != null ? EndpointExtractor.customerEndpoint(request) : "list";
         if (UserRoleProvider.fetchUserRole(session).equals("ROLE_OWNER") || refererEndpoint.equals("my-profile")) {
             CustomerDTO customer = customerCredentialService.getCustomerById(customerId);
             if(customer == null) {
@@ -112,7 +112,7 @@ public class CustomerCredentialController {
     @GetMapping("/activate")
     public String activateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.activateCustomer(customerId);
-        return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        return "redirect:/SRW/customer/" + EndpointExtractor.customerEndpoint(request);
     }
 
     /*
@@ -123,6 +123,6 @@ public class CustomerCredentialController {
     @GetMapping("/deactivate")
     public String deactivateCustomer(@RequestParam("customerId") String customerId, HttpServletRequest request) {
         customerCredentialService.deactivateCustomer(customerId);
-        return "redirect:/SRW/customer/" + SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
+        return "redirect:/SRW/customer/" + EndpointExtractor.customerEndpoint(request);
     }
 }

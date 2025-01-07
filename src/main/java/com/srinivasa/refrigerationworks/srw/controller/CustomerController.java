@@ -3,7 +3,7 @@ package com.srinivasa.refrigerationworks.srw.controller;
 import com.srinivasa.refrigerationworks.srw.model.CustomerModel;
 import com.srinivasa.refrigerationworks.srw.payload.dto.UserIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.service.CustomerService;
-import com.srinivasa.refrigerationworks.srw.utility.common.SubStringExtractor;
+import com.srinivasa.refrigerationworks.srw.utility.common.EndpointExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -38,8 +38,8 @@ public class CustomerController {
      */
     @GetMapping("/list")
     public String getCustomerList(Model model) {
-        CustomerModel.addCustomersToModel(model.getAttribute("userIdentifierDTO") == null
-                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        CustomerModel.addCustomersToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 customerService.getCustomerList(), model);
         return "customer/customer-list";
     }
@@ -50,8 +50,8 @@ public class CustomerController {
      */
     @GetMapping("/active-list")
     public String getActiveCustomerList(Model model) {
-        CustomerModel.addCustomersToModel(model.getAttribute("userIdentifierDTO") == null
-                ? new UserIdentifierDTO() : (UserIdentifierDTO) model.getAttribute("userIdentifierDTO"),
+        UserIdentifierDTO userIdentifierDTO = (UserIdentifierDTO) model.getAttribute("userIdentifierDTO");
+        CustomerModel.addCustomersToModel(userIdentifierDTO == null ? new UserIdentifierDTO() : userIdentifierDTO,
                 customerService.getActiveCustomerList(), model);
         return "customer/customer-list";
     }
@@ -63,12 +63,12 @@ public class CustomerController {
     @PostMapping("/search")
     public String getCustomer(@ModelAttribute @Valid UserIdentifierDTO userIdentifierDTO, BindingResult bindingResult,
                               Model model, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        String searchEndpointOrigin = SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/").equals("search")
-                ? session.getAttribute("searchEndpointOrigin").toString()
-                : SubStringExtractor.extractSubString(request.getHeader("Referer"), "customer/");
-        if (!bindingResult.hasErrors() && !userIdentifierDTO.getIdentifier().isEmpty()) {
+        String refererEndpoint = EndpointExtractor.customerEndpoint(request);
+        String searchEndpointOrigin = refererEndpoint.equals("search") ? (String) session.getAttribute("searchEndpointOrigin") : refererEndpoint;
+        String identifier = userIdentifierDTO.getIdentifier();
+        if (!bindingResult.hasErrors() && !identifier.isEmpty()) {
             CustomerModel.addCustomersToModel(userIdentifierDTO, Collections.singletonList(
-                    customerService.getCustomerByIdentifier(userIdentifierDTO.getIdentifier())), model);
+                    customerService.getCustomerByIdentifier(identifier)), model);
             session.setAttribute("searchEndpointOrigin", searchEndpointOrigin);
             return "customer/customer-list";
         }
