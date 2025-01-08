@@ -48,7 +48,7 @@ spring:
       on-profile: prod  # Set profile to 'prod' for production environment
 
   datasource:
-    url: ${PROD_DB_URL}  # Dynamic database URL for production
+    url: jdbc:${PROD_DB_URL}  # Dynamic database URL for production
     username: ${PROD_DB_USERNAME}  # Dynamic database username for production
     password: ${PROD_DB_PASSWORD}  # Dynamic database password for production
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC driver
@@ -56,6 +56,6 @@ spring:
   redis:
     host: ${PROD_REDIS_HOST}  # Redis host provided by Railway
     port: ${PROD_REDIS_PORT}  # Redis port provided by Railway
-    time-to-live: 180000  # TTL in milliseconds
+    time-to-live: 1800000  # TTL in milliseconds
     repositories:
       enabled: false  # Disable Redis repository scanning
