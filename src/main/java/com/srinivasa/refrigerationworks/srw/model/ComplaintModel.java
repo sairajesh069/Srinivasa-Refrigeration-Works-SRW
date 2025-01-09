@@ -5,6 +5,7 @@ import com.srinivasa.refrigerationworks.srw.payload.dto.ComplaintIdentifierDTO;
 import com.srinivasa.refrigerationworks.srw.payload.dto.EmployeeInfoDTO;
 import com.srinivasa.refrigerationworks.srw.utility.common.constants.ComplaintFormConstants;
 import com.srinivasa.refrigerationworks.srw.utility.common.enums.ComplaintStatus;
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import org.springframework.ui.Model;
 
 import java.util.List;
@@ -82,8 +83,14 @@ public class ComplaintModel {
     /*
      * Populates the model with technicians, complaint statuses, and update endpoint.
      */
-    public static void populateComplaintUpdate(List<String> technicians, String updateEndpointOrigin, Model model) {
-        model.addAttribute("technicians", technicians);
+    public static void populateComplaintUpdate(Map<String, EmployeeInfoDTO> techniciansInfo, String updateEndpointOrigin, Model model) {
+        model.addAttribute("activeTechniciansInfo", techniciansInfo
+                            .values()
+                            .stream()
+                            .filter(employeeInfoDTO -> employeeInfoDTO.getStatus().equals(UserStatus.ACTIVE))
+                            .map(employee -> employee.getEmployeeId() + " - " + employee.getFullName())
+                            .toList());
+        model.addAttribute("techniciansInfo", techniciansInfo);
         populateComplaintStatus(model);
         model.addAttribute("updateEndpointOrigin", updateEndpointOrigin);
     }

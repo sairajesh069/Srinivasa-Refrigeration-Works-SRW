@@ -157,7 +157,7 @@ public class ComplaintService {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = "complaints", allEntries = true),
-                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #complaintId")
+                    @CacheEvict(cacheNames = "complaint", key = "'fetch-' + #updatedComplaintDTO.complaintId")
             },
             put = @CachePut(value = "complaint", key = "'update-' + #updatedComplaintDTO.complaintId")
     )
@@ -235,22 +235,11 @@ public class ComplaintService {
     }
 
     /*
-     * Retrieves a list of active technicians formatted as "EmployeeID - FullName".
+     * Retrieves a map of technicians, with EmployeeID as the key and EmployeeInfoDTO as the value.
      */
-    public List<String> getActiveTechnicians() {
+    public Map<String, EmployeeInfoDTO> getTechniciansInfo() {
         return employeeService
-                .getEmployeeInfoByStatus(UserStatus.ACTIVE)
-                .stream()
-                .map(employee -> employee.getEmployeeId() + " - " + employee.getFullName())
-                .toList();
-    }
-
-    /*
-     * Retrieves a map of active technicians, with EmployeeID as the key and EmployeeInfoDTO as the value.
-     */
-    public Map<String, EmployeeInfoDTO> getActiveTechniciansInfo() {
-        return employeeService
-                .getEmployeeInfoByStatus(UserStatus.ACTIVE)
+                .getEmployeesInfo()
                 .stream()
                 .collect(Collectors.toMap(
                         EmployeeInfoDTO::getEmployeeId,

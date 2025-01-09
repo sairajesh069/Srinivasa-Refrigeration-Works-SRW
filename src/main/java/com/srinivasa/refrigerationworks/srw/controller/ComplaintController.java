@@ -79,7 +79,7 @@ public class ComplaintController {
         if (complaint.getComplaintId() != null) {
             ComplaintModel.addComplaintToModel(complaint, model);
             ComplaintModel.populateComplaintUpdate(
-                    complaintService.getActiveTechnicians(), request.getParameter("updateEndpointOrigin"), model);
+                    complaintService.getTechniciansInfo(), request.getParameter("updateEndpointOrigin"), model);
             ComplaintModel.populateComplaintStatus(model);
             return "complaint/complaint-update-form";
         }
@@ -93,7 +93,7 @@ public class ComplaintController {
     @GetMapping("/my-complaints")
     public String getMyComplaints(Model model, HttpSession session) {
         ComplaintIdentifierDTO complaintIdentifierDTO = (ComplaintIdentifierDTO) model.getAttribute("complaintIdentifierDTO");
-        ComplaintModel.addComplaintsToModel(complaintService.getActiveTechniciansInfo(),
+        ComplaintModel.addComplaintsToModel(complaintService.getTechniciansInfo(),
                 complaintIdentifierDTO == null ? new ComplaintIdentifierDTO() : complaintIdentifierDTO,
                 complaintService.getComplaintsByBookedById((String) session.getAttribute("userId")),
                 "No complaints have been registered yet.", model);
@@ -106,7 +106,7 @@ public class ComplaintController {
     @GetMapping("/list")
     public String getComplaintList(Model model) {
         ComplaintIdentifierDTO complaintIdentifierDTO = (ComplaintIdentifierDTO) model.getAttribute("complaintIdentifierDTO");
-        ComplaintModel.addComplaintsToModel(complaintService.getActiveTechniciansInfo(),
+        ComplaintModel.addComplaintsToModel(complaintService.getTechniciansInfo(),
                 complaintIdentifierDTO == null ? new ComplaintIdentifierDTO() : complaintIdentifierDTO,
                 complaintService.getComplaintList(), "No complaints have been registered yet.", model);
         return "complaint/complaint-list";
@@ -118,7 +118,7 @@ public class ComplaintController {
     @GetMapping("/active-list")
     public String getActiveComplaintList(Model model) {
         ComplaintIdentifierDTO complaintIdentifierDTO = (ComplaintIdentifierDTO) model.getAttribute("complaintIdentifierDTO");
-        ComplaintModel.addComplaintsToModel(complaintService.getActiveTechniciansInfo(),
+        ComplaintModel.addComplaintsToModel(complaintService.getTechniciansInfo(),
                 complaintIdentifierDTO == null ? new ComplaintIdentifierDTO() : complaintIdentifierDTO,
                 complaintService.getActiveComplaintList(), "No active complaints found.", model);
         return "complaint/complaint-list";
@@ -134,7 +134,7 @@ public class ComplaintController {
         String searchEndpointOrigin = refererEndpoint.equals("search")
                 ? (String) session.getAttribute("searchEndpointOrigin") : refererEndpoint;
         if(!bindingResult.hasErrors() && complaintIdentifierDTO.getIdentifier() != null) {
-            ComplaintModel.addComplaintsToModel(complaintService.getActiveTechniciansInfo(), complaintIdentifierDTO,
+            ComplaintModel.addComplaintsToModel(complaintService.getTechniciansInfo(), complaintIdentifierDTO,
                     complaintService.getComplaintByIdentifier(
                             complaintIdentifierDTO, (String) session.getAttribute("userId"), UserRoleProvider.fetchUserRole(session)
                     ), "No complaints found.", model);
@@ -162,7 +162,7 @@ public class ComplaintController {
                 return "complaint/complaint-list";
             }
             ComplaintModel.addComplaintToModel(complaint, model);
-            ComplaintModel.populateComplaintUpdate(complaintService.getActiveTechnicians(),
+            ComplaintModel.populateComplaintUpdate(complaintService.getTechniciansInfo(),
                     refererEndpoint.equals("search") ? (String) session.getAttribute("searchEndpointOrigin") : refererEndpoint, model);
             return "complaint/complaint-update-form";
         }
@@ -182,7 +182,7 @@ public class ComplaintController {
             } else {
                 ComplaintModel.addProductTypesToModel(model);
             }
-            ComplaintModel.populateComplaintUpdate(complaintService.getActiveTechnicians(), updateEndpointOrigin, model);
+            ComplaintModel.populateComplaintUpdate(complaintService.getTechniciansInfo(), updateEndpointOrigin, model);
             return "complaint/complaint-update-form";
         }
         complaintService.updateComplaint(complaintService.getComplaintById(updatedComplaintDTO.getComplaintId()), updatedComplaintDTO);
@@ -213,7 +213,7 @@ public class ComplaintController {
     @GetMapping("/assigned-complaints")
     public String getAssignedComplaints(Model model, HttpSession session) {
         ComplaintIdentifierDTO complaintIdentifierDTO = (ComplaintIdentifierDTO) model.getAttribute("complaintIdentifierDTO");
-        ComplaintModel.addComplaintsToModel(complaintService.getActiveTechniciansInfo(),
+        ComplaintModel.addComplaintsToModel(complaintService.getTechniciansInfo(),
                 complaintIdentifierDTO == null ? new ComplaintIdentifierDTO() : complaintIdentifierDTO,
                 complaintService.getComplaintsByTechnicianId((String) session.getAttribute("userId")),
                 "No complaints have been assigned yet.", model);

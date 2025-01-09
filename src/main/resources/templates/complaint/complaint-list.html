@@ -91,7 +91,7 @@
                     <!-- Display updated date or 'Not Updated Yet' if the complaint isn't updated -->
                     <td th:text="${complaint.updatedAt != null ? complaint.updatedAt : 'Not Updated Yet'}"></td>
                     <!-- Check if the user has 'OWNER' role to display technician id or 'Awaiting Technician' if no technician is assigned -->
-                    <td sec:authorize="hasRole('OWNER')" th:text="${complaint.technicianId != null ? complaint.technicianId : 'Awaiting Technician'}"></td>
+                    <td sec:authorize="hasRole('OWNER')" th:text="${complaint.technicianId != null ? complaint.technicianId + ' - ' + techniciansInfo.get(complaint.technicianId).status : 'Awaiting Technician'}"></td>
                     <!-- Display technician name or 'Awaiting Technician' if no technician is assigned -->
                     <td th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).fullName : 'Awaiting Technician'}"></td>
                     <!-- Display technician phone number or 'Awaiting Technician' if no technician is assigned -->

@@ -128,18 +128,19 @@ public class EmployeeService {
     }
 
     /*
-     * Retrieves a list of EmployeeInfoDTOs for employees with the specified status.
+     * Retrieves a list of EmployeeInfoDTOs for employees.
      */
     @Cacheable(value = "techniciansInfo", key = "#status + '_technicians_info'")
-    public List<EmployeeInfoDTO> getEmployeeInfoByStatus(UserStatus status) {
+    public List<EmployeeInfoDTO> getEmployeesInfo() {
         return employeeRepository
-                .findByStatus(status)
+                .findAll()
                 .stream()
                 .map(employee -> new EmployeeInfoDTO(
                         employee.getEmployeeId(),
                         employee.getFirstName() + " " + employee.getLastName(),
                         employee.getPhoneNumber(),
-                        employee.getDesignation()))
+                        employee.getDesignation(),
+                        employee.getStatus()))
                 .toList();
     }
 }

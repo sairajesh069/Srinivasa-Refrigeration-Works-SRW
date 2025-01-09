@@ -103,12 +103,12 @@
             <select id="technicianId" th:field="*{technicianId}" th:if="${session.userId.length() == 6}">
                 <option value="" selected>--select--</option>
                 <!-- Iterate through available technicians and display them -->
-                <option th:each="technician : ${technicians}" th:value="${technician.substring(0, 7)}" th:text="${technician}"></option>
+                <option th:each="activeTechnician : ${activeTechniciansInfo}" th:value="${activeTechnician.substring(0, 7)}" th:text="${activeTechnician}"></option>
             </select>
-            <select id="technicianInfoDisabled" th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
-                <option value="" selected>--select--</option>
+            <select th:field="*{technicianId}" th:if="${session.userId.length() != 6}" disabled>
                 <!-- Iterate through available technicians and display them -->
-                <option th:each="technician : ${technicians}" th:value="${technician.substring(0, 7)}" th:text="${technician.substring(10)}"></option>
+                <option th:value="${complaint.technicianId}"
+                        th:text="${complaint.technicianId != null ? techniciansInfo.get(complaint.technicianId).fullName : 'Pending'}"></option>
             </select> <br><br>
 
             <!-- Hidden input to store technician ID if the select is read-only -->

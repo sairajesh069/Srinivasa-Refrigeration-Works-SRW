@@ -1,5 +1,6 @@
 package com.srinivasa.refrigerationworks.srw.payload.dto;
 
+import com.srinivasa.refrigerationworks.srw.utility.common.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,4 +41,9 @@ public class EmployeeInfoDTO implements Serializable {
      * Employee's designation.
      */
     private String designation;
+
+    /*
+     * Employee's status.
+     */
+    private UserStatus status;
 }
