@@ -54,9 +54,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC driver
 
   redis:
-    host: ${PROD_REDIS_HOST}  # Redis host provided by Railway
-    port: ${PROD_REDIS_PORT}  # Redis port provided by Railway
-    password: ${PROD_REDIS_PASSWORD}  # Redis password provided by Railway
+    url: ${PROD_REDIS_URL}  # Redis url provided by Railway
     time-to-live: 1800000  # TTL in milliseconds
     repositories:
       enabled: false  # Disable Redis repository scanning
