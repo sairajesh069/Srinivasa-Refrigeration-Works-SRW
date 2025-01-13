@@ -36,9 +36,9 @@ spring:
   redis:
     host: ${DEV_REDIS_HOST}  # Redis host for dev environment
     port: ${DEV_REDIS_PORT}  # Redis port for dev environment
-    time-to-live: 180000  # TTL in milliseconds
-    repositories:
-      enabled: false  # Disable Redis repository scanning
+  cache:
+    redis:
+      time-to-live: 900000  # TTL in milliseconds
 
 ---
 # Production profile configuration
@@ -55,6 +55,6 @@ spring:
 
   redis:
     url: ${PROD_REDIS_URL}  # Redis url provided by Railway
-    time-to-live: 1800000  # TTL in milliseconds
-    repositories:
-      enabled: false  # Disable Redis repository scanning
+  cache:
+    redis:
+      time-to-live: 1800000  # TTL in milliseconds
